@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
-  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList 
+  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList, Home
 } from 'lucide-react';
 import { 
   Sidebar, 
@@ -60,6 +60,18 @@ export default function AdminSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+           <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === "/"} // Or simply never active if it's an exit link
+                tooltip="Back to Main Content"
+              >
+                <Link href="/">
+                  <Home />
+                  <span>Back to Main Content</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
 

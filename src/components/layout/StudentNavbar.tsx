@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, UserCircle, BookOpen, LogOut, BookMarked, Menu } from 'lucide-react';
+import { LayoutDashboard, UserCircle, BookOpen, LogOut, BookMarked, Menu, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils';
 const studentNavLinks = [
   { href: '/student/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/student/profile', label: 'My Profile', icon: UserCircle },
+  { href: '/', label: 'Back to Main Content', icon: Home },
   // Add more links like "My Courses", "Resources" when available
 ];
 
