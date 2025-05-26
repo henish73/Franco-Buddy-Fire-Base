@@ -2,7 +2,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useActionState, useFormStatus } from "react"; // Updated import
+import { useActionState } from "react"; // Updated import
+import { useFormStatus } from "react-dom"; // Corrected import
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
