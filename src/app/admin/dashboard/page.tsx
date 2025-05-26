@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import StatCard from '@/components/shared/StatCard';
 import { Users, Inbox, BookOpen, BarChart3, ArrowRight } from 'lucide-react';
 
