@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import SectionTitle from '@/components/shared/SectionTitle';
-import { Award, BookOpen, MapPin, Users, Lightbulb, ShieldCheck } from 'lucide-react';
+import { Award, BookOpen, MapPin, Users, Lightbulb, ShieldCheck, Clock } from 'lucide-react';
 
 export default function AboutPage() {
   return (
