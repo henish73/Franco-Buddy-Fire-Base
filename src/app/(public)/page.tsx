@@ -4,17 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import SectionTitle from '@/components/shared/SectionTitle';
 import StatCard from '@/components/shared/StatCard';
-import { CheckCircle, Users, Clock, Award, UserCheck, BookOpen, Mic, Laptop, Star, TrendingUp, Target, UserCircle, ChevronRight } from 'lucide-react';
+import { CheckCircle, Users, Clock, Award, UserCheck, BookOpen, Mic, Laptop, Star, TrendingUp, Target, UserCircle, ChevronRight, Home } from 'lucide-react';
+import { getSiteSettings } from '@/app/admin/settings/actions'; // Import the new fetch function
 
-// Placeholder data - In a real app, this would come from a CMS or database
-const quickStats = {
-  studentsHelped: "150+", // Placeholder, admin editable
-  successRate: "92%",    // Placeholder, admin editable
-};
-
+// Placeholder data - In a real app, this would come from a CMS or database for courses/testimonials
 const courses = [
-  { id: "1", title: "TEF Foundation", description: "Build a strong base for your TEF Canada journey. Ideal for beginners.", targetCLB: "4-6", format: "1:1 / 1:3", image: "https://placehold.co/600x400.png", dataAiHint: "study learning" },
-  { id: "2", title: "TEF Pro - CLB 7+", description: "Intensive preparation to achieve CLB 7+ for Express Entry.", targetCLB: "7+", format: "1:1 / 1:3", image: "https://placehold.co/600x400.png", dataAiHint: "success achievement" },
+  { id: "tef-foundation", title: "TEF Foundation", description: "Build a strong base for your TEF Canada journey. Ideal for beginners.", targetCLB: "4-6", format: "1:1 / 1:3", image: "https://placehold.co/600x400.png", dataAiHint: "study learning" },
+  { id: "tef-pro-clb7", title: "TEF Pro - CLB 7+", description: "Intensive preparation to achieve CLB 7+ for Express Entry.", targetCLB: "7+", format: "1:1 / 1:3", image: "https://placehold.co/600x400.png", dataAiHint: "success achievement" },
 ];
 
 const testimonials = [
@@ -37,7 +33,14 @@ const howWeWorkSteps = [
   { icon: Star, title: "Personalized Coaching", description: "Targeted support to overcome weaknesses and maximize your score." },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Fetch dynamic quick stats
+  const siteSettings = await getSiteSettings();
+  const quickStats = {
+    studentsHelped: siteSettings?.studentsHelpedCount || "150+", // Fallback to default
+    successRate: siteSettings?.successRateCLB7 || "92%",    // Fallback to default
+  };
+
   return (
     <>
       {/* Hero Section */}

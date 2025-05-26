@@ -19,10 +19,8 @@ export type SiteSettingsFormState = {
   isSuccess: boolean;
 };
 
-const initialState: SiteSettingsFormState = {
-  message: "",
-  isSuccess: false,
-};
+// This would typically be a Firestore document ID or a known constant
+const SITE_SETTINGS_DOC_ID = 'generalSiteInfo'; 
 
 export async function updateSiteSettings(
   prevState: SiteSettingsFormState,
@@ -47,13 +45,18 @@ export async function updateSiteSettings(
 
   try {
     // In a real application, you would:
-    // 1. Update the document in Firestore (e.g., site_settings_basic collection, doc_id 'homepage_stats')
-    //    await db.collection('site_settings_basic').doc('homepage_stats').set(validatedFields.data, { merge: true });
+    // 1. Initialize Firestore admin SDK (if not already done globally for server actions)
+    // const db = admin.firestore(); // Assuming Firebase Admin SDK for server-side operations
+    // 2. Update the document in Firestore
+    // await db.collection('site_configuration').doc(SITE_SETTINGS_DOC_ID).set(validatedFields.data, { merge: true });
     
-    console.log("Site settings updated (simulated):", validatedFields.data);
+    console.log("Site settings would be saved to Firestore:", validatedFields.data);
+    // For now, we'll simulate a successful save without actual DB interaction.
+    // To make this truly live for other parts of the app, the reading parts (e.g., homepage)
+    // would also need to fetch from Firestore.
 
     return {
-      message: "Site settings updated successfully!",
+      message: "Site settings updated successfully! (Data would be saved to Firestore)",
       isSuccess: true,
     };
   } catch (error) {
@@ -62,5 +65,44 @@ export async function updateSiteSettings(
       message: "An unexpected error occurred. Please try again later.",
       isSuccess: false,
     };
+  }
+}
+
+// New function to fetch settings (simulated)
+export async function getSiteSettings(): Promise<{ adminContactEmail: string; studentsHelpedCount: string; successRateCLB7: string; } | null> {
+  try {
+    // In a real application, fetch from Firestore:
+    // const db = admin.firestore();
+    // const docRef = db.collection('site_configuration').doc(SITE_SETTINGS_DOC_ID);
+    // const docSnap = await docRef.get();
+    // if (docSnap.exists) {
+    //   const data = docSnap.data();
+    //   return {
+    //      adminContactEmail: data.adminContactEmail,
+    //      studentsHelpedCount: data.studentsHelpedCount.toString(), // Convert number to string for display consistency
+    //      successRateCLB7: data.successRateCLB7.toString() + "%", // Add %
+    //   };
+    // } else {
+    //   console.log("No site settings document found!");
+    //   return null;
+    // }
+
+    // Simulate fetch for now, returning default values if not "saved"
+    // This is a placeholder. In a real scenario, if the admin saves "200" and "95%",
+    // this function (when connected to Firestore) would return those values.
+    console.log(`Simulating fetch of site settings from Firestore. If admin saved new values, they would be reflected here.`);
+    // For this example, to show it *can* be dynamic, let's return some values.
+    // To see changes, you'd need to implement actual Firestore write in updateSiteSettings
+    // and read here. This simulation won't pick up "saved" values from the admin panel yet
+    // without actual database integration.
+    return {
+      adminContactEmail: "admin-from-db@frenchgta.ca", // Example
+      studentsHelpedCount: "175+", // Example
+      successRateCLB7: "93%", // Example
+    };
+
+  } catch (error) {
+    console.error("Error fetching site settings:", error);
+    return null;
   }
 }
