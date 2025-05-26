@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
-  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink 
+  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList 
 } from 'lucide-react';
 import { 
   Sidebar, 
@@ -26,6 +26,7 @@ const adminNavItems = [
   { href: '/admin/leads', label: 'Lead Management', icon: Inbox },
   { href: '/admin/students', label: 'Student Management', icon: Users },
   { href: '/admin/courses', label: 'Course Management', icon: BookOpen },
+  { href: '/admin/enrollments', label: 'Enrollments', icon: ClipboardList },
   { href: '/admin/settings', label: 'Site Settings', icon: Settings },
 ];
 

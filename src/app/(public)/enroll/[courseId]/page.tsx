@@ -1,7 +1,7 @@
 // src/app/(public)/enroll/[courseId]/page.tsx
 import SectionTitle from '@/components/shared/SectionTitle';
 import EnrollmentForm from './EnrollmentForm';
-import { coursesData } from '../courses/mockCoursesData'; // Using a shared mock data for now
+import { coursesData } from '@/app/(public)/courses/mockCoursesData'; // Using a shared mock data for now
 import { type Course } from '@/components/shared/CourseCard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShoppingCart } from 'lucide-react';
