@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, BookOpen, Users, Target, Info, Tag, CalendarDays } from 'lucide-react';
-import { type Course } from '@/components/shared/CourseCard'; // Assuming Course type is exported
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Check, BookOpen, Users, Target, Info, Tag, CalendarDays, Video, FileText, Brain, ClipboardCheck, Award, MessageSquare, MessageCircleIcon } from 'lucide-react';
+import { type Course, type Module, type Lesson } from '@/components/shared/CourseCard';
 
 // Placeholder data - In a real app, this would come from Firestore based on params.id
 const coursesData: { [key: string]: Course } = {
@@ -26,8 +27,27 @@ const coursesData: { [key: string]: Course } = {
       "You prefer a structured approach with foundational learning.",
     ],
     structure: "Weekly live classes, interactive exercises, access to notes, and basic mock tests.",
-    learningResources: ["Live Classes", "Downloadable Notes", "Recorded Sessions", "Practice Quizzes"],
-    tefFocus: "Introduction to all 4 TEF Canada sections, basic strategies, and confidence building."
+    tefFocus: "Introduction to all 4 TEF Canada sections, basic strategies, and confidence building.",
+    modules: [
+      { id: "m1", title: "Module 1: Introduction to TEF Canada & French Basics", order: 1, lessons: [
+        { id: "l1-1", title: "Lesson 1.1: Understanding the TEF Canada Exam", keyTopics: ["Exam structure", "Scoring (CLB levels)", "Registration process"], skillsTargeted: ["General Knowledge"], tefQuestionTypes: ["Overview"], exampleActivities: "Review exam guide" },
+        { id: "l1-2", title: "Lesson 1.2: Basic French Greetings & Introductions", keyTopics: ["Salutations", "Presenting oneself", "Asking basic questions"], skillsTargeted: ["Speaking", "Listening"], exampleActivities: "Role-playing introductions" },
+      ]},
+      { id: "m2", title: "Module 2: Core Grammar & Vocabulary", order: 2, lessons: [
+        { id: "l2-1", title: "Lesson 2.1: Essential Verbs (être, avoir, aller)", keyTopics: ["Conjugation in present tense", "Usage in sentences"], skillsTargeted: ["Writing", "Reading"], exampleActivities: "Fill-in-the-blanks exercises" },
+      ]}
+    ],
+    whatsIncluded: [
+      { text: "Live Interactive Classes", icon: Users },
+      { text: "Certified TEF Instructors", icon: Award },
+      { text: "Class Recordings (24/7 Access)", icon: Video },
+      { text: "Comprehensive Class Notes (PDF)", icon: FileText },
+      { text: "AI Language Tutor Access (Speaking & Writing)", icon: Brain },
+      { text: "Official TEF Practice Materials", icon: ClipboardCheck },
+      { text: "Regular Mock Tests & Feedback", icon: Target },
+      { text: "One-on-One Support Sessions (as per plan)", icon: MessageSquare },
+      { text: "Dedicated WhatsApp Group for Batch", icon: MessageCircleIcon },
+    ],
   },
   "tef-pro-clb7": { 
     id: "tef-pro-clb7", 
@@ -47,8 +67,26 @@ const coursesData: { [key: string]: Course } = {
       "You want personalized feedback to refine your skills.",
     ],
     structure: "Advanced strategy sessions, full-length mock tests, personalized feedback, targeted skill workshops.",
-    learningResources: ["Advanced Live Classes", "Strategy Guides", "Extensive Mock Tests", "Personalized Feedback Reports", "Recordings of all sessions"],
-    tefFocus: "Mastery of all 4 TEF Canada sections, advanced test-taking strategies, time management, and achieving high fluency."
+    tefFocus: "Mastery of all 4 TEF Canada sections, advanced test-taking strategies, time management, and achieving high fluency.",
+    modules: [
+      { id: "m1-pro", title: "Module 1: Advanced Listening Comprehension", order: 1, lessons: [
+        { id: "l1-1-pro", title: "Lesson 1.1: Identifying Nuances and Implied Meanings", keyTopics: ["Inferencing", "Understanding idiomatic expressions", "Diverse accents"], skillsTargeted: ["Listening"], tefQuestionTypes: ["Compréhension Orale - Section A, B, C"], exampleActivities: "Practice with advanced audio clips" },
+      ]},
+      { id: "m2-pro", title: "Module 2: Mastering Speaking Sections", order: 2, lessons: [
+        { id: "l2-1-pro", title: "Lesson 2.1: Structuring Arguments for Section B (Expression Orale)", keyTopics: ["Persuasive language", "Organizing ideas", "Effective vocabulary"], skillsTargeted: ["Speaking"], tefQuestionTypes: ["Expression Orale - Section B"], exampleActivities: "Timed speaking practice with feedback" },
+      ]}
+    ],
+    whatsIncluded: [
+      { text: "Advanced Live Interactive Classes", icon: Users },
+      { text: "Expert TEF Instructors (CLB 9+)", icon: Award },
+      { text: "All Class Recordings (24/7 Access)", icon: Video },
+      { text: "Detailed Strategy Guides & Notes (PDF)", icon: FileText },
+      { text: "AI Language Tutor Access (All Modules)", icon: Brain },
+      { text: "Extensive Official TEF Practice Materials", icon: ClipboardCheck },
+      { text: "Multiple Full-Length Mock Tests & In-depth Feedback", icon: Target },
+      { text: "Dedicated One-on-One Strategy Sessions", icon: MessageSquare },
+      { text: "Priority Support via WhatsApp Group", icon: MessageCircleIcon },
+    ],
   },
    "tef-excellence-clb9": { 
     id: "tef-excellence-clb9", 
@@ -67,8 +105,9 @@ const coursesData: { [key: string]: Course } = {
       "You require elite, personalized coaching to polish every aspect of your language skills.",
     ],
     structure: "Intensive 1:1 coaching, customized study plans, advanced material, specialized mock tests, and detailed error analysis.",
-    learningResources: ["Elite 1:1 Live Sessions", "Advanced Custom Materials", "Full-Length Proctored Mock Tests", "In-depth Performance Analytics", "Access to Exclusive Resources"],
-    tefFocus: "Achieving near-native proficiency across all TEF Canada sections, mastering complex structures, and ensuring impeccable accuracy."
+    tefFocus: "Achieving near-native proficiency across all TEF Canada sections, mastering complex structures, and ensuring impeccable accuracy.",
+    modules: [], // Populate if needed
+    whatsIncluded: [], // Populate if needed
   },
 };
 
@@ -121,7 +160,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
       </section>
       
       <div className="container mx-auto px-4 py-16 md:py-24">
-        <div className="grid md:grid-cols-3 gap-12">
+        <div className="grid md:grid-cols-3 gap-12 items-start">
           {/* Main Content */}
           <div className="md:col-span-2 space-y-12">
             {/* Detailed Overview Section */}
@@ -132,54 +171,109 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
               <p className="text-foreground/80 leading-relaxed">{course.detailedDescription}</p>
             </section>
 
-            {/* "Is This Course For You?" Section */}
-            <section>
-              <h2 className="text-2xl font-semibold text-primary mb-4 flex items-center gap-2">
-                <Target className="h-6 w-6" /> Is This Course For You?
-              </h2>
-              <ul className="space-y-2">
-                {course.isForYou.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2 text-foreground/80">
-                    <Check className="h-5 w-5 text-green-500 mt-1 shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            {/* Syllabus / Curriculum Section */}
+            {course.modules && course.modules.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-semibold text-primary mb-6 flex items-center gap-2">
+                  <BookOpen className="h-6 w-6" /> Syllabus / Curriculum
+                </h2>
+                <Accordion type="single" collapsible className="w-full space-y-4">
+                  {course.modules.sort((a,b) => (a.order || 0) - (b.order || 0)).map((module) => (
+                    <AccordionItem key={module.id} value={module.id} className="bg-card shadow-sm rounded-lg border">
+                      <AccordionTrigger className="text-left hover:no-underline py-4 px-6 text-lg font-medium text-primary">
+                        {module.title}
+                      </AccordionTrigger>
+                      <AccordionContent className="py-4 px-6 text-muted-foreground space-y-4">
+                        {module.description && <p className="mb-4">{module.description}</p>}
+                        {module.lessons.sort((a,b) => (a.order || 0) - (b.order || 0)).map((lesson) => (
+                          <div key={lesson.id} className="p-4 border-l-2 border-primary/50 bg-muted/30 rounded-r-md">
+                            <h4 className="font-semibold text-foreground mb-1">{lesson.title}</h4>
+                            {lesson.keyTopics && lesson.keyTopics.length > 0 && (
+                              <p className="text-sm"><strong>Key Topics:</strong> {lesson.keyTopics.join(', ')}</p>
+                            )}
+                            {lesson.skillsTargeted && lesson.skillsTargeted.length > 0 && (
+                              <p className="text-sm"><strong>Skills Targeted:</strong> {lesson.skillsTargeted.join(', ')}</p>
+                            )}
+                            {lesson.tefQuestionTypes && lesson.tefQuestionTypes.length > 0 && (
+                                <p className="text-sm"><strong>TEF Question Types:</strong> {lesson.tefQuestionTypes.join(', ')}</p>
+                            )}
+                            {lesson.exampleActivities && (
+                                <p className="text-sm"><strong>Example Activities:</strong> {lesson.exampleActivities}</p>
+                            )}
+                          </div>
+                        ))}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            )}
 
-            {/* Course Structure & Format (basic details) */}
-            <section>
-              <h2 className="text-2xl font-semibold text-primary mb-4 flex items-center gap-2">
-                <CalendarDays className="h-6 w-6" /> Course Structure & Format
-              </h2>
-              <p className="text-foreground/80 leading-relaxed">{course.structure}</p>
-            </section>
+            {/* "What's Included?" Section */}
+            {course.whatsIncluded && course.whatsIncluded.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-semibold text-primary mb-6 flex items-center gap-2">
+                  <Check className="h-6 w-6" /> What&apos;s Included?
+                </h2>
+                <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-4">
+                  {course.whatsIncluded.map((item, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <item.icon className="h-6 w-6 text-green-500 mt-1 shrink-0" />
+                      <span className="text-foreground/80">{item.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
-            {/* Learning Resources */}
-            <section>
-              <h2 className="text-2xl font-semibold text-primary mb-4 flex items-center gap-2">
-                <BookOpen className="h-6 w-6" /> Learning Resources
-              </h2>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {course.learningResources.map((resource, index) => (
-                  <div key={index} className="flex items-center gap-2 p-3 bg-muted/50 rounded-md">
-                    <Check className="h-5 w-5 text-primary shrink-0" />
-                    <span className="text-foreground/80">{resource}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
+            {/* "Is This Course For You?" Section (Kept from original) */}
+             {course.isForYou && course.isForYou.length > 0 && (
+                <section>
+                <h2 className="text-2xl font-semibold text-primary mb-4 flex items-center gap-2">
+                    <Target className="h-6 w-6" /> Is This Course For You?
+                </h2>
+                <ul className="space-y-2">
+                    {course.isForYou.map((item, index) => (
+                    <li key={index} className="flex items-start gap-2 text-foreground/80">
+                        <Check className="h-5 w-5 text-green-500 mt-1 shrink-0" />
+                        <span>{item}</span>
+                    </li>
+                    ))}
+                </ul>
+                </section>
+            )}
 
-            {/* TEF Canada Exam Focus (brief) */}
-            <section>
-              <h2 className="text-2xl font-semibold text-primary mb-4">TEF Canada Exam Focus</h2>
-              <p className="text-foreground/80 leading-relaxed">{course.tefFocus}</p>
-            </section>
+            {/* Course Structure & Format (Kept from original for now) */}
+            {course.structure && (
+              <section>
+                <h2 className="text-2xl font-semibold text-primary mb-4 flex items-center gap-2">
+                  <CalendarDays className="h-6 w-6" /> Course Structure & Format
+                </h2>
+                <p className="text-foreground/80 leading-relaxed">{course.structure}</p>
+              </section>
+            )}
+
+            {/* Learning Resources (Kept for backward compatibility for now) */}
+            {course.learningResources && course.learningResources.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-semibold text-primary mb-4 flex items-center gap-2">
+                  <BookOpen className="h-6 w-6" /> Learning Resources
+                </h2>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {course.learningResources.map((resource, index) => (
+                    <div key={index} className="flex items-center gap-2 p-3 bg-muted/50 rounded-md">
+                      <Check className="h-5 w-5 text-primary shrink-0" />
+                      <span className="text-foreground/80">{resource}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Sidebar - Pricing & Enrollment Block */}
-          <aside className="md:col-span-1 space-y-6">
-            <Card className="shadow-xl sticky top-24">
+          <aside className="md:col-span-1 space-y-6 sticky top-24">
+            <Card className="shadow-xl">
               <CardHeader>
                 <CardTitle className="text-2xl text-primary flex items-center gap-2">
                   <Tag className="h-6 w-6" /> Pricing & Enrollment
@@ -201,10 +295,10 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                   </div>
                 )}
                 <Button asChild size="lg" className="w-full mt-4">
-                  <Link href="/book-demo">Enroll Now / Book Free Demo</Link>
+                  <Link href={`/enroll/${course.id}`}>Enroll Now</Link>
                 </Button>
-                <p className="text-xs text-muted-foreground text-center">
-                  Enrollment is currently processed after a demo session.
+                <p className="text-xs text-muted-foreground text-center mt-2">
+                  <Link href="/book-demo" className="hover:underline">Or Book a Free Demo</Link>
                 </p>
               </CardContent>
             </Card>

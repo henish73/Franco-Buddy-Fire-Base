@@ -2,19 +2,70 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, type LucideIcon } from 'lucide-react';
+import type { ElementType } from 'react';
+
+export type Lesson = {
+  id: string;
+  title: string;
+  description?: string;
+  keyTopics?: string[];
+  skillsTargeted?: string[]; 
+  tefQuestionTypes?: string[];
+  exampleActivities?: string;
+  videoUrl?: string; 
+  notesFileUrl?: string; 
+  order?: number;
+};
+
+export type Module = {
+  id: string;
+  title: string;
+  description?: string;
+  order?: number;
+  lessons: Lesson[];
+};
+
+export type WhatsIncludedItem = {
+  text: string;
+  icon: ElementType; // Allow any React component, including Lucide icons
+};
+
+export type InstructorSpotlight = {
+  name: string;
+  bio: string;
+  imageUrl?: string;
+  imageAiHint?: string;
+};
+
+export type CourseTestimonial = {
+  quote: string;
+  author: string;
+  image?: string;
+  imageAiHint?: string;
+};
 
 export type Course = {
   id: string;
   title: string;
   shortDescription: string;
   targetCLB: string;
-  format: string; // e.g., "1:1 / 1:3"
+  format: string; 
   imageUrl?: string;
   imageAiHint?: string;
   status?: 'Active' | 'Draft';
   price1on1?: number;
   price1on3?: number;
+  // Detailed page fields
+  detailedDescription?: string;
+  isForYou?: string[];
+  structure?: string; 
+  learningResources?: string[]; // Kept for backward compatibility, prefer whatsIncluded
+  tefFocus?: string; 
+  modules?: Module[];
+  whatsIncluded?: WhatsIncludedItem[];
+  instructorSpotlight?: InstructorSpotlight;
+  courseSpecificTestimonials?: CourseTestimonial[];
 };
 
 type CourseCardProps = {
