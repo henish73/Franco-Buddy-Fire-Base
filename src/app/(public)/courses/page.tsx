@@ -1,64 +1,9 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import SectionTitle from '@/components/shared/SectionTitle';
-import CourseCard, { type Course } from '@/components/shared/CourseCard';
-import { HelpCircle, Users, Award, Video, FileText, Brain, ClipboardCheck, Target as TargetIcon, MessageSquare, MessageCircleIcon } from 'lucide-react'; // Added icons for whatsIncluded
-
-// Placeholder data - In a real app, this would come from Firestore
-// Ensure this data aligns with the updated Course type, adding optional new fields as undefined or with sample data if needed by CourseCard
-const coursesData: Course[] = [
-  { 
-    id: "tef-foundation", 
-    title: "TEF Foundation", 
-    shortDescription: "Master the fundamentals of French tailored for TEF Canada. Ideal for beginners aiming for CLB 4-6.", 
-    targetCLB: "4-6", 
-    format: "1:1 Personal Coaching / 1:3 Small Group",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageAiHint: "classroom study group",
-    price1on1: 500,
-    price1on3: 300,
-    detailedDescription: "Our TEF Foundation course is meticulously designed for beginners...", // Truncated for brevity
-    modules: [ // Sample module structure
-      { id: "m1", title: "Module 1: Intro", lessons: [{id: "l1", title: "Lesson 1"}] }
-    ],
-    whatsIncluded: [ // Sample whatsIncluded
-      { text: "Live Interactive Classes", icon: Users },
-    ],
-  },
-  { 
-    id: "tef-pro-clb7", 
-    title: "TEF Pro - CLB 7+", 
-    shortDescription: "Intensive, strategy-focused training to help you achieve CLB 7 and above for Express Entry success.", 
-    targetCLB: "7+", 
-    format: "1:1 Personal Coaching / 1:3 Small Group",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageAiHint: "professional success graph",
-    price1on1: 800,
-    price1on3: 550,
-    detailedDescription: "The TEF Pro - CLB 7+ course is engineered for intermediate learners...", // Truncated
-    modules: [
-      { id: "m1-pro", title: "Module 1: Advanced Listening", lessons: [{id: "l1-pro", title: "Advanced Listening Lesson 1"}] }
-    ],
-    whatsIncluded: [
-      { text: "Advanced Live Interactive Classes", icon: Users },
-      { text: "Expert TEF Instructors (CLB 9+)", icon: Award },
-    ],
-  },
-  { 
-    id: "tef-excellence-clb9", 
-    title: "TEF Excellence - CLB 9+", 
-    shortDescription: "Advanced coaching for those aiming for top-tier CLB 9+ scores, maximizing their CRS points.", 
-    targetCLB: "9+", 
-    format: "1:1 Personal Coaching",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageAiHint: "award certificate graduation",
-    price1on1: 1200,
-    detailedDescription: "The TEF Excellence course is for advanced French speakers...", // Truncated
-    // modules and whatsIncluded can be empty or have sample data
-    modules: [],
-    whatsIncluded: [],
-  },
-];
+import CourseCard from '@/components/shared/CourseCard';
+import { HelpCircle } from 'lucide-react';
+import { coursesData } from './mockCoursesData'; // Import from the shared mock data file
 
 export default function CoursesPage() {
   return (

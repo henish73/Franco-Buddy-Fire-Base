@@ -8,21 +8,23 @@ import type { ElementType } from 'react';
 export type Lesson = {
   id: string;
   title: string;
-  description?: string;
-  keyTopics?: string[];
-  skillsTargeted?: string[]; 
-  tefQuestionTypes?: string[];
-  exampleActivities?: string;
-  videoUrl?: string; 
-  notesFileUrl?: string; 
-  order?: number;
+  description?: string; // General description of the lesson
+  keyTopics?: string[]; // Bullet points of key topics
+  skillsTargeted?: string[]; // e.g., "Speaking", "Listening"
+  tefQuestionTypes?: string[]; // Specific TEF question types covered, e.g., "Compréhension Orale - Section A"
+  exampleActivities?: string; // Brief description of example activities
+  videoUrl?: string; // URL for embedded video
+  notesFileUrl?: string; // URL for downloadable notes PDF
+  order?: number; // For ordering lessons within a module
+  // Link to AI Tutor exercises (will be IDs or structured objects later)
+  // associatedAiPromptIds?: string[]; 
 };
 
 export type Module = {
   id: string;
   title: string;
-  description?: string;
-  order?: number;
+  description?: string; // Overview of the module
+  order?: number; // For ordering modules within a course
   lessons: Lesson[];
 };
 
@@ -57,15 +59,15 @@ export type Course = {
   price1on1?: number;
   price1on3?: number;
   // Detailed page fields
-  detailedDescription?: string;
-  isForYou?: string[];
-  structure?: string; 
+  detailedDescription?: string; // Full course overview
+  isForYou?: string[]; // Array of strings describing target audience
+  structure?: string; // Overview of course structure (e.g., weekly classes, assignments)
   learningResources?: string[]; // Kept for backward compatibility, prefer whatsIncluded
-  tefFocus?: string; 
-  modules?: Module[];
-  whatsIncluded?: WhatsIncludedItem[];
-  instructorSpotlight?: InstructorSpotlight;
-  courseSpecificTestimonials?: CourseTestimonial[];
+  tefFocus?: string; // Specific TEF Canada focus areas
+  modules?: Module[]; // Detailed syllabus
+  whatsIncluded?: WhatsIncludedItem[]; // Checklist of what the course offers
+  instructorSpotlight?: InstructorSpotlight; // Info about the instructor
+  courseSpecificTestimonials?: CourseTestimonial[]; // Testimonials for this course
 };
 
 type CourseCardProps = {
