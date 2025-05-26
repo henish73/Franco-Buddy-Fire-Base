@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { BookMarked, Menu } from 'lucide-react';
+import { BookMarked, Menu, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { usePathname } from 'next/navigation';
@@ -45,6 +45,12 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Button asChild variant="ghost" size="sm" className="hidden sm:flex">
+            <Link href="/login">
+              <LogIn className="mr-2 h-4 w-4" />
+              Login
+            </Link>
+          </Button>
           <Button asChild variant="default" size="sm">
             <Link href="/book-demo">Book Free Demo</Link>
           </Button>
@@ -73,7 +79,12 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <Button asChild variant="default" className="mt-4">
+                <Button asChild variant="outline" className="mt-4">
+                  <Link href="/login">
+                     <LogIn className="mr-2 h-4 w-4" /> Login
+                  </Link>
+                </Button>
+                <Button asChild variant="default" className="mt-2">
                   <Link href="/book-demo">Book Free Demo</Link>
                 </Button>
               </div>
