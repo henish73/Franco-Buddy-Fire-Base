@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList, Home, FileText
+  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList, Home, FileText, MessageSquareHeart // Added MessageSquareHeart
 } from 'lucide-react';
 import {
   Sidebar,
@@ -17,7 +17,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarSeparator
-} from '@/components/ui/sidebar'; // Assuming this is the correct path to your Sidebar component
+} from '@/components/ui/sidebar'; 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -27,7 +27,8 @@ const adminNavItems = [
   { href: '/admin/students', label: 'Student Management', icon: Users },
   { href: '/admin/courses', label: 'Course Management', icon: BookOpen },
   { href: '/admin/enrollments', label: 'Enrollments', icon: ClipboardList },
-  { href: '/admin/blog-management', label: 'Blog Management', icon: FileText }, // New Link
+  { href: '/admin/blog-management', label: 'Blog Management', icon: FileText },
+  { href: '/admin/ai-content', label: 'AI Tutor Content', icon: MessageSquareHeart }, // New Link for AI Content
   { href: '/admin/settings', label: 'Site Settings', icon: Settings },
 ];
 
