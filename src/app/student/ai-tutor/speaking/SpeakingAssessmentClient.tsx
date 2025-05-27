@@ -1,4 +1,3 @@
-
 // src/app/student/ai-tutor/speaking/SpeakingAssessmentClient.tsx
 "use client";
 
@@ -10,9 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Mic, StopCircle, Play, AlertCircle, CheckCircle, RefreshCw, Sparkles, Send } from "lucide-react";
-import type { SpeakingPrompt } from "@/app/admin/ai-content/page";
+import type { SpeakingPrompt } from '@/app/admin/ai-content/speakingPromptSchemas'; // Adjusted path for SpeakingPrompt type if it was moved
 import { submitSpeakingAssessment, type SpeakingAssessmentFormState } from "./actions";
-import type { SpeakingAssessmentOutput } from "@/ai/flows/speakingAssessmentFlow";
+import type { SpeakingAssessmentOutput } from "@/ai/flows/speakingAssessmentSchemas"; // Import from new schema file
 
 type SpeakingAssessmentClientProps = {
   prompts: SpeakingPrompt[];

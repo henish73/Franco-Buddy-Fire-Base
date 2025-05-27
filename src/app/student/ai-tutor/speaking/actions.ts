@@ -1,14 +1,14 @@
-
 // src/app/student/ai-tutor/speaking/actions.ts
 "use server";
 
 import { z } from "zod";
-import { assessSpeaking, type SpeakingAssessmentInput, type SpeakingAssessmentOutput } from "@/ai/flows/speakingAssessmentFlow";
+import { assessSpeaking } from "@/ai/flows/speakingAssessmentFlow";
+import { 
+  type SpeakingAssessmentInput, 
+  type SpeakingAssessmentOutput,
+  SpeakingAssessmentInputSchema // Using the schema for validation if needed directly, though input types are derived
+} from "@/ai/flows/speakingAssessmentSchemas";
 
-const SpeakingAssessmentClientSchema = z.object({
-  promptText: z.string().min(1, { message: "Prompt text is required." }),
-  audioDataUri: z.string().startsWith("data:audio/", { message: "Invalid audio data URI." }),
-});
 
 export type SpeakingAssessmentFormState = {
   message: string;
@@ -26,7 +26,7 @@ export async function submitSpeakingAssessment(
   audioDataUri: string
 ): Promise<SpeakingAssessmentFormState> {
   
-  const validatedFields = SpeakingAssessmentClientSchema.safeParse({
+  const validatedFields = SpeakingAssessmentInputSchema.safeParse({ // Using the imported schema for validation
     promptText,
     audioDataUri,
   });
