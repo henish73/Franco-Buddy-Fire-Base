@@ -1,3 +1,4 @@
+
 // src/app/admin/ai-content/readingPassageSchemas.ts
 import { z } from "zod";
 
@@ -31,14 +32,42 @@ export const readingPassageSchema = z.object({
   difficultyLevel: z.enum(["Beginner (CLB 1-3)", "Intermediate (CLB 4-6)", "Advanced (CLB 7+)"]).optional(),
   tefSection: z.string().optional(),
   questions: z.string().optional().transform((val, ctx) => { // Questions entered as JSON string
-    if (!val || val.trim() === "") return [];
+    if (!val || val.trim() === "" || val.trim() === "[]") return []; // Allow empty array string
     try {
       const parsed = JSON.parse(val);
+      if (!Array.isArray(parsed)) {
+         ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Questions must be a JSON array.",
+        });
+        return z.NEVER;
+      }
+      if (parsed.length === 0) return []; // Valid empty array
+
       const validatedQuestions = z.array(quizQuestionSchema).safeParse(parsed);
       if (!validatedQuestions.success) {
+        // Construct a more detailed error message
+        let errorMessages = "Invalid questions JSON structure or content: ";
+        const fieldErrors = validatedQuestions.error.flatten().fieldErrors as Record<string, string[]>; // Type assertion
+        const arrayErrors = validatedQuestions.error.flatten().formErrors;
+
+        if (arrayErrors.length > 0) {
+            errorMessages += arrayErrors.join('; ');
+        }
+        
+        for (const key in fieldErrors) {
+            if (Object.prototype.hasOwnProperty.call(fieldErrors, key) && fieldErrors[key]) {
+                 errorMessages += ` Question index ${key}: ${fieldErrors[key]!.join(', ')}. `;
+            }
+        }
+        // Fallback for nested errors not easily caught by fieldErrors (e.g. issues within an array item)
+        if (validatedQuestions.error.issues.length > 0 && errorMessages === "Invalid questions JSON structure or content: ") {
+            errorMessages += validatedQuestions.error.issues.map(issue => `At path ${issue.path.join('.')}: ${issue.message}`).join('; ');
+        }
+
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Invalid questions JSON structure or content: " + validatedQuestions.error.flatten().fieldErrors,
+          message: errorMessages,
         });
         return z.NEVER;
       }
