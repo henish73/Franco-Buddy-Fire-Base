@@ -3,12 +3,17 @@
 "use server";
 
 import { z } from "zod";
-import { assessWriting, type WritingAssessmentInput, type WritingAssessmentOutput } from "@/ai/flows/writingAssessmentFlow";
+import { assessWriting } from "@/ai/flows/writingAssessmentFlow";
+import { 
+  type WritingAssessmentInput, // Correct import path
+  type WritingAssessmentOutput, // Correct import path
+  WritingAssessmentInputSchema // If needed for validation within action
+} from "@/ai/flows/writingAssessmentSchemas";
 
-const WritingAssessmentClientSchema = z.object({
-  promptText: z.string().min(1, { message: "Prompt text is required." }),
-  studentResponseText: z.string().min(10, { message: "Response must be at least 10 characters." }),
-});
+
+// Client-side validation schema could be defined here if different from backend,
+// or re-use WritingAssessmentInputSchema if identical.
+const ClientWritingAssessmentSchema = WritingAssessmentInputSchema; // Re-using for simplicity
 
 export type WritingAssessmentFormState = {
   message: string;
@@ -26,7 +31,7 @@ export async function submitWritingAssessment(
   studentResponseText: string
 ): Promise<WritingAssessmentFormState> {
   
-  const validatedFields = WritingAssessmentClientSchema.safeParse({
+  const validatedFields = ClientWritingAssessmentSchema.safeParse({
     promptText,
     studentResponseText,
   });
@@ -63,3 +68,4 @@ export async function submitWritingAssessment(
     };
   }
 }
+
