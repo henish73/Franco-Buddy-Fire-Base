@@ -132,9 +132,9 @@ export default function AdminAIContentPage() {
       <Tabs defaultValue="speaking_prompts">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 md:max-w-2xl">
           <TabsTrigger value="speaking_prompts"><Mic className="mr-2 h-4 w-4" />Speaking Prompts</TabsTrigger>
-          <TabsTrigger value="writing_prompts" disabled><MessageSquareText className="mr-2 h-4 w-4" />Writing Prompts</TabsTrigger>
-          <TabsTrigger value="reading_passages" disabled><FileQuestion className="mr-2 h-4 w-4" />Reading Passages</TabsTrigger>
-          <TabsTrigger value="listening_audio" disabled><FileAudio className="mr-2 h-4 w-4" />Listening Audio</TabsTrigger>
+          <TabsTrigger value="writing_prompts"><MessageSquareText className="mr-2 h-4 w-4" />Writing Prompts</TabsTrigger>
+          <TabsTrigger value="reading_passages"><FileQuestion className="mr-2 h-4 w-4" />Reading Passages</TabsTrigger>
+          <TabsTrigger value="listening_audio"><FileAudio className="mr-2 h-4 w-4" />Listening Audio</TabsTrigger>
         </TabsList>
 
         {/* Speaking Prompts Tab Content */}
@@ -231,25 +231,30 @@ export default function AdminAIContentPage() {
           {isPending && <p className="text-center text-muted-foreground py-8">Loading prompts...</p>}
         </TabsContent>
 
-        {/* Writing Prompts Tab Content (Placeholder) */}
+        {/* Writing Prompts Tab Content */}
         <TabsContent value="writing_prompts" className="mt-6">
           <div className="text-center py-12 text-muted-foreground">
             <MessageSquareText className="h-12 w-12 mx-auto mb-4" />
-            <p>Writing Prompt Management - Coming Soon!</p>
+            <h2 className="text-xl font-semibold mb-2">Writing Prompt Management</h2>
+            <p>This section is coming soon! You will be able to manage prompts for AI-powered writing assessments here.</p>
           </div>
         </TabsContent>
-        {/* Reading Passages Tab Content (Placeholder) */}
+        
+        {/* Reading Passages Tab Content */}
         <TabsContent value="reading_passages" className="mt-6">
           <div className="text-center py-12 text-muted-foreground">
             <FileQuestion className="h-12 w-12 mx-auto mb-4" />
-            <p>Reading Passage Management - Coming Soon!</p>
+            <h2 className="text-xl font-semibold mb-2">Reading Passage Management</h2>
+            <p>This section is coming soon! You will be able to manage reading passages and questions for AI-powered reading comprehension exercises.</p>
           </div>
         </TabsContent>
-        {/* Listening Audio Tab Content (Placeholder) */}
+        
+        {/* Listening Audio Tab Content */}
         <TabsContent value="listening_audio" className="mt-6">
           <div className="text-center py-12 text-muted-foreground">
             <FileAudio className="h-12 w-12 mx-auto mb-4" />
-            <p>Listening Audio Management - Coming Soon!</p>
+            <h2 className="text-xl font-semibold mb-2">Listening Audio Management</h2>
+            <p>This section is coming soon! You will be able to manage audio clips and questions for AI-powered listening comprehension exercises.</p>
           </div>
         </TabsContent>
       </Tabs>
