@@ -1,38 +1,13 @@
 // src/app/admin/ai-content/speakingPromptActions.ts
 "use server";
 
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import type { SpeakingPrompt } from "./page"; // Import type from the page component for now
-
-// Define the Zod schema internally first
-const _speakingPromptSchemaDefinition = z.object({
-  id: z.string().optional(),
-  topic: z.string().min(3, "Topic is required (min 3 chars)"),
-  promptText: z.string().min(10, "Prompt text is required (min 10 chars)"),
-  expectedKeywords: z.preprocess(
-    (val) => (typeof val === 'string' && val.trim() !== '' ? val.split(',').map(s => s.trim()).filter(Boolean) : []),
-    z.array(z.string()).optional()
-  ),
-  // Add other fields as they are implemented (e.g., audioExampleUrl, difficultyLevel)
-});
-
-// Export the schema using a simple const assignment
-export const speakingPromptSchema = _speakingPromptSchemaDefinition;
-export type SpeakingPromptFormData = z.infer<typeof speakingPromptSchema>;
-
-// Form State Type
-export type SpeakingPromptFormState = {
-  message: string;
-  errors?: {
-    topic?: string[];
-    promptText?: string[];
-    expectedKeywords?: string[];
-    form?: string[];
-  };
-  isSuccess: boolean;
-  data?: SpeakingPrompt | SpeakingPrompt[] | null;
-};
+import { 
+  speakingPromptSchema, 
+  type SpeakingPromptFormData, 
+  type SpeakingPromptFormState,
+  type SpeakingPrompt // Import the data model type
+} from './speakingPromptSchemas';
 
 // Simulated Database for Speaking Prompts
 let simulatedSpeakingPromptsDb: SpeakingPrompt[] = [
@@ -85,10 +60,11 @@ export async function addSpeakingPromptAction(
   }
 
   try {
-    const newPromptData = validatedFields.data;
+    const newPromptData = validatedFields.data as SpeakingPromptFormData; // Cast after validation
     const newPrompt: SpeakingPrompt = {
-      ...newPromptData,
       id: `spk_prompt_${Date.now()}`, // Generate unique ID
+      topic: newPromptData.topic,
+      promptText: newPromptData.promptText,
       expectedKeywords: newPromptData.expectedKeywords || [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -132,11 +108,12 @@ export async function updateSpeakingPromptAction(
   }
 
   try {
-    const updatedData = validatedFields.data;
+    const updatedData = validatedFields.data as SpeakingPromptFormData; // Cast after validation
     const originalPrompt = simulatedSpeakingPromptsDb[promptIndex];
     const updatedPrompt: SpeakingPrompt = {
       ...originalPrompt,
-      ...updatedData,
+      topic: updatedData.topic,
+      promptText: updatedData.promptText,
       expectedKeywords: updatedData.expectedKeywords || [],
       updatedAt: new Date().toISOString(),
     };

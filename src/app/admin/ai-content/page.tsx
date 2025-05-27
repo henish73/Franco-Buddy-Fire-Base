@@ -21,23 +21,14 @@ import {
   addSpeakingPromptAction,
   updateSpeakingPromptAction,
   deleteSpeakingPromptAction,
-  type SpeakingPromptFormState,
-  type SpeakingPromptFormData,
-  speakingPromptSchema // import schema for client-side validation
-} from './speakingPromptActions'; // Assuming actions file for speaking prompts
+} from './speakingPromptActions';
+import { 
+  speakingPromptSchema, 
+  type SpeakingPromptFormData, 
+  type SpeakingPromptFormState, 
+  type SpeakingPrompt 
+} from './speakingPromptSchemas';
 
-// Placeholder type for actual prompts
-export type SpeakingPrompt = {
-  id: string;
-  topic: string;
-  promptText: string;
-  expectedKeywords?: string[]; // comma-separated in form, array in data
-  // audioExampleUrl?: string; // Future
-  // difficultyLevel?: 'Beginner' | 'Intermediate' | 'Advanced'; // Future
-  // associatedCourseModule?: string; // Future
-  createdAt?: string;
-  updatedAt?: string;
-};
 
 const initialSpeakingPromptFormState: SpeakingPromptFormState = { message: "", isSuccess: false, errors: {} };
 
@@ -51,7 +42,7 @@ export default function AdminAIContentPage() {
   const [editingSpeakingPrompt, setEditingSpeakingPrompt] = useState<SpeakingPrompt | null>(null);
 
   const speakingPromptForm = useForm<SpeakingPromptFormData>({
-    resolver: zodResolver(speakingPromptSchema), // Use the imported schema
+    resolver: zodResolver(speakingPromptSchema), 
     defaultValues: { topic: "", promptText: "", expectedKeywords: "" }
   });
   const [speakingPromptServerState, speakingPromptFormAction] = useFormState(
@@ -102,14 +93,14 @@ export default function AdminAIContentPage() {
     speakingPromptForm.handleSubmit(async (data) => {
       startTransition(async () => {
         const actionToCall = editingSpeakingPrompt ? updateSpeakingPromptAction : addSpeakingPromptAction;
-        const result = await actionToCall(initialSpeakingPromptFormState, formData); // Pass initial state
+        const result = await actionToCall(initialSpeakingPromptFormState, formData); 
         if (result.isSuccess) {
           toast({ title: "Success", description: result.message });
           setIsSpeakingPromptDialogOpen(false);
           fetchSpeakingPrompts();
         } else {
           toast({ title: "Error", description: result.message || "Failed to save speaking prompt.", variant: "destructive" });
-          if (result.errors) { // Populate client-side errors from server
+          if (result.errors) { 
             (Object.keys(result.errors) as Array<keyof SpeakingPromptFormData>).forEach(key => {
                if (result.errors && result.errors[key]) {
                  speakingPromptForm.setError(key, { type: 'server', message: result.errors[key]![0] });
