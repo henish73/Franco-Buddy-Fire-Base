@@ -1,33 +1,40 @@
 // src/app/(public)/blog/[slug]/page.tsx
 import Image from 'next/image';
 import Link from 'next/link';
-import { mockBlogPosts, type BlogPost } from '../mockBlogPosts';
+import { type BlogPost } from '../mockBlogPosts';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { Button } from '@/components/ui/button';
-import { CalendarDays, UserCircle, Tag, ChevronRight } from 'lucide-react';
+import { CalendarDays, UserCircle, Tag, ChevronRight, Send, RefreshCw } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-
-// Function to fetch a single blog post by slug (simulated)
-async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
-  return mockBlogPosts.find(post => post.slug === slug);
-}
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getPostBySlugAction, getBlogPostsAction } from '@/app/admin/blog-management/postActions';
+import CommentForm from './CommentForm'; // Create this component
 
 export default async function BlogPostDetailPage({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug);
-
-  if (!post) {
+  const postResult = await getPostBySlugAction(params.slug);
+  
+  if (!postResult.isSuccess || !postResult.data) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
-        <SectionTitle title="Post Not Found" subtitle="The blog post you are looking for does not exist or has been moved." />
+        <SectionTitle title="Post Not Found" subtitle={postResult.message || "The blog post you are looking for does not exist or has been moved."} />
         <Button asChild>
           <Link href="/blog">Back to Blog</Link>
         </Button>
       </div>
     );
   }
+  const post = postResult.data as BlogPost;
+
+  // Fetch all posts for related posts section (can be optimized later)
+  const allPostsResult = await getBlogPostsAction();
+  const allPosts = (allPostsResult.isSuccess && Array.isArray(allPostsResult.data)) ? allPostsResult.data as BlogPost[] : [];
+  
+  const relatedPosts = allPosts
+    .filter(p => p.slug !== post.slug && Array.isArray(p.categories) && Array.isArray(post.categories) && p.categories.some(cat => post.categories.includes(cat)))
+    .slice(0, 3);
 
   // Estimate read time (simple version)
   const wordsPerMinute = 200;
@@ -48,7 +55,7 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <div className="mb-4">
-            {post.categories.map(category => (
+            {Array.isArray(post.categories) && post.categories.map(category => (
               <Link key={category} href={`/blog/category/${category.toLowerCase().replace(/\s+/g, '-')}`} 
                     className="text-primary hover:underline text-sm font-medium mr-2">
                 {category}
@@ -84,11 +91,10 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
         <div className="grid lg:grid-cols-12 gap-12 items-start">
           {/* Main Content */}
           <article className="lg:col-span-8 prose prose-lg dark:prose-invert max-w-none text-foreground/90">
-             {/* Use prose classes for nice typography: https://tailwindcss.com/docs/typography-plugin */}
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </article>
 
-          {/* Sidebar (Author Bio, Related Posts - Placeholder) */}
+          {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-8 sticky top-24">
             <Card className="shadow-md">
               <CardHeader>
@@ -100,11 +106,10 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
                 <p className="text-xs text-muted-foreground mt-1">
                   {post.author === "Henish Patel" ? "Founder of French.GTA, CS Student & AI Enthusiast." : "Expert TEF Canada Instructor at French.GTA."}
                 </p>
-                {/* Add social links if available */}
               </CardContent>
             </Card>
             
-            {post.tags && post.tags.length > 0 && (
+            {Array.isArray(post.tags) && post.tags.length > 0 && (
                 <Card className="shadow-md">
                     <CardHeader>
                         <CardTitle className="text-xl text-primary">Tags</CardTitle>
@@ -119,64 +124,53 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
                 </Card>
             )}
 
-            {/* Related Posts (Placeholder) */}
-            <Card className="shadow-md">
-              <CardHeader>
-                <CardTitle className="text-xl text-primary">Related Posts</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {mockBlogPosts.filter(p => p.slug !== post.slug && p.categories.some(cat => post.categories.includes(cat))).slice(0,3).map(relatedPost => (
-                  <Link key={relatedPost.slug} href={`/blog/${relatedPost.slug}`} className="block group">
-                    <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">{relatedPost.title}</h4>
-                    <p className="text-xs text-muted-foreground">{new Date(relatedPost.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                  </Link>
-                ))}
-              </CardContent>
-            </Card>
+            {relatedPosts.length > 0 && (
+              <Card className="shadow-md">
+                <CardHeader>
+                  <CardTitle className="text-xl text-primary">Related Posts</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {relatedPosts.map(relatedPost => (
+                    <Link key={relatedPost.slug} href={`/blog/${relatedPost.slug}`} className="block group">
+                      <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">{relatedPost.title}</h4>
+                      <p className="text-xs text-muted-foreground">{new Date(relatedPost.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                    </Link>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
           </aside>
         </div>
       </div>
 
-      {/* Comments Section Placeholder */}
+      {/* Comments Section */}
       <section className="py-12 md:py-16 bg-muted/30">
         <div className="container mx-auto px-4 max-w-3xl">
           <h2 className="text-2xl md:text-3xl font-bold text-primary mb-8">Leave a Comment</h2>
-          <form className="space-y-6 bg-card p-6 md:p-8 rounded-lg shadow-md">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="commentName">Name</Label>
-                <Input id="commentName" name="commentName" placeholder="Your Name" required />
-              </div>
-              <div>
-                <Label htmlFor="commentEmail">Email (Optional)</Label>
-                <Input id="commentEmail" name="commentEmail" type="email" placeholder="your.email@example.com" />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="commentMessage">Comment</Label>
-              <Textarea id="commentMessage" name="commentMessage" placeholder="Write your comment here..." rows={5} required />
-            </div>
-            <Button type="submit" disabled>Submit Comment (Coming Soon)</Button>
-            <p className="text-xs text-muted-foreground">Comments are moderated. Real-time updates for new comments coming soon.</p>
-          </form>
-          {/* Placeholder for displaying comments */}
+          <CommentForm postId={post.id!} postSlug={post.slug} />
+          
           <div className="mt-12">
-             <h3 className="text-xl font-semibold text-foreground mb-6">Comments (0)</h3>
-             <p className="text-muted-foreground">No comments yet. Be the first to share your thoughts!</p>
-             {/* Example Comment Structure (when implemented)
-             <div className="border-t pt-6 mt-6">
-                <div className="flex items-start gap-3">
-                    <Avatar>
-                        <AvatarImage src="https://placehold.co/40x40.png" alt="User Avatar" />
-                        <AvatarFallback>JD</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-semibold text-foreground">John Doe <span className="text-xs text-muted-foreground ml-2">July 22, 2024</span></p>
-                        <p className="text-sm text-muted-foreground mt-1">This is a great article, very insightful!</p>
-                    </div>
+             <h3 className="text-xl font-semibold text-foreground mb-6">Comments ({post.comments?.length || 0})</h3>
+             {post.comments && post.comments.length > 0 ? (
+                <div className="space-y-6">
+                    {post.comments.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map(comment => (
+                         <div key={comment.id} className="border-t pt-6">
+                            <div className="flex items-start gap-3">
+                                <Avatar>
+                                    <AvatarImage src={comment.authorImage || "https://placehold.co/40x40.png"} alt={comment.authorName} data-ai-hint={comment.authorImageAiHint || "user avatar generic"}/>
+                                    <AvatarFallback>{comment.authorName.substring(0,2).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <p className="font-semibold text-foreground">{comment.authorName} <span className="text-xs text-muted-foreground ml-2">{new Date(comment.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span></p>
+                                    <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{comment.text}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
-             </div>
-             */}
+             ) : (
+                <p className="text-muted-foreground">No comments yet. Be the first to share your thoughts!</p>
+             )}
           </div>
         </div>
       </section>
@@ -203,10 +197,3 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
     </>
   );
 }
-
-// Function to generate static paths for all blog posts (optional, for SSG)
-// export async function generateStaticParams() {
-//   return mockBlogPosts.map((post) => ({
-//     slug: post.slug,
-//   }));
-// }

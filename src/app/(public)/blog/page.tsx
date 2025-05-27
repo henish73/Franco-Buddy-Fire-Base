@@ -1,52 +1,106 @@
 // src/app/(public)/blog/page.tsx
-"use client"; // Add "use client" for useState and useEffect
+"use client"; 
 
 import { useState, useEffect, useMemo } from 'react';
 import SectionTitle from '@/components/shared/SectionTitle';
 import BlogPostCard from '@/components/shared/BlogPostCard';
-import { mockBlogPosts, type BlogPost } from './mockBlogPosts';
+import { type BlogPost, type BlogCategory, type BlogTag } from './mockBlogPosts'; // Using type from mock for structure
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, ExternalLink } from 'lucide-react';
+import { Search, ExternalLink, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
-
-// Function to get categories and tags for sidebar
-const getSidebarData = () => {
-  const categories = new Set<string>();
-  const tags = new Set<string>();
-  mockBlogPosts.forEach(post => {
-    post.categories.forEach(cat => categories.add(cat));
-    post.tags.forEach(tag => tags.add(tag));
-  });
-  return {
-    categories: Array.from(categories).sort(),
-    tags: Array.from(tags).sort(),
-    recentPosts: mockBlogPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5).map(p => ({ title: p.title, slug: p.slug })),
-    popularPosts: mockBlogPosts.filter(p => p.featured).slice(0,3).map(p => ({ title: p.title, slug: p.slug })),
-  };
-};
+import { getBlogPostsAction, type BlogPostFormState } from '@/app/admin/blog-management/postActions';
+import { getCategoriesAction, getTagsAction, type TaxonomyFormState } from '@/app/admin/blog-management/taxonomyActions';
+import { useToast } from "@/hooks/use-toast";
 
 export default function BlogPage() {
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  const [displayedPosts, setDisplayedPosts] = useState<BlogPost[]>(mockBlogPosts);
+  const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
+  const [displayedPosts, setDisplayedPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<BlogCategory[]>([]);
+  const [tags, setTags] = useState<BlogTag[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const sidebarData = useMemo(() => getSidebarData(), []);
+  const fetchBlogData = async () => {
+    setIsLoading(true);
+    try {
+      const [postsResult, categoriesResult, tagsResult] = await Promise.all([
+        getBlogPostsAction(),
+        getCategoriesAction(),
+        getTagsAction()
+      ]);
+
+      if (postsResult.isSuccess && postsResult.data) {
+        const fetchedPosts = postsResult.data as BlogPost[];
+        setAllPosts(fetchedPosts);
+        setDisplayedPosts(fetchedPosts);
+      } else {
+        toast({ title: "Error fetching posts", description: postsResult.message, variant: "destructive" });
+        setAllPosts([]);
+        setDisplayedPosts([]);
+      }
+
+      if (categoriesResult.isSuccess && categoriesResult.data) {
+        setCategories(categoriesResult.data as BlogCategory[]);
+      } else {
+        toast({ title: "Error fetching categories", description: categoriesResult.message, variant: "destructive" });
+        setCategories([]);
+      }
+
+      if (tagsResult.isSuccess && tagsResult.data) {
+        setTags(tagsResult.data as BlogTag[]);
+      } else {
+        toast({ title: "Error fetching tags", description: tagsResult.message, variant: "destructive" });
+        setTags([]);
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to load blog data.", variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchBlogData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const sidebarData = useMemo(() => {
+    return {
+      categories: categories.sort((a,b) => a.name.localeCompare(b.name)),
+      tags: tags.sort((a,b) => a.name.localeCompare(b.name)),
+      recentPosts: allPosts.slice(0, 5).map(p => ({ title: p.title, slug: p.slug })), // Already sorted by date in getBlogPostsAction
+      popularPosts: allPosts.filter(p => p.featured).slice(0,3).map(p => ({ title: p.title, slug: p.slug })),
+    };
+  }, [allPosts, categories, tags]);
 
   useEffect(() => {
     if (searchTerm === '') {
-      setDisplayedPosts(mockBlogPosts);
+      setDisplayedPosts(allPosts);
     } else {
-      const filtered = mockBlogPosts.filter(post =>
+      const filtered = allPosts.filter(post =>
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+        post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (Array.isArray(post.categories) && post.categories.some(cat => cat.toLowerCase().includes(searchTerm.toLowerCase()))) ||
+        (Array.isArray(post.tags) && post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
       );
       setDisplayedPosts(filtered);
     }
-  }, [searchTerm]);
+  }, [searchTerm, allPosts]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <RefreshCw className="h-12 w-12 mx-auto mb-4 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading blog posts...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -66,7 +120,7 @@ export default function BlogPage() {
             <div className="lg:col-span-8 space-y-10">
               {displayedPosts.length > 0 ? (
                 displayedPosts.map((post) => (
-                  <BlogPostCard key={post.slug} post={post} />
+                  <BlogPostCard key={post.id || post.slug} post={post} />
                 ))
               ) : (
                 <p className="text-center text-muted-foreground col-span-full py-10">
@@ -74,11 +128,11 @@ export default function BlogPage() {
                 </p>
               )}
               {/* Pagination placeholder */}
-              {displayedPosts.length > 5 && mockBlogPosts.length > 5 && (
+              {/* {allPosts.length > 5 && (
                 <div className="mt-12 text-center">
                   <Button variant="outline">Load More Posts (Placeholder)</Button>
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Sidebar Area */}
@@ -104,9 +158,9 @@ export default function BlogPage() {
                   <h3 className="text-xl font-semibold text-primary mb-4">Categories</h3>
                   <ul className="space-y-2">
                     {sidebarData.categories.map(category => (
-                      <li key={category}>
-                        <Link href={`/blog/category/${category.toLowerCase().replace(/\s+/g, '-')}`} className="text-muted-foreground hover:text-primary transition-colors">
-                          {category}
+                      <li key={category.id || category.slug}>
+                        <Link href={`/blog/category/${category.slug}`} className="text-muted-foreground hover:text-primary transition-colors">
+                          {category.name}
                         </Link>
                       </li>
                     ))}
@@ -152,8 +206,8 @@ export default function BlogPage() {
                     <h3 className="text-xl font-semibold text-primary mb-4">Tags</h3>
                     <div className="flex flex-wrap gap-2">
                     {sidebarData.tags.map(tag => (
-                        <Button key={tag} variant="outline" size="sm" asChild>
-                            <Link href={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`}>{tag}</Link>
+                        <Button key={tag.id || tag.slug} variant="outline" size="sm" asChild>
+                            <Link href={`/blog/tag/${tag.slug}`}>{tag.name}</Link>
                         </Button>
                     ))}
                     </div>

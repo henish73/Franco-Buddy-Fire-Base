@@ -1,28 +1,50 @@
 // src/app/(public)/blog/tag/[tagName]/page.tsx
-import { mockBlogPosts, type BlogPost } from '../mockBlogPosts';
+import { type BlogPost } from '../mockBlogPosts';
 import BlogPostCard from '@/components/shared/BlogPostCard';
-import SectionTitle from '@/components/shared/SectionTitle';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Tag } from 'lucide-react';
+import { Tag as TagIcon, RefreshCw } from 'lucide-react'; // Renamed to avoid conflict
+import { getPostsByTagSlugAction } from '@/app/admin/blog-management/postActions';
 
-// This is a placeholder. In a real app, you'd fetch filtered posts.
-async function getPostsByTag(tagName: string): Promise<BlogPost[]> {
-  const decodedTagName = decodeURIComponent(tagName).replace(/-/g, ' ');
-  return mockBlogPosts.filter(post => 
-    post.tags.some(tag => tag.toLowerCase() === decodedTagName.toLowerCase())
-  );
+// Helper function to format tag title from slug
+function formatTagTitle(slug: string): string {
+  return decodeURIComponent(slug)
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
 
 export default async function BlogTagPage({ params }: { params: { tagName: string } }) {
-  const posts = await getPostsByTag(params.tagName);
-  const tagTitle = decodeURIComponent(params.tagName).replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const tagSlug = params.tagName;
+  const tagTitle = formatTagTitle(tagSlug);
+
+  const result = await getPostsByTagSlugAction(tagSlug);
+  const posts = (result.isSuccess && Array.isArray(result.data)) ? result.data as BlogPost[] : [];
+
+  if (!result.isSuccess && result.message) {
+     console.error("Error fetching posts for tag:", result.message);
+  }
+
+  if (posts.length === 0 && !result.isSuccess) { // If fetch failed and no posts
+     return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <TagIcon className="h-12 w-12 text-primary mx-auto mb-4" />
+        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">Tag: {tagTitle}</h1>
+        <p className="text-lg text-destructive mb-4">
+          Could not load posts for this tag. {result.message}
+        </p>
+        <Button asChild variant="outline">
+            <Link href="/blog">Back to All Posts</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <>
       <section className="bg-muted/50 py-12 md:py-16">
         <div className="container mx-auto px-4 text-center">
-          <Tag className="h-12 w-12 text-primary mx-auto mb-4" />
+          <TagIcon className="h-12 w-12 text-primary mx-auto mb-4" />
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">Tag: {tagTitle}</h1>
           <p className="text-lg text-muted-foreground">
             Showing posts tagged with &quot;{tagTitle}&quot;.
@@ -35,7 +57,7 @@ export default async function BlogTagPage({ params }: { params: { tagName: strin
           {posts.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {posts.map((post) => (
-                <BlogPostCard key={post.slug} post={post} />
+                <BlogPostCard key={post.id || post.slug} post={post} />
               ))}
             </div>
           ) : (
@@ -51,10 +73,3 @@ export default async function BlogTagPage({ params }: { params: { tagName: strin
     </>
   );
 }
-
-// Optional: Generate static paths if you have a known list of tags
-// export async function generateStaticParams() {
-//   const tags = new Set<string>();
-//   mockBlogPosts.forEach(post => post.tags.forEach(tag => tags.add(tag.toLowerCase().replace(/\s+/g, '-'))));
-//   return Array.from(tags).map(tagName => ({ tagName }));
-// }

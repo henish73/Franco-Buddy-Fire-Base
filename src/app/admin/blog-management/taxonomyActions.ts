@@ -7,7 +7,9 @@ import { type BlogCategory, type BlogTag, mockBlogPosts } from "@/app/(public)/b
 
 // --- Simulated Database for Categories & Tags ---
 // In a real app, this would be Firestore.
-let simulatedCategoriesDb: BlogCategory[] = mockBlogPosts.reduce((acc, post) => {
+
+// Initialize with reduce and store in internal temporary const variables
+const _initialSimulatedCategoriesDb: BlogCategory[] = mockBlogPosts.reduce((acc, post) => {
   post.categories.forEach(catName => {
     if (!acc.find(c => c.name === catName)) {
       const slug = catName.toLowerCase().replace(/\s+/g, '-');
@@ -24,7 +26,7 @@ let simulatedCategoriesDb: BlogCategory[] = mockBlogPosts.reduce((acc, post) => 
   return acc;
 }, [] as BlogCategory[]);
 
-let simulatedTagsDb: BlogTag[] = mockBlogPosts.reduce((acc, post) => {
+const _initialSimulatedTagsDb: BlogTag[] = mockBlogPosts.reduce((acc, post) => {
   post.tags.forEach(tagName => {
     if (!acc.find(t => t.name === tagName)) {
       const slug = tagName.toLowerCase().replace(/\s+/g, '-');
@@ -39,6 +41,10 @@ let simulatedTagsDb: BlogTag[] = mockBlogPosts.reduce((acc, post) => {
   });
   return acc;
 }, [] as BlogTag[]);
+
+// Export as 'let' so server actions in this file can modify them (e.g., push, splice)
+export let simulatedCategoriesDb: BlogCategory[] = [..._initialSimulatedCategoriesDb];
+export let simulatedTagsDb: BlogTag[] = [..._initialSimulatedTagsDb];
 
 
 // --- Zod Schemas ---
@@ -115,6 +121,7 @@ export async function addCategoryAction(
     simulatedCategoriesDb.push(newCategory);
     console.log("[Server Action] Added new category to simulated DB:", newCategory);
     revalidatePath("/admin/blog-management");
+    revalidatePath("/blog");
     return { message: "Category added successfully!", isSuccess: true, data: newCategory };
   } catch (error) {
     console.error("Error adding category:", error);
@@ -147,15 +154,23 @@ export async function updateCategoryAction(
     if (categoryIndex === -1) {
       return { message: "Category not found.", isSuccess: false };
     }
-    const updatedCategory = {
-      ...simulatedCategoriesDb[categoryIndex],
-      ...validatedFields.data,
+    const originalCategory = simulatedCategoriesDb[categoryIndex];
+    const updatedCategoryData = validatedFields.data;
+
+    const updatedCategory: BlogCategory = {
+      ...originalCategory,
+      ...updatedCategoryData,
       updatedAt: new Date().toISOString(),
     };
-    // In a real app: await db.collection('blog_categories').doc(categoryId).update(validatedFields.data);
+    
     simulatedCategoriesDb[categoryIndex] = updatedCategory;
     console.log("[Server Action] Updated category in simulated DB:", updatedCategory);
     revalidatePath("/admin/blog-management");
+    revalidatePath("/blog");
+    revalidatePath(`/blog/category/${updatedCategory.slug}`);
+    if (originalCategory.slug !== updatedCategory.slug) {
+      revalidatePath(`/blog/category/${originalCategory.slug}`);
+    }
     return { message: "Category updated successfully!", isSuccess: true, data: updatedCategory };
   } catch (error) {
     console.error("Error updating category:", error);
@@ -165,15 +180,16 @@ export async function updateCategoryAction(
 
 export async function deleteCategoryAction(categoryId: string): Promise<TaxonomyFormState> {
   try {
-    // In a real app: await db.collection('blog_categories').doc(categoryId).delete();
-    // Also consider: what happens to posts using this category? Unlink or warn.
     const initialLength = simulatedCategoriesDb.length;
+    const deletedCategory = simulatedCategoriesDb.find(cat => cat.id === categoryId);
     simulatedCategoriesDb = simulatedCategoriesDb.filter(cat => cat.id !== categoryId);
-    if (simulatedCategoriesDb.length === initialLength) {
+    if (!deletedCategory || simulatedCategoriesDb.length === initialLength) {
         return { message: "Category not found or already deleted.", isSuccess: false };
     }
     console.log(`[Server Action] Deleted category ${categoryId} from simulated DB.`);
     revalidatePath("/admin/blog-management");
+    revalidatePath("/blog");
+    revalidatePath(`/blog/category/${deletedCategory.slug}`);
     return { message: "Category deleted successfully!", isSuccess: true };
   } catch (error) {
     console.error("Error deleting category:", error);
@@ -185,7 +201,6 @@ export async function deleteCategoryAction(categoryId: string): Promise<Taxonomy
 // --- Tag Actions ---
 export async function getTagsAction(): Promise<TaxonomyFormState> {
   try {
-    // In a real app: await db.collection('blog_tags').orderBy('name').get();
     console.log("[Server Action] Fetching tags from simulated DB.");
     return {
       message: "Tags fetched successfully.",
@@ -220,10 +235,10 @@ export async function addTagAction(
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    // In a real app: await db.collection('blog_tags').add(newTag);
     simulatedTagsDb.push(newTag);
     console.log("[Server Action] Added new tag to simulated DB:", newTag);
     revalidatePath("/admin/blog-management");
+    revalidatePath("/blog");
     return { message: "Tag added successfully!", isSuccess: true, data: newTag };
   } catch (error) {
     console.error("Error adding tag:", error);
@@ -255,15 +270,22 @@ export async function updateTagAction(
     if (tagIndex === -1) {
       return { message: "Tag not found.", isSuccess: false };
     }
-    const updatedTag = {
-      ...simulatedTagsDb[tagIndex],
-      ...validatedFields.data,
+    const originalTag = simulatedTagsDb[tagIndex];
+    const updatedTagData = validatedFields.data;
+
+    const updatedTag: BlogTag = {
+      ...originalTag,
+      ...updatedTagData,
       updatedAt: new Date().toISOString(),
     };
-    // In a real app: await db.collection('blog_tags').doc(tagId).update(validatedFields.data);
     simulatedTagsDb[tagIndex] = updatedTag;
     console.log("[Server Action] Updated tag in simulated DB:", updatedTag);
     revalidatePath("/admin/blog-management");
+    revalidatePath("/blog");
+    revalidatePath(`/blog/tag/${updatedTag.slug}`);
+    if (originalTag.slug !== updatedTag.slug) {
+      revalidatePath(`/blog/tag/${originalTag.slug}`);
+    }
     return { message: "Tag updated successfully!", isSuccess: true, data: updatedTag };
   } catch (error) {
     console.error("Error updating tag:", error);
@@ -273,14 +295,16 @@ export async function updateTagAction(
 
 export async function deleteTagAction(tagId: string): Promise<TaxonomyFormState> {
   try {
-    // In a real app: await db.collection('blog_tags').doc(tagId).delete();
     const initialLength = simulatedTagsDb.length;
+    const deletedTag = simulatedTagsDb.find(tag => tag.id === tagId);
     simulatedTagsDb = simulatedTagsDb.filter(tag => tag.id !== tagId);
-     if (simulatedTagsDb.length === initialLength) {
+     if (!deletedTag || simulatedTagsDb.length === initialLength) {
         return { message: "Tag not found or already deleted.", isSuccess: false };
     }
     console.log(`[Server Action] Deleted tag ${tagId} from simulated DB.`);
     revalidatePath("/admin/blog-management");
+    revalidatePath("/blog");
+    revalidatePath(`/blog/tag/${deletedTag.slug}`);
     return { message: "Tag deleted successfully!", isSuccess: true };
   } catch (error) {
     console.error("Error deleting tag:", error);
