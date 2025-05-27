@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/about', label: 'About Us' },
   { href: '/courses', label: 'Courses' },
   { href: '/pricing', label: 'Pricing' },
+  { href: '/blog', label: 'Blog' },
   { href: '/ai-course-suggester', label: 'AI Course Suggester' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Contact Us' },
