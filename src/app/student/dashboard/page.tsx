@@ -1,17 +1,19 @@
-
+// src/app/student/dashboard/page.tsx
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { BookOpen, UserCircle, Bell, CheckSquare, Mic, MessageSquareText, Headphones } from 'lucide-react'; 
+import { BookOpen, UserCircle, Bell, CheckSquare, Mic, MessageSquareText, Headphones, Sparkles, BarChart3, FileText } from 'lucide-react';
+import { getMostRecentAiTutorFeedbackAction, type RecentFeedbackSnippet } from './actions';
 
 // Placeholder data
 const studentName = "Aisha K."; // Replace with dynamic data later
 const enrolledCourses = [
   { id: "tef-pro-clb7", name: "TEF Pro - CLB 7+", progress: 65, nextClass: "Tomorrow, 6 PM: Speaking Practice" },
-  // { id: "tef-foundation", name: "TEF Foundation", progress: 100, nextClass: "Completed" },
 ];
 
-export default function StudentDashboardPage() {
+export default async function StudentDashboardPage() {
+  const recentFeedback: RecentFeedbackSnippet | null = await getMostRecentAiTutorFeedbackAction();
+
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -64,6 +66,47 @@ export default function StudentDashboardPage() {
         </Card>
       </section>
 
+      {/* Recent AI Tutor Feedback Snippet */}
+      {recentFeedback && (
+        <section>
+          <h2 className="text-xl font-semibold text-foreground mb-4">My Recent AI Tutor Feedback</h2>
+          <Card className="shadow-md bg-accent/10">
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg text-primary/90">
+                  Latest: {recentFeedback.assessmentType} Practice
+                  {recentFeedback.promptTopic && <span className="block text-sm font-normal text-muted-foreground">Topic: {recentFeedback.promptTopic}</span>}
+                </CardTitle>
+                <Sparkles className="h-6 w-6 text-accent" />
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {recentFeedback.score !== undefined && (
+                <p className="text-2xl font-bold text-primary">
+                  Score: {recentFeedback.score}/100
+                </p>
+              )}
+              {recentFeedback.keyFeedback && (
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Key Suggestion:</p>
+                  <p className="text-sm text-muted-foreground">{recentFeedback.keyFeedback}</p>
+                </div>
+              )}
+              {recentFeedback.timestamp && (
+                <p className="text-xs text-muted-foreground pt-2">
+                  Assessed on: {new Date(recentFeedback.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                </p>
+              )}
+            </CardContent>
+            <CardFooter>
+              <Button asChild variant="link" className="p-0 h-auto">
+                <Link href="/student/ai-tutor/report">View Detailed AI Tutor Report</Link>
+              </Button>
+            </CardFooter>
+          </Card>
+        </section>
+      )}
+
 
       {/* Enrolled Courses Section */}
       <section>
@@ -75,7 +118,7 @@ export default function StudentDashboardPage() {
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <CardTitle className="text-xl text-primary">{course.name}</CardTitle>
-                    <BookOpen className="h-6 w-6 text-accent" />
+                    <FileText className="h-6 w-6 text-accent" /> {/* Changed icon for variety */}
                   </div>
                   <CardDescription>Your progress and upcoming activities.</CardDescription>
                 </CardHeader>
@@ -100,7 +143,7 @@ export default function StudentDashboardPage() {
         ) : (
           <Card className="text-center py-12">
             <CardContent>
-              <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" /> {/* Changed icon */}
               <p className="text-muted-foreground mb-4">You are not currently enrolled in any courses.</p>
               <Button asChild>
                 <Link href="/courses">Explore Courses</Link>
@@ -121,12 +164,6 @@ export default function StudentDashboardPage() {
                 </CardHeader>
                 <CardContent>
                     <p className="text-sm text-muted-foreground">No new announcements at this time. Stay tuned!</p>
-                    {/* Example Announcement:
-                    <div className="border-l-4 border-accent pl-4 py-2 mt-2 bg-accent/10">
-                        <h4 className="font-semibold">New Mock Test Available!</h4>
-                        <p className="text-xs text-muted-foreground">A new full-length TEF mock test has been added to the "TEF Pro" course resources. Test your skills now!</p>
-                    </div>
-                    */}
                 </CardContent>
             </Card>
             <Card>
