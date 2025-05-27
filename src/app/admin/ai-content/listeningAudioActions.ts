@@ -14,7 +14,7 @@ let simulatedListeningAudioDb: ListeningAudio[] = [
   {
     id: "la_audio_1",
     topic: "Annonce à la Gare",
-    audioFileUrlOrName: "gare_annonce_train_retard.mp3", // Placeholder
+    audioFileUrlOrName: "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3", // Using a valid placeholder MP3 URL
     transcript: "Mesdames et messieurs, en raison d'un incident technique, le train à destination de Lyon, initialement prévu à 14h30, subira un retard d'environ 20 minutes. Nous vous prions de nous excuser pour ce désagrément.",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
