@@ -6,7 +6,8 @@ import {
   listeningAudioSchema, 
   type ListeningAudioFormData, 
   type ListeningAudioFormState,
-  type ListeningAudio
+  type ListeningAudio,
+  type QuizQuestion
 } from './listeningAudioSchemas';
 
 // Simulated Database for Listening Audio
@@ -14,8 +15,26 @@ let simulatedListeningAudioDb: ListeningAudio[] = [
   {
     id: "la_audio_1",
     topic: "Annonce à la Gare",
-    audioFileUrlOrName: "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3", // Using a valid placeholder MP3 URL
+    audioFileUrlOrName: "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3",
     transcript: "Mesdames et messieurs, en raison d'un incident technique, le train à destination de Lyon, initialement prévu à 14h30, subira un retard d'environ 20 minutes. Nous vous prions de nous excuser pour ce désagrément.",
+    difficultyLevel: "Intermediate (CLB 4-6)",
+    tefSection: "Compréhension Orale - Section A",
+    questions: [
+      {
+        id: "q1_la1",
+        questionText: "Quelle est la destination du train mentionné ?",
+        options: ["Paris", "Lyon", "Marseille", "Lille"],
+        correctAnswer: "Lyon",
+        tefSkillTarget: "Comprendre une information clé"
+      },
+      {
+        id: "q2_la1",
+        questionText: "De combien de temps le train sera-t-il en retard ?",
+        options: ["10 minutes", "15 minutes", "20 minutes", "30 minutes"],
+        correctAnswer: "20 minutes",
+        tefSkillTarget: "Comprendre une durée"
+      }
+    ],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -51,11 +70,14 @@ export async function addListeningAudioAction(
 
   try {
     const newAudioData = validatedFields.data;
-    // Here, you would handle actual file upload if this were fully integrated with storage.
-    // For now, audioFileUrlOrName is just a string.
     const newAudio: ListeningAudio = {
       id: `la_audio_${Date.now()}`,
-      ...newAudioData,
+      topic: newAudioData.topic,
+      audioFileUrlOrName: newAudioData.audioFileUrlOrName,
+      transcript: newAudioData.transcript,
+      difficultyLevel: newAudioData.difficultyLevel,
+      tefSection: newAudioData.tefSection,
+      questions: newAudioData.questions || [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -77,6 +99,7 @@ export async function updateListeningAudioAction(
   const validatedFields = listeningAudioSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
+    console.log("Validation errors:", validatedFields.error.flatten().fieldErrors);
     return {
       message: "Validation failed.",
       errors: validatedFields.error.flatten().fieldErrors,
@@ -99,7 +122,12 @@ export async function updateListeningAudioAction(
     const originalAudio = simulatedListeningAudioDb[audioIndex];
     const updatedAudio: ListeningAudio = {
       ...originalAudio,
-      ...updatedData,
+      topic: updatedData.topic,
+      audioFileUrlOrName: updatedData.audioFileUrlOrName,
+      transcript: updatedData.transcript,
+      difficultyLevel: updatedData.difficultyLevel,
+      tefSection: updatedData.tefSection,
+      questions: updatedData.questions || [],
       updatedAt: new Date().toISOString(),
     };
     

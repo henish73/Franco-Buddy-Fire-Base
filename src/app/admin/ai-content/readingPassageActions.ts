@@ -6,7 +6,8 @@ import {
   readingPassageSchema, 
   type ReadingPassageFormData, 
   type ReadingPassageFormState,
-  type ReadingPassage
+  type ReadingPassage,
+  type QuizQuestion
 } from './readingPassageSchemas';
 
 // Simulated Database for Reading Passages
@@ -15,9 +16,37 @@ let simulatedReadingPassagesDb: ReadingPassage[] = [
     id: "rp_passage_1",
     topic: "Le Télétravail",
     passageText: "Le télétravail, ou travail à distance, est devenu une pratique de plus en plus courante dans de nombreuses entreprises à travers le monde. Cette flexibilité offre des avantages tant pour les employés que pour les employeurs, mais présente également certains défis. Pour les employés, le télétravail peut signifier une meilleure conciliation entre vie professionnelle et vie personnelle, une réduction du temps de trajet et une plus grande autonomie. Pour les employeurs, cela peut se traduire par une réduction des coûts immobiliers et un accès à un bassin de talents plus large. Cependant, maintenir la cohésion d'équipe, assurer la sécurité des données et prévenir l'isolement des employés sont des aspects cruciaux à gérer.",
+    difficultyLevel: "Intermediate (CLB 4-6)",
+    tefSection: "Compréhension Écrite - Section A",
+    questions: [
+      {
+        id: "q1_rp1",
+        questionText: "Quel est l'un des avantages du télétravail pour les employés mentionné dans le texte ?",
+        options: ["Augmentation des coûts immobiliers", "Réduction du temps de trajet", "Moins d'autonomie", "Difficulté à maintenir la cohésion d'équipe"],
+        correctAnswer: "Réduction du temps de trajet",
+        tefSkillTarget: "Identifier une information spécifique"
+      },
+      {
+        id: "q2_rp1",
+        questionText: "Quel est un défi du télétravail pour les employeurs ?",
+        options: ["Accès à un bassin de talents plus restreint", "Augmentation de la cohésion d'équipe", "Prévenir l'isolement des employés", "Réduction des coûts de communication"],
+        correctAnswer: "Prévenir l'isolement des employés",
+        tefSkillTarget: "Comprendre les défis"
+      }
+    ],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
+  {
+    id: "rp_passage_2",
+    topic: "Les Énergies Renouvelables",
+    passageText: "Face au changement climatique, le développement des énergies renouvelables est devenu une priorité mondiale. Les sources comme le solaire, l'éolien ou l'hydraulique offrent une alternative plus propre aux combustibles fossiles. Leur adoption massive est cependant freinée par des coûts initiaux parfois élevés et la nécessité d'adapter les réseaux électriques.",
+    difficultyLevel: "Advanced (CLB 7+)",
+    tefSection: "Compréhension Écrite - Section B",
+    questions: [], // No questions initially
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
 ];
 
 export async function getReadingPassagesAction(): Promise<ReadingPassageFormState> {
@@ -52,7 +81,11 @@ export async function addReadingPassageAction(
     const newPassageData = validatedFields.data;
     const newPassage: ReadingPassage = {
       id: `rp_passage_${Date.now()}`,
-      ...newPassageData,
+      topic: newPassageData.topic,
+      passageText: newPassageData.passageText,
+      difficultyLevel: newPassageData.difficultyLevel,
+      tefSection: newPassageData.tefSection,
+      questions: newPassageData.questions || [], // Default to empty array if undefined
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -74,6 +107,7 @@ export async function updateReadingPassageAction(
   const validatedFields = readingPassageSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
+    console.log("Validation errors:", validatedFields.error.flatten().fieldErrors);
     return {
       message: "Validation failed.",
       errors: validatedFields.error.flatten().fieldErrors,
@@ -96,7 +130,11 @@ export async function updateReadingPassageAction(
     const originalPassage = simulatedReadingPassagesDb[passageIndex];
     const updatedPassage: ReadingPassage = {
       ...originalPassage,
-      ...updatedData,
+      topic: updatedData.topic,
+      passageText: updatedData.passageText,
+      difficultyLevel: updatedData.difficultyLevel,
+      tefSection: updatedData.tefSection,
+      questions: updatedData.questions || [],
       updatedAt: new Date().toISOString(),
     };
     
