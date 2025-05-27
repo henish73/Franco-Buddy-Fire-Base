@@ -5,8 +5,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import type { SpeakingPrompt } from "./page"; // Import type from the page component for now
 
-// Zod schema for Speaking Prompt form validation
-export const speakingPromptSchema = z.object({
+// Define the Zod schema internally first
+const _speakingPromptSchemaDefinition = z.object({
   id: z.string().optional(),
   topic: z.string().min(3, "Topic is required (min 3 chars)"),
   promptText: z.string().min(10, "Prompt text is required (min 10 chars)"),
@@ -16,6 +16,9 @@ export const speakingPromptSchema = z.object({
   ),
   // Add other fields as they are implemented (e.g., audioExampleUrl, difficultyLevel)
 });
+
+// Export the schema using a simple const assignment
+export const speakingPromptSchema = _speakingPromptSchemaDefinition;
 export type SpeakingPromptFormData = z.infer<typeof speakingPromptSchema>;
 
 // Form State Type
