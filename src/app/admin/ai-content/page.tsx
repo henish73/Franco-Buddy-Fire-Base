@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { MoreHorizontal, PlusCircle, Edit3, Trash2, Mic, MessageSquareText, RefreshCw, FileAudio, FileQuestion } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MoreHorizontal, PlusCircle, Edit3, Trash2, Mic, MessageSquareText, RefreshCw, FileAudio, FileQuestion, BookOpen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -29,8 +30,50 @@ import {
   type SpeakingPrompt 
 } from './speakingPromptSchemas';
 
+import {
+  getWritingPromptsAction,
+  addWritingPromptAction,
+  updateWritingPromptAction,
+  deleteWritingPromptAction,
+} from './writingPromptActions';
+import { 
+  writingPromptSchema, 
+  type WritingPromptFormData, 
+  type WritingPromptFormState, 
+  type WritingPrompt 
+} from './writingPromptSchemas';
+
+import {
+  getReadingPassagesAction,
+  addReadingPassageAction,
+  updateReadingPassageAction,
+  deleteReadingPassageAction,
+} from './readingPassageActions';
+import { 
+  readingPassageSchema, 
+  type ReadingPassageFormData, 
+  type ReadingPassageFormState, 
+  type ReadingPassage 
+} from './readingPassageSchemas';
+
+import {
+  getListeningAudioAction,
+  addListeningAudioAction,
+  updateListeningAudioAction,
+  deleteListeningAudioAction,
+} from './listeningAudioActions';
+import { 
+  listeningAudioSchema, 
+  type ListeningAudioFormData, 
+  type ListeningAudioFormState, 
+  type ListeningAudio 
+} from './listeningAudioSchemas';
+
 
 const initialSpeakingPromptFormState: SpeakingPromptFormState = { message: "", isSuccess: false, errors: {} };
+const initialWritingPromptFormState: WritingPromptFormState = { message: "", isSuccess: false, errors: {} };
+const initialReadingPassageFormState: ReadingPassageFormState = { message: "", isSuccess: false, errors: {} };
+const initialListeningAudioFormState: ListeningAudioFormState = { message: "", isSuccess: false, errors: {} };
 
 export default function AdminAIContentPage() {
   const { toast } = useToast();
@@ -50,20 +93,82 @@ export default function AdminAIContentPage() {
     initialSpeakingPromptFormState
   );
 
+  // --- Writing Prompts State & Forms ---
+  const [writingPrompts, setWritingPrompts] = useState<WritingPrompt[]>([]);
+  const [isWritingPromptDialogOpen, setIsWritingPromptDialogOpen] = useState(false);
+  const [editingWritingPrompt, setEditingWritingPrompt] = useState<WritingPrompt | null>(null);
+
+  const writingPromptForm = useForm<WritingPromptFormData>({
+    resolver: zodResolver(writingPromptSchema),
+    defaultValues: { topic: "", taskType: "", promptText: "", sampleResponse: "" }
+  });
+  const [writingPromptServerState, writingPromptFormAction] = useFormState(
+    editingWritingPrompt ? updateWritingPromptAction : addWritingPromptAction,
+    initialWritingPromptFormState
+  );
+
+  // --- Reading Passages State & Forms ---
+  const [readingPassages, setReadingPassages] = useState<ReadingPassage[]>([]);
+  const [isReadingPassageDialogOpen, setIsReadingPassageDialogOpen] = useState(false);
+  const [editingReadingPassage, setEditingReadingPassage] = useState<ReadingPassage | null>(null);
+  
+  const readingPassageForm = useForm<ReadingPassageFormData>({
+    resolver: zodResolver(readingPassageSchema),
+    defaultValues: { topic: "", passageText: "" }
+  });
+  const [readingPassageServerState, readingPassageFormAction] = useFormState(
+    editingReadingPassage ? updateReadingPassageAction : addReadingPassageAction,
+    initialReadingPassageFormState
+  );
+
+  // --- Listening Audio State & Forms ---
+  const [listeningAudioItems, setListeningAudioItems] = useState<ListeningAudio[]>([]);
+  const [isListeningAudioDialogOpen, setIsListeningAudioDialogOpen] = useState(false);
+  const [editingListeningAudio, setEditingListeningAudio] = useState<ListeningAudio | null>(null);
+
+  const listeningAudioForm = useForm<ListeningAudioFormData>({
+    resolver: zodResolver(listeningAudioSchema),
+    defaultValues: { topic: "", audioFileUrlOrName: "", transcript: "" }
+  });
+  const [listeningAudioServerState, listeningAudioFormAction] = useFormState(
+    editingListeningAudio ? updateListeningAudioAction : addListeningAudioAction,
+    initialListeningAudioFormState
+  );
+
+
   // --- Data Fetching Effects ---
-  const fetchSpeakingPrompts = async () => {
+  const fetchData = (type: 'speaking' | 'writing' | 'reading' | 'listening') => {
     startTransition(async () => {
-      const result = await getSpeakingPromptsAction();
-      if (result.isSuccess && result.data) {
-        setSpeakingPrompts(result.data as SpeakingPrompt[]);
-      } else {
-        toast({ title: "Error", description: result.message || "Failed to fetch speaking prompts.", variant: "destructive" });
+      let result;
+      switch (type) {
+        case 'speaking':
+          result = await getSpeakingPromptsAction();
+          if (result.isSuccess && result.data) setSpeakingPrompts(result.data as SpeakingPrompt[]);
+          break;
+        case 'writing':
+          result = await getWritingPromptsAction();
+          if (result.isSuccess && result.data) setWritingPrompts(result.data as WritingPrompt[]);
+          break;
+        case 'reading':
+          result = await getReadingPassagesAction();
+          if (result.isSuccess && result.data) setReadingPassages(result.data as ReadingPassage[]);
+          break;
+        case 'listening':
+          result = await getListeningAudioAction();
+          if (result.isSuccess && result.data) setListeningAudioItems(result.data as ListeningAudio[]);
+          break;
+      }
+      if (result && !result.isSuccess) {
+        toast({ title: "Error", description: result.message || `Failed to fetch ${type} content.`, variant: "destructive" });
       }
     });
   };
 
   useEffect(() => {
-    fetchSpeakingPrompts();
+    fetchData('speaking');
+    fetchData('writing');
+    fetchData('reading');
+    fetchData('listening');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -73,7 +178,6 @@ export default function AdminAIContentPage() {
     setEditingSpeakingPrompt(null);
     setIsSpeakingPromptDialogOpen(true);
   };
-
   const openEditSpeakingPromptDialog = (prompt: SpeakingPrompt) => {
     setEditingSpeakingPrompt(prompt);
     speakingPromptForm.reset({
@@ -82,48 +186,118 @@ export default function AdminAIContentPage() {
     });
     setIsSpeakingPromptDialogOpen(true);
   };
-
   const handleSpeakingPromptFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    if (editingSpeakingPrompt && editingSpeakingPrompt.id) {
-      formData.append('id', editingSpeakingPrompt.id);
-    }
-
-    speakingPromptForm.handleSubmit(async (data) => {
+    if (editingSpeakingPrompt && editingSpeakingPrompt.id) formData.append('id', editingSpeakingPrompt.id);
+    speakingPromptForm.handleSubmit(async () => {
       startTransition(async () => {
-        const actionToCall = editingSpeakingPrompt ? updateSpeakingPromptAction : addSpeakingPromptAction;
-        const result = await actionToCall(initialSpeakingPromptFormState, formData); 
-        if (result.isSuccess) {
-          toast({ title: "Success", description: result.message });
-          setIsSpeakingPromptDialogOpen(false);
-          fetchSpeakingPrompts();
-        } else {
-          toast({ title: "Error", description: result.message || "Failed to save speaking prompt.", variant: "destructive" });
-          if (result.errors) { 
-            (Object.keys(result.errors) as Array<keyof SpeakingPromptFormData>).forEach(key => {
-               if (result.errors && result.errors[key]) {
-                 speakingPromptForm.setError(key, { type: 'server', message: result.errors[key]![0] });
-               }
-            });
-          }
-        }
+        const result = await (editingSpeakingPrompt ? updateSpeakingPromptAction(initialSpeakingPromptFormState, formData) : addSpeakingPromptAction(initialSpeakingPromptFormState, formData));
+        if (result.isSuccess) { toast({ title: "Success", description: result.message }); setIsSpeakingPromptDialogOpen(false); fetchData('speaking'); } 
+        else { toast({ title: "Error", description: result.message || "Failed to save.", variant: "destructive" }); }
       });
     })(event);
   };
-
-  const handleDeleteSpeakingPrompt = (promptId: string) => {
+  const handleDeleteSpeakingPrompt = (id: string) => {
     startTransition(async () => {
-      const result = await deleteSpeakingPromptAction(promptId);
-      if (result.isSuccess) {
-        toast({ title: "Success", description: result.message });
-        fetchSpeakingPrompts();
-      } else {
-        toast({ title: "Error", description: result.message || "Failed to delete speaking prompt.", variant: "destructive" });
-      }
+      const result = await deleteSpeakingPromptAction(id);
+      if (result.isSuccess) { toast({ title: "Success", description: result.message }); fetchData('speaking'); }
+      else { toast({ title: "Error", description: result.message || "Failed to delete.", variant: "destructive" }); }
     });
   };
 
+  // --- Writing Prompt Management ---
+  const openAddWritingPromptDialog = () => {
+    writingPromptForm.reset({ topic: "", taskType: "", promptText: "", sampleResponse: "" });
+    setEditingWritingPrompt(null);
+    setIsWritingPromptDialogOpen(true);
+  };
+  const openEditWritingPromptDialog = (prompt: WritingPrompt) => {
+    setEditingWritingPrompt(prompt);
+    writingPromptForm.reset(prompt);
+    setIsWritingPromptDialogOpen(true);
+  };
+  const handleWritingPromptFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    if (editingWritingPrompt && editingWritingPrompt.id) formData.append('id', editingWritingPrompt.id);
+    writingPromptForm.handleSubmit(async () => {
+      startTransition(async () => {
+        const result = await (editingWritingPrompt ? updateWritingPromptAction(initialWritingPromptFormState, formData) : addWritingPromptAction(initialWritingPromptFormState, formData));
+        if (result.isSuccess) { toast({ title: "Success", description: result.message }); setIsWritingPromptDialogOpen(false); fetchData('writing'); }
+        else { toast({ title: "Error", description: result.message || "Failed to save.", variant: "destructive" }); }
+      });
+    })(event);
+  };
+  const handleDeleteWritingPrompt = (id: string) => {
+    startTransition(async () => {
+      const result = await deleteWritingPromptAction(id);
+      if (result.isSuccess) { toast({ title: "Success", description: result.message }); fetchData('writing'); }
+      else { toast({ title: "Error", description: result.message || "Failed to delete.", variant: "destructive" }); }
+    });
+  };
+
+  // --- Reading Passage Management ---
+  const openAddReadingPassageDialog = () => {
+    readingPassageForm.reset({ topic: "", passageText: "" });
+    setEditingReadingPassage(null);
+    setIsReadingPassageDialogOpen(true);
+  };
+  const openEditReadingPassageDialog = (passage: ReadingPassage) => {
+    setEditingReadingPassage(passage);
+    readingPassageForm.reset(passage);
+    setIsReadingPassageDialogOpen(true);
+  };
+  const handleReadingPassageFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    if (editingReadingPassage && editingReadingPassage.id) formData.append('id', editingReadingPassage.id);
+    readingPassageForm.handleSubmit(async () => {
+      startTransition(async () => {
+        const result = await (editingReadingPassage ? updateReadingPassageAction(initialReadingPassageFormState, formData) : addReadingPassageAction(initialReadingPassageFormState, formData));
+        if (result.isSuccess) { toast({ title: "Success", description: result.message }); setIsReadingPassageDialogOpen(false); fetchData('reading'); }
+        else { toast({ title: "Error", description: result.message || "Failed to save.", variant: "destructive" }); }
+      });
+    })(event);
+  };
+  const handleDeleteReadingPassage = (id: string) => {
+    startTransition(async () => {
+      const result = await deleteReadingPassageAction(id);
+      if (result.isSuccess) { toast({ title: "Success", description: result.message }); fetchData('reading'); }
+      else { toast({ title: "Error", description: result.message || "Failed to delete.", variant: "destructive" }); }
+    });
+  };
+
+  // --- Listening Audio Management ---
+  const openAddListeningAudioDialog = () => {
+    listeningAudioForm.reset({ topic: "", audioFileUrlOrName: "", transcript: "" });
+    setEditingListeningAudio(null);
+    setIsListeningAudioDialogOpen(true);
+  };
+  const openEditListeningAudioDialog = (item: ListeningAudio) => {
+    setEditingListeningAudio(item);
+    listeningAudioForm.reset(item);
+    setIsListeningAudioDialogOpen(true);
+  };
+  const handleListeningAudioFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    if (editingListeningAudio && editingListeningAudio.id) formData.append('id', editingListeningAudio.id);
+    listeningAudioForm.handleSubmit(async () => {
+      startTransition(async () => {
+        const result = await (editingListeningAudio ? updateListeningAudioAction(initialListeningAudioFormState, formData) : addListeningAudioAction(initialListeningAudioFormState, formData));
+        if (result.isSuccess) { toast({ title: "Success", description: result.message }); setIsListeningAudioDialogOpen(false); fetchData('listening'); }
+        else { toast({ title: "Error", description: result.message || "Failed to save.", variant: "destructive" }); }
+      });
+    })(event);
+  };
+  const handleDeleteListeningAudio = (id: string) => {
+    startTransition(async () => {
+      const result = await deleteListeningAudioAction(id);
+      if (result.isSuccess) { toast({ title: "Success", description: result.message }); fetchData('listening'); }
+      else { toast({ title: "Error", description: result.message || "Failed to delete.", variant: "destructive" }); }
+    });
+  };
 
   return (
     <div className="space-y-8">
@@ -133,7 +307,7 @@ export default function AdminAIContentPage() {
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 md:max-w-2xl">
           <TabsTrigger value="speaking_prompts"><Mic className="mr-2 h-4 w-4" />Speaking Prompts</TabsTrigger>
           <TabsTrigger value="writing_prompts"><MessageSquareText className="mr-2 h-4 w-4" />Writing Prompts</TabsTrigger>
-          <TabsTrigger value="reading_passages"><FileQuestion className="mr-2 h-4 w-4" />Reading Passages</TabsTrigger>
+          <TabsTrigger value="reading_passages"><BookOpen className="mr-2 h-4 w-4" />Reading Passages</TabsTrigger>
           <TabsTrigger value="listening_audio"><FileAudio className="mr-2 h-4 w-4" />Listening Audio</TabsTrigger>
         </TabsList>
 
@@ -142,7 +316,7 @@ export default function AdminAIContentPage() {
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold text-foreground">Manage Speaking Prompts</h2>
             <div>
-              <Button onClick={fetchSpeakingPrompts} variant="outline" size="icon" className="mr-2" aria-label="Refresh Speaking Prompts" disabled={isPending}>
+              <Button onClick={() => fetchData('speaking')} variant="outline" size="icon" className="mr-2" aria-label="Refresh Speaking Prompts" disabled={isPending}>
                 <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
               </Button>
               <Button onClick={openAddSpeakingPromptDialog} disabled={isPending}><PlusCircle className="mr-2 h-4 w-4" /> Add New Speaking Prompt</Button>
@@ -152,109 +326,103 @@ export default function AdminAIContentPage() {
             <DialogContent className="sm:max-w-lg">
               <DialogHeader>
                 <DialogTitle>{editingSpeakingPrompt ? "Edit Speaking Prompt" : "Add New Speaking Prompt"}</DialogTitle>
-                <DialogDescription>
-                  {editingSpeakingPrompt ? "Update the details of this speaking prompt." : "Enter the details for the new speaking prompt."}
-                </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSpeakingPromptFormSubmit} id="speakingPromptForm" className="grid gap-4 py-4">
-                <div>
-                  <Label htmlFor="topic">Topic / Category</Label>
-                  <Input id="topic" {...speakingPromptForm.register("topic")} placeholder="e.g., Daily Life, Opinions" />
-                  {speakingPromptForm.formState.errors.topic && <p className="text-sm text-destructive mt-1">{speakingPromptForm.formState.errors.topic.message}</p>}
-                  {speakingPromptServerState.errors?.topic && !speakingPromptForm.formState.errors.topic && <p className="text-sm text-destructive mt-1">{speakingPromptServerState.errors.topic[0]}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="promptText">Prompt Text</Label>
-                  <Textarea id="promptText" {...speakingPromptForm.register("promptText")} placeholder="Enter the full speaking prompt text here..." rows={4} />
-                  {speakingPromptForm.formState.errors.promptText && <p className="text-sm text-destructive mt-1">{speakingPromptForm.formState.errors.promptText.message}</p>}
-                  {speakingPromptServerState.errors?.promptText && !speakingPromptForm.formState.errors.promptText && <p className="text-sm text-destructive mt-1">{speakingPromptServerState.errors.promptText[0]}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="expectedKeywords">Expected Keywords (Optional)</Label>
-                  <Input id="expectedKeywords" {...speakingPromptForm.register("expectedKeywords")} placeholder="Comma-separated, e.g., bonjour, merci, s'il vous plaît" />
-                  {speakingPromptForm.formState.errors.expectedKeywords && <p className="text-sm text-destructive mt-1">{speakingPromptForm.formState.errors.expectedKeywords.message}</p>}
-                  {speakingPromptServerState.errors?.expectedKeywords && !speakingPromptForm.formState.errors.expectedKeywords && <p className="text-sm text-destructive mt-1">{speakingPromptServerState.errors.expectedKeywords[0]}</p>}
-                </div>
-                {/* Add more fields like audioExampleUrl, difficultyLevel, associatedCourseModule in future iterations */}
-                {speakingPromptServerState.message && !speakingPromptServerState.isSuccess && (
-                    <p className="text-sm text-destructive text-center">{speakingPromptServerState.message}</p>
-                 )}
+                <div><Label htmlFor="topic_spk">Topic</Label><Input id="topic_spk" {...speakingPromptForm.register("topic")} />{speakingPromptForm.formState.errors.topic && <p className="text-sm text-destructive mt-1">{speakingPromptForm.formState.errors.topic.message}</p>}</div>
+                <div><Label htmlFor="promptText_spk">Prompt Text</Label><Textarea id="promptText_spk" {...speakingPromptForm.register("promptText")} rows={4} />{speakingPromptForm.formState.errors.promptText && <p className="text-sm text-destructive mt-1">{speakingPromptForm.formState.errors.promptText.message}</p>}</div>
+                <div><Label htmlFor="expectedKeywords_spk">Keywords</Label><Input id="expectedKeywords_spk" {...speakingPromptForm.register("expectedKeywords")} placeholder="Comma-separated" />{speakingPromptForm.formState.errors.expectedKeywords && <p className="text-sm text-destructive mt-1">{speakingPromptForm.formState.errors.expectedKeywords.message}</p>}</div>
               </form>
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsSpeakingPromptDialogOpen(false)} disabled={isPending}>Cancel</Button>
-                <Button type="submit" form="speakingPromptForm" disabled={isPending || speakingPromptForm.formState.isSubmitting}>{isPending ? "Saving..." : (editingSpeakingPrompt ? "Save Changes" : "Add Prompt")}</Button>
-              </DialogFooter>
+              <DialogFooter><Button variant="outline" onClick={() => setIsSpeakingPromptDialogOpen(false)}>Cancel</Button><Button type="submit" form="speakingPromptForm">{editingSpeakingPrompt ? "Save" : "Add"}</Button></DialogFooter>
             </DialogContent>
           </Dialog>
           <div className="rounded-lg border shadow-sm">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Topic</TableHead>
-                  <TableHead>Prompt Text (Snippet)</TableHead>
-                  <TableHead className="hidden md:table-cell">Keywords</TableHead>
-                  <TableHead><span className="sr-only">Actions</span></TableHead>
-                </TableRow>
-              </TableHeader>
+            <Table><TableHeader><TableRow><TableHead>Topic</TableHead><TableHead>Prompt (Snippet)</TableHead><TableHead className="hidden md:table-cell">Keywords</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
               <TableBody>
-                {speakingPrompts.map((prompt) => (
-                  <TableRow key={prompt.id}>
-                    <TableCell className="font-medium">{prompt.topic}</TableCell>
-                    <TableCell className="max-w-xs truncate">{prompt.promptText}</TableCell>
-                    <TableCell className="hidden md:table-cell max-w-sm truncate">
-                      {Array.isArray(prompt.expectedKeywords) ? prompt.expectedKeywords.join(', ') : 'N/A'}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost" disabled={isPending}>
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => openEditSpeakingPromptDialog(prompt)}><Edit3 className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => handleDeleteSpeakingPrompt(prompt.id!)} className="text-destructive focus:text-destructive focus:bg-destructive/10">
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                {speakingPrompts.map((p) => (<TableRow key={p.id}><TableCell>{p.topic}</TableCell><TableCell className="max-w-xs truncate">{p.promptText}</TableCell><TableCell className="hidden md:table-cell max-w-sm truncate">{Array.isArray(p.expectedKeywords) ? p.expectedKeywords.join(', ') : 'N/A'}</TableCell>
+                  <TableCell><DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost"><MoreHorizontal/></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={()=>openEditSpeakingPromptDialog(p)}>Edit</DropdownMenuItem><DropdownMenuItem onClick={()=>handleDeleteSpeakingPrompt(p.id!)} className="text-destructive">Delete</DropdownMenuItem></DropdownMenuContent></DropdownMenu></TableCell></TableRow>))}
+              </TableBody></Table>
+             {speakingPrompts.length === 0 && !isPending && <p className="text-center text-muted-foreground py-8">No speaking prompts.</p>}
           </div>
-          {speakingPrompts.length === 0 && !isPending && <p className="text-center text-muted-foreground py-8">No speaking prompts found.</p>}
-          {isPending && <p className="text-center text-muted-foreground py-8">Loading prompts...</p>}
         </TabsContent>
 
         {/* Writing Prompts Tab Content */}
-        <TabsContent value="writing_prompts" className="mt-6">
-          <div className="text-center py-12 text-muted-foreground">
-            <MessageSquareText className="h-12 w-12 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Writing Prompt Management</h2>
-            <p>This section is coming soon! You will be able to manage prompts for AI-powered writing assessments here.</p>
+        <TabsContent value="writing_prompts" className="mt-6 space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-foreground">Manage Writing Prompts</h2>
+            <div><Button onClick={() => fetchData('writing')} variant="outline" size="icon" className="mr-2" disabled={isPending}><RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin':''}`}/></Button><Button onClick={openAddWritingPromptDialog} disabled={isPending}><PlusCircle className="mr-2 h-4 w-4"/>Add New Writing Prompt</Button></div>
+          </div>
+           <Dialog open={isWritingPromptDialogOpen} onOpenChange={setIsWritingPromptDialogOpen}>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader><DialogTitle>{editingWritingPrompt ? "Edit Writing Prompt" : "Add New Writing Prompt"}</DialogTitle></DialogHeader>
+              <form onSubmit={handleWritingPromptFormSubmit} id="writingPromptForm" className="grid gap-4 py-4">
+                <div><Label htmlFor="topic_wp">Topic</Label><Input id="topic_wp" {...writingPromptForm.register("topic")} />{writingPromptForm.formState.errors.topic && <p className="text-sm text-destructive mt-1">{writingPromptForm.formState.errors.topic.message}</p>}</div>
+                <div><Label htmlFor="taskType_wp">Task Type</Label><Input id="taskType_wp" {...writingPromptForm.register("taskType")} placeholder="e.g., Formal Letter, Opinion Essay"/>{writingPromptForm.formState.errors.taskType && <p className="text-sm text-destructive mt-1">{writingPromptForm.formState.errors.taskType.message}</p>}</div>
+                <div><Label htmlFor="promptText_wp">Prompt Text</Label><Textarea id="promptText_wp" {...writingPromptForm.register("promptText")} rows={4}/>{writingPromptForm.formState.errors.promptText && <p className="text-sm text-destructive mt-1">{writingPromptForm.formState.errors.promptText.message}</p>}</div>
+                <div><Label htmlFor="sampleResponse_wp">Sample Response (Optional)</Label><Textarea id="sampleResponse_wp" {...writingPromptForm.register("sampleResponse")} rows={4}/>{writingPromptForm.formState.errors.sampleResponse && <p className="text-sm text-destructive mt-1">{writingPromptForm.formState.errors.sampleResponse.message}</p>}</div>
+              </form>
+              <DialogFooter><Button variant="outline" onClick={()=>setIsWritingPromptDialogOpen(false)}>Cancel</Button><Button type="submit" form="writingPromptForm">{editingWritingPrompt ? "Save" : "Add"}</Button></DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <div className="rounded-lg border shadow-sm">
+            <Table><TableHeader><TableRow><TableHead>Topic</TableHead><TableHead>Task Type</TableHead><TableHead>Prompt (Snippet)</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+            <TableBody>
+              {writingPrompts.map((p)=>(<TableRow key={p.id}><TableCell>{p.topic}</TableCell><TableCell>{p.taskType}</TableCell><TableCell className="max-w-xs truncate">{p.promptText}</TableCell>
+              <TableCell><DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost"><MoreHorizontal/></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={()=>openEditWritingPromptDialog(p)}>Edit</DropdownMenuItem><DropdownMenuItem onClick={()=>handleDeleteWritingPrompt(p.id!)} className="text-destructive">Delete</DropdownMenuItem></DropdownMenuContent></DropdownMenu></TableCell></TableRow>))}
+            </TableBody></Table>
+            {writingPrompts.length === 0 && !isPending && <p className="text-center text-muted-foreground py-8">No writing prompts.</p>}
           </div>
         </TabsContent>
         
         {/* Reading Passages Tab Content */}
-        <TabsContent value="reading_passages" className="mt-6">
-          <div className="text-center py-12 text-muted-foreground">
-            <FileQuestion className="h-12 w-12 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Reading Passage Management</h2>
-            <p>This section is coming soon! You will be able to manage reading passages and questions for AI-powered reading comprehension exercises.</p>
+        <TabsContent value="reading_passages" className="mt-6 space-y-6">
+           <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-foreground">Manage Reading Passages</h2>
+            <div><Button onClick={() => fetchData('reading')} variant="outline" size="icon" className="mr-2" disabled={isPending}><RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin':''}`}/></Button><Button onClick={openAddReadingPassageDialog} disabled={isPending}><PlusCircle className="mr-2 h-4 w-4"/>Add New Reading Passage</Button></div>
+          </div>
+          <Dialog open={isReadingPassageDialogOpen} onOpenChange={setIsReadingPassageDialogOpen}>
+            <DialogContent className="sm:max-w-xl">
+              <DialogHeader><DialogTitle>{editingReadingPassage ? "Edit Reading Passage" : "Add New Reading Passage"}</DialogTitle></DialogHeader>
+              <form onSubmit={handleReadingPassageFormSubmit} id="readingPassageForm" className="grid gap-4 py-4">
+                <div><Label htmlFor="topic_rp">Topic</Label><Input id="topic_rp" {...readingPassageForm.register("topic")} />{readingPassageForm.formState.errors.topic && <p className="text-sm text-destructive mt-1">{readingPassageForm.formState.errors.topic.message}</p>}</div>
+                <div><Label htmlFor="passageText_rp">Passage Text</Label><Textarea id="passageText_rp" {...readingPassageForm.register("passageText")} rows={10}/>{readingPassageForm.formState.errors.passageText && <p className="text-sm text-destructive mt-1">{readingPassageForm.formState.errors.passageText.message}</p>}</div>
+              </form>
+              <DialogFooter><Button variant="outline" onClick={()=>setIsReadingPassageDialogOpen(false)}>Cancel</Button><Button type="submit" form="readingPassageForm">{editingReadingPassage ? "Save" : "Add"}</Button></DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <div className="rounded-lg border shadow-sm">
+            <Table><TableHeader><TableRow><TableHead>Topic</TableHead><TableHead>Passage (Snippet)</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+            <TableBody>
+              {readingPassages.map((p)=>(<TableRow key={p.id}><TableCell>{p.topic}</TableCell><TableCell className="max-w-md truncate">{p.passageText}</TableCell>
+              <TableCell><DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost"><MoreHorizontal/></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={()=>openEditReadingPassageDialog(p)}>Edit</DropdownMenuItem><DropdownMenuItem onClick={()=>handleDeleteReadingPassage(p.id!)} className="text-destructive">Delete</DropdownMenuItem></DropdownMenuContent></DropdownMenu></TableCell></TableRow>))}
+            </TableBody></Table>
+            {readingPassages.length === 0 && !isPending && <p className="text-center text-muted-foreground py-8">No reading passages.</p>}
           </div>
         </TabsContent>
         
         {/* Listening Audio Tab Content */}
-        <TabsContent value="listening_audio" className="mt-6">
-          <div className="text-center py-12 text-muted-foreground">
-            <FileAudio className="h-12 w-12 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Listening Audio Management</h2>
-            <p>This section is coming soon! You will be able to manage audio clips and questions for AI-powered listening comprehension exercises.</p>
+        <TabsContent value="listening_audio" className="mt-6 space-y-6">
+           <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-foreground">Manage Listening Audio</h2>
+            <div><Button onClick={() => fetchData('listening')} variant="outline" size="icon" className="mr-2" disabled={isPending}><RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin':''}`}/></Button><Button onClick={openAddListeningAudioDialog} disabled={isPending}><PlusCircle className="mr-2 h-4 w-4"/>Add New Listening Audio</Button></div>
+          </div>
+          <Dialog open={isListeningAudioDialogOpen} onOpenChange={setIsListeningAudioDialogOpen}>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader><DialogTitle>{editingListeningAudio ? "Edit Listening Audio" : "Add New Listening Audio"}</DialogTitle></DialogHeader>
+              <form onSubmit={handleListeningAudioFormSubmit} id="listeningAudioForm" className="grid gap-4 py-4">
+                <div><Label htmlFor="topic_la">Topic</Label><Input id="topic_la" {...listeningAudioForm.register("topic")} />{listeningAudioForm.formState.errors.topic && <p className="text-sm text-destructive mt-1">{listeningAudioForm.formState.errors.topic.message}</p>}</div>
+                <div><Label htmlFor="audioFileUrlOrName_la">Audio File URL/Name</Label><Input id="audioFileUrlOrName_la" {...listeningAudioForm.register("audioFileUrlOrName")} placeholder="e.g., audio/interview_job.mp3 or full URL"/>{listeningAudioForm.formState.errors.audioFileUrlOrName && <p className="text-sm text-destructive mt-1">{listeningAudioForm.formState.errors.audioFileUrlOrName.message}</p>}</div>
+                <div><Label htmlFor="transcript_la">Transcript (Optional)</Label><Textarea id="transcript_la" {...listeningAudioForm.register("transcript")} rows={6}/>{listeningAudioForm.formState.errors.transcript && <p className="text-sm text-destructive mt-1">{listeningAudioForm.formState.errors.transcript.message}</p>}</div>
+              </form>
+              <DialogFooter><Button variant="outline" onClick={()=>setIsListeningAudioDialogOpen(false)}>Cancel</Button><Button type="submit" form="listeningAudioForm">{editingListeningAudio ? "Save" : "Add"}</Button></DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <div className="rounded-lg border shadow-sm">
+            <Table><TableHeader><TableRow><TableHead>Topic</TableHead><TableHead>Audio File/URL</TableHead><TableHead>Transcript (Snippet)</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+            <TableBody>
+              {listeningAudioItems.map((item)=>(<TableRow key={item.id}><TableCell>{item.topic}</TableCell><TableCell>{item.audioFileUrlOrName}</TableCell><TableCell className="max-w-xs truncate">{item.transcript || "N/A"}</TableCell>
+              <TableCell><DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost"><MoreHorizontal/></Button></DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem onClick={()=>openEditListeningAudioDialog(item)}>Edit</DropdownMenuItem><DropdownMenuItem onClick={()=>handleDeleteListeningAudio(item.id!)} className="text-destructive">Delete</DropdownMenuItem></DropdownMenuContent></DropdownMenu></TableCell></TableRow>))}
+            </TableBody></Table>
+            {listeningAudioItems.length === 0 && !isPending && <p className="text-center text-muted-foreground py-8">No listening audio items.</p>}
           </div>
         </TabsContent>
       </Tabs>
