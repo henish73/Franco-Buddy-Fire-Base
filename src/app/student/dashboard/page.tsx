@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { BookOpen, UserCircle, Bell, CheckSquare, Mic, MessageSquareText, BookOpenIcon as Book, Headphones } from 'lucide-react'; // Renamed BookOpen to Book
+import { BookOpen, UserCircle, Bell, CheckSquare, Mic, MessageSquareText, Headphones } from 'lucide-react'; 
 
 // Placeholder data
 const studentName = "Aisha K."; // Replace with dynamic data later
@@ -45,15 +45,17 @@ export default function StudentDashboardPage() {
                         <span>Writing</span>
                     </Link>
                 </Button>
-                 <Button variant="outline" size="lg" className="flex flex-col h-auto py-4" disabled>
-                    <Book className="h-8 w-8 mb-2"/>
-                    <span>Reading</span>
-                     <span className="text-xs mt-1">(Coming Soon)</span>
+                 <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4">
+                    <Link href="/student/ai-tutor/reading">
+                        <BookOpen className="h-8 w-8 mb-2"/>
+                        <span>Reading</span>
+                    </Link>
                 </Button>
-                 <Button variant="outline" size="lg" className="flex flex-col h-auto py-4" disabled>
-                    <Headphones className="h-8 w-8 mb-2"/>
-                    <span>Listening</span>
-                     <span className="text-xs mt-1">(Coming Soon)</span>
+                 <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4">
+                    <Link href="/student/ai-tutor/listening">
+                        <Headphones className="h-8 w-8 mb-2"/>
+                        <span>Listening</span>
+                    </Link>
                 </Button>
             </CardContent>
             <CardFooter>

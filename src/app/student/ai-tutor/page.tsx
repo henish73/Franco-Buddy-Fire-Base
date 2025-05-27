@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mic, MessageSquareText, BookOpenIcon as Book, Headphones, Sparkles, BarChart3 } from 'lucide-react'; // Renamed BookOpen to Book to avoid conflict
+import { Mic, MessageSquareText, BookOpen, Headphones, Sparkles, BarChart3 } from 'lucide-react';
 
 export default function AITutorHubPage() {
   return (
@@ -49,29 +49,33 @@ export default function AITutorHubPage() {
             </CardFooter>
           </Card>
 
-          <Card className="shadow-lg hover:shadow-primary/20 transition-shadow opacity-70">
+          <Card className="shadow-lg hover:shadow-primary/20 transition-shadow">
             <CardHeader>
-              <Book className="h-10 w-10 text-primary mb-3" />
+              <BookOpen className="h-10 w-10 text-primary mb-3" />
               <CardTitle className="text-xl">Reading Comprehension</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>Read passages and answer TEF-style questions. Get insights into your understanding and vocabulary.</CardDescription>
             </CardContent>
              <CardFooter>
-              <Button className="w-full" disabled>Coming Soon</Button>
+              <Button asChild className="w-full">
+                <Link href="/student/ai-tutor/reading">Practice Reading</Link>
+              </Button>
             </CardFooter>
           </Card>
 
-          <Card className="shadow-lg hover:shadow-primary/20 transition-shadow opacity-70">
+          <Card className="shadow-lg hover:shadow-primary/20 transition-shadow">
             <CardHeader>
               <Headphones className="h-10 w-10 text-primary mb-3" />
               <CardTitle className="text-xl">Listening Practice</CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription>Listen to audio clips and answer comprehension questions. Improve your ability to understand spoken French.</CardDescription>
+              <CardDescription>Listen to audio clips (or read transcripts) and answer comprehension questions. Improve your ability to understand spoken French.</CardDescription>
             </CardContent>
             <CardFooter>
-              <Button className="w-full" disabled>Coming Soon</Button>
+               <Button asChild className="w-full">
+                <Link href="/student/ai-tutor/listening">Practice Listening</Link>
+              </Button>
             </CardFooter>
           </Card>
         </div>
