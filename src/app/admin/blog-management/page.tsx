@@ -1,8 +1,7 @@
-
 // src/app/admin/blog-management/page.tsx
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition, FormEvent } from 'react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -10,16 +9,42 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { MoreHorizontal, PlusCircle, Edit3, Trash2, Tags, FolderTree } from "lucide-react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { MoreHorizontal, PlusCircle, Edit3, Trash2, Tags, FolderTree, RefreshCw } from "lucide-react";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { mockBlogPosts, type BlogPost } from '@/app/(public)/blog/mockBlogPosts'; // Using existing mock data
+import { mockBlogPosts, type BlogPost, type BlogCategory, type BlogTag } from '@/app/(public)/blog/mockBlogPosts'; // Import types
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { useFormState } from 'react-dom';
 
-// Zod schema for blog post form validation
-const blogPostSchema = z.object({
-  id: z.string().optional(), // For editing
+import { 
+  getBlogPostsAction, 
+  addBlogPostAction, 
+  updateBlogPostAction, 
+  deleteBlogPostAction,
+  type BlogPostFormState,
+  type BlogPostFormData
+} from './postActions';
+
+import {
+  getCategoriesAction,
+  addCategoryAction,
+  updateCategoryAction,
+  deleteCategoryAction,
+  getTagsAction,
+  addTagAction,
+  updateTagAction,
+  deleteTagAction,
+  type TaxonomyFormState,
+  type CategoryFormData,
+  type TagFormData
+} from './taxonomyActions';
+
+
+// Zod schema for blog post form validation (matches schema in postActions.ts)
+const blogPostClientSchema = z.object({
+  id: z.string().optional(),
   slug: z.string().min(3, "Slug is required (min 3 chars, e.g., my-first-post)").regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug format (e.g., 'my-post-slug')"),
   title: z.string().min(5, "Title is required (min 5 chars)"),
   date: z.string().refine(val => !isNaN(Date.parse(val)), { message: "Invalid date format" }),
@@ -28,81 +53,107 @@ const blogPostSchema = z.object({
   imageUrl: z.string().url({ message: "Please enter a valid image URL" }).optional().or(z.literal('')),
   imageAiHint: z.string().optional(),
   content: z.string().min(20, "Content is required (min 20 chars)"),
-  categories: z.string().transform(val => val.split(',').map(s => s.trim()).filter(Boolean)),
-  tags: z.string().transform(val => val.split(',').map(s => s.trim()).filter(Boolean)),
+  categories: z.string().transform(val => val.split(',').map(s => s.trim()).filter(Boolean)), // Stored as array in DB, string in form
+  tags: z.string().transform(val => val.split(',').map(s => s.trim()).filter(Boolean)), // Stored as array in DB, string in form
   featured: z.boolean().optional(),
 });
-type BlogPostFormData = z.infer<typeof blogPostSchema>;
 
-// Category Type and Schema
-export type BlogCategory = {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-};
-const categorySchema = z.object({
+
+// Zod schema for category form validation (matches schema in taxonomyActions.ts)
+const categoryClientSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(2, "Category name is required (min 2 chars)"),
   slug: z.string().min(2, "Slug is required (min 2 chars)").regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug format"),
   description: z.string().optional(),
 });
-type CategoryFormData = z.infer<typeof categorySchema>;
 
-// Tag Type and Schema
-export type BlogTag = {
-  id: string;
-  name: string;
-  slug: string;
-};
-const tagSchema = z.object({
+// Zod schema for tag form validation (matches schema in taxonomyActions.ts)
+const tagClientSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(2, "Tag name is required (min 2 chars)"),
   slug: z.string().min(2, "Slug is required (min 2 chars)").regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug format"),
 });
-type TagFormData = z.infer<typeof tagSchema>;
 
-// Mock initial categories and tags - In a real app, fetch from Firestore
-const initialCategories: BlogCategory[] = [
-  { id: "cat1", name: "TEF Speaking", slug: "tef-speaking", description: "Tips for the TEF speaking section." },
-  { id: "cat2", name: "Exam Strategies", slug: "exam-strategies", description: "General TEF exam strategies." },
-];
-const initialTags: BlogTag[] = [
-  { id: "tag1", name: "TEF Tips", slug: "tef-tips" },
-  { id: "tag2", name: "French Grammar", slug: "french-grammar" },
-];
 
+const initialPostFormState: BlogPostFormState = { message: "", isSuccess: false, errors: {} };
+const initialTaxonomyFormState: TaxonomyFormState = { message: "", isSuccess: false, errors: {} };
 
 export default function AdminBlogManagementPage() {
+  const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
+
+  // --- Posts State & Forms ---
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  
+  const postForm = useForm<BlogPostFormData>({
+    resolver: zodResolver(blogPostClientSchema),
+    defaultValues: { featured: false, categories: [], tags: [] }
+  });
+  const [postFormServerState, postFormAction] = useFormState(editingPost ? updateBlogPostAction : addBlogPostAction, initialPostFormState);
 
-  const [categories, setCategories] = useState<BlogCategory[]>(initialCategories);
+  // --- Categories State & Forms ---
+  const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<BlogCategory | null>(null);
 
-  const [tags, setTags] = useState<BlogTag[]>(initialTags);
+  const categoryForm = useForm<CategoryFormData>({
+    resolver: zodResolver(categoryClientSchema),
+  });
+  const [categoryFormServerState, categoryFormAction] = useFormState(editingCategory ? updateCategoryAction : addCategoryAction, initialTaxonomyFormState);
+
+  // --- Tags State & Forms ---
+  const [tags, setTags] = useState<BlogTag[]>([]);
   const [isTagDialogOpen, setIsTagDialogOpen] = useState(false);
   const [editingTag, setEditingTag] = useState<BlogTag | null>(null);
-  
-  // Initialize posts with mock data
-  useEffect(() => {
-    setPosts(mockBlogPosts.map(p => ({...p, id: p.slug }))); // Use slug as ID for mock posts
-  }, []);
-
-  const postForm = useForm<BlogPostFormData>({
-    resolver: zodResolver(blogPostSchema),
-    defaultValues: { featured: false, categories: [], tags: [] }
-  });
-
-  const categoryForm = useForm<CategoryFormData>({
-    resolver: zodResolver(categorySchema),
-  });
 
   const tagForm = useForm<TagFormData>({
-    resolver: zodResolver(tagSchema),
+    resolver: zodResolver(tagClientSchema),
   });
+  const [tagFormServerState, tagFormAction] = useFormState(editingTag ? updateTagAction : addTagAction, initialTaxonomyFormState);
+  
+
+  // --- Data Fetching Effects ---
+  const fetchPosts = async () => {
+    startTransition(async () => {
+      const result = await getBlogPostsAction();
+      if (result.isSuccess && result.data) {
+        setPosts(result.data as BlogPost[]);
+      } else {
+        toast({ title: "Error", description: result.message || "Failed to fetch posts.", variant: "destructive" });
+      }
+    });
+  };
+
+  const fetchCategories = async () => {
+    startTransition(async () => {
+      const result = await getCategoriesAction();
+      if (result.isSuccess && result.data) {
+        setCategories(result.data as BlogCategory[]);
+      } else {
+        toast({ title: "Error", description: result.message || "Failed to fetch categories.", variant: "destructive" });
+      }
+    });
+  };
+
+  const fetchTags = async () => {
+    startTransition(async () => {
+      const result = await getTagsAction();
+      if (result.isSuccess && result.data) {
+        setTags(result.data as BlogTag[]);
+      } else {
+        toast({ title: "Error", description: result.message || "Failed to fetch tags.", variant: "destructive" });
+      }
+    });
+  };
+  
+  useEffect(() => {
+    fetchPosts();
+    fetchCategories();
+    fetchTags();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // --- Post Management ---
   const openAddPostDialog = () => {
@@ -119,28 +170,46 @@ export default function AdminBlogManagementPage() {
     setEditingPost(post);
     postForm.reset({
       ...post,
-      categories: post.categories.join(', '),
-      tags: post.tags.join(', '),
+      categories: Array.isArray(post.categories) ? post.categories.join(', ') : '', // Ensure it's a string for the form
+      tags: Array.isArray(post.tags) ? post.tags.join(', ') : '', // Ensure it's a string for the form
     });
     setIsPostDialogOpen(true);
   };
 
-  const onPostSubmit: SubmitHandler<BlogPostFormData> = (data) => {
-    if (editingPost) {
-      setPosts(posts.map(p => p.id === editingPost.id ? { ...editingPost, ...data, id: editingPost.id } : p));
-      console.log("Updating post:", { ...editingPost, ...data, id: editingPost.id });
-    } else {
-      const newPost = { ...data, id: data.slug }; // Use slug as ID
-      setPosts([newPost as BlogPost, ...posts]);
-      console.log("Adding new post:", newPost);
+  const handlePostFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    if (editingPost && editingPost.id) {
+        formData.append('id', editingPost.id); // Add ID for updates
     }
-    setIsPostDialogOpen(false);
-    postForm.reset();
+
+    postForm.handleSubmit(async (data) => {
+        startTransition(async () => {
+            const actionToCall = editingPost ? updateBlogPostAction : addBlogPostAction;
+            const result = await actionToCall(initialPostFormState, formData);
+            if (result.isSuccess) {
+                toast({ title: "Success", description: result.message });
+                setIsPostDialogOpen(false);
+                fetchPosts(); // Refetch posts
+            } else {
+                toast({ title: "Error", description: result.message || "Failed to save post.", variant: "destructive" });
+                // Optionally set server errors to form context if needed
+                // result.errors?.title && postForm.setError("title", { message: result.errors.title[0]}); // etc.
+            }
+        });
+    })(event); // Trigger react-hook-form validation before submitting
   };
   
   const handleDeletePost = (postId: string) => {
-    setPosts(posts.filter(p => p.id !== postId));
-    console.log(`Deleting post ${postId}`);
+    startTransition(async () => {
+      const result = await deleteBlogPostAction(postId);
+      if (result.isSuccess) {
+        toast({ title: "Success", description: result.message });
+        fetchPosts();
+      } else {
+        toast({ title: "Error", description: result.message || "Failed to delete post.", variant: "destructive" });
+      }
+    });
   };
 
   // --- Category Management ---
@@ -156,22 +225,38 @@ export default function AdminBlogManagementPage() {
     setIsCategoryDialogOpen(true);
   };
 
-  const onCategorySubmit: SubmitHandler<CategoryFormData> = (data) => {
-    if (editingCategory) {
-      setCategories(categories.map(c => c.id === editingCategory.id ? { ...editingCategory, ...data } : c));
-      console.log("Updating category:", { ...editingCategory, ...data });
-    } else {
-      const newCategory = { ...data, id: `cat${Date.now()}` };
-      setCategories([newCategory, ...categories]);
-      console.log("Adding new category:", newCategory);
+  const handleCategoryFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+     if (editingCategory && editingCategory.id) {
+        formData.append('id', editingCategory.id);
     }
-    setIsCategoryDialogOpen(false);
-    categoryForm.reset();
+    
+    categoryForm.handleSubmit(async (data) => {
+      startTransition(async () => {
+        const actionToCall = editingCategory ? updateCategoryAction : addCategoryAction;
+        const result = await actionToCall(initialTaxonomyFormState, formData);
+        if (result.isSuccess) {
+          toast({ title: "Success", description: result.message });
+          setIsCategoryDialogOpen(false);
+          fetchCategories();
+        } else {
+          toast({ title: "Error", description: result.message || "Failed to save category.", variant: "destructive" });
+        }
+      });
+    })(event);
   };
 
   const handleDeleteCategory = (categoryId: string) => {
-    setCategories(categories.filter(c => c.id !== categoryId));
-    console.log(`Deleting category ${categoryId}`);
+    startTransition(async () => {
+      const result = await deleteCategoryAction(categoryId);
+      if (result.isSuccess) {
+        toast({ title: "Success", description: result.message });
+        fetchCategories();
+      } else {
+        toast({ title: "Error", description: result.message || "Failed to delete category.", variant: "destructive" });
+      }
+    });
   };
 
   // --- Tag Management ---
@@ -187,22 +272,39 @@ export default function AdminBlogManagementPage() {
     setIsTagDialogOpen(true);
   };
 
-  const onTagSubmit: SubmitHandler<TagFormData> = (data) => {
-    if (editingTag) {
-      setTags(tags.map(t => t.id === editingTag.id ? { ...editingTag, ...data } : t));
-      console.log("Updating tag:", { ...editingTag, ...data });
-    } else {
-      const newTag = { ...data, id: `tag${Date.now()}` };
-      setTags([newTag, ...tags]);
-      console.log("Adding new tag:", newTag);
+ const handleTagFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    if (editingTag && editingTag.id) {
+        formData.append('id', editingTag.id);
     }
-    setIsTagDialogOpen(false);
-    tagForm.reset();
-  };
+
+    tagForm.handleSubmit(async (data) => {
+        startTransition(async () => {
+            const actionToCall = editingTag ? updateTagAction : addTagAction;
+            const result = await actionToCall(initialTaxonomyFormState, formData);
+            if (result.isSuccess) {
+                toast({ title: "Success", description: result.message });
+                setIsTagDialogOpen(false);
+                fetchTags();
+            } else {
+                toast({ title: "Error", description: result.message || "Failed to save tag.", variant: "destructive" });
+            }
+        });
+    })(event);
+ };
+
 
   const handleDeleteTag = (tagId: string) => {
-    setTags(tags.filter(t => t.id !== tagId));
-    console.log(`Deleting tag ${tagId}`);
+     startTransition(async () => {
+      const result = await deleteTagAction(tagId);
+      if (result.isSuccess) {
+        toast({ title: "Success", description: result.message });
+        fetchTags();
+      } else {
+        toast({ title: "Error", description: result.message || "Failed to delete tag.", variant: "destructive" });
+      }
+    });
   };
 
   return (
@@ -220,7 +322,12 @@ export default function AdminBlogManagementPage() {
         <TabsContent value="posts" className="mt-6 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold text-foreground">Manage Posts</h2>
-            <Button onClick={openAddPostDialog}><PlusCircle className="mr-2 h-4 w-4" /> Add New Post</Button>
+            <div>
+              <Button onClick={fetchPosts} variant="outline" size="icon" className="mr-2" aria-label="Refresh Posts" disabled={isPending}>
+                <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+              </Button>
+              <Button onClick={openAddPostDialog} disabled={isPending}><PlusCircle className="mr-2 h-4 w-4" /> Add New Post</Button>
+            </div>
           </div>
           <Dialog open={isPostDialogOpen} onOpenChange={setIsPostDialogOpen}>
             <DialogContent className="sm:max-w-[725px] max-h-[90vh] flex flex-col">
@@ -230,8 +337,7 @@ export default function AdminBlogManagementPage() {
                   {editingPost ? "Update the details of this blog post." : "Enter the details for the new blog post."}
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={postForm.handleSubmit(onPostSubmit)} id="blogPostForm" className="grid gap-4 py-4 flex-grow overflow-y-auto pr-2">
-                {/* Post Form Fields from previous implementation */}
+              <form onSubmit={handlePostFormSubmit} id="blogPostForm" className="grid gap-4 py-4 flex-grow overflow-y-auto pr-2">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="title" className="text-right">Title</Label>
                   <Input id="title" {...postForm.register("title")} className="col-span-3" />
@@ -284,16 +390,31 @@ export default function AdminBlogManagementPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="featured" className="text-right">Featured Post</Label>
-                    <div className="col-span-3 flex items-center">
-                        <Input type="checkbox" id="featured" {...postForm.register("featured")} className="h-4 w-4 mr-2"/>
-                        <Label htmlFor="featured" className="font-normal">Mark as featured</Label>
-                    </div>
+                    <Controller
+                        name="featured"
+                        control={postForm.control}
+                        render={({ field }) => (
+                            <div className="col-span-3 flex items-center">
+                                <Input 
+                                    type="checkbox" 
+                                    id="featured" 
+                                    checked={field.value || false} 
+                                    onCheckedChange={field.onChange}
+                                    className="h-4 w-4 mr-2"
+                                />
+                                <Label htmlFor="featured" className="font-normal">Mark as featured</Label>
+                            </div>
+                        )}
+                    />
                     {postForm.formState.errors.featured && <p className="col-span-4 text-sm text-destructive text-right">{postForm.formState.errors.featured.message}</p>}
                 </div>
+                 {postFormServerState.message && !postFormServerState.isSuccess && (
+                    <p className="col-span-4 text-sm text-destructive text-center">{postFormServerState.message}</p>
+                 )}
               </form>
               <DialogFooter className="mt-auto pt-4 border-t">
-                <Button type="button" variant="outline" onClick={() => setIsPostDialogOpen(false)}>Cancel</Button>
-                <Button type="submit" form="blogPostForm">{editingPost ? "Save Changes" : "Add Post"}</Button>
+                <Button type="button" variant="outline" onClick={() => setIsPostDialogOpen(false)} disabled={isPending}>Cancel</Button>
+                <Button type="submit" form="blogPostForm" disabled={isPending}>{isPending ? "Saving..." : (editingPost ? "Save Changes" : "Add Post")}</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -314,11 +435,11 @@ export default function AdminBlogManagementPage() {
                     <TableCell className="font-medium">{post.title}</TableCell>
                     <TableCell className="hidden md:table-cell">{post.author}</TableCell>
                     <TableCell className="hidden lg:table-cell">{new Date(post.date).toLocaleDateString()}</TableCell>
-                    <TableCell className="hidden md:table-cell">{post.categories.join(', ')}</TableCell>
+                    <TableCell className="hidden md:table-cell">{Array.isArray(post.categories) ? post.categories.join(', ') : ''}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
+                          <Button aria-haspopup="true" size="icon" variant="ghost" disabled={isPending}>
                             <MoreHorizontal className="h-4 w-4" />
                             <span className="sr-only">Toggle menu</span>
                           </Button>
@@ -338,21 +459,26 @@ export default function AdminBlogManagementPage() {
               </TableBody>
             </Table>
           </div>
-          {posts.length === 0 && <p className="text-center text-muted-foreground py-8">No blog posts found.</p>}
+          {posts.length === 0 && <p className="text-center text-muted-foreground py-8">No blog posts found. {isPending && "Loading..."}</p>}
         </TabsContent>
 
         {/* Categories Tab Content */}
         <TabsContent value="categories" className="mt-6 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold text-foreground">Manage Categories</h2>
-            <Button onClick={openAddCategoryDialog}><FolderTree className="mr-2 h-4 w-4" /> Add New Category</Button>
+            <div>
+              <Button onClick={fetchCategories} variant="outline" size="icon" className="mr-2" aria-label="Refresh Categories" disabled={isPending}>
+                <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+              </Button>
+              <Button onClick={openAddCategoryDialog} disabled={isPending}><FolderTree className="mr-2 h-4 w-4" /> Add New Category</Button>
+            </div>
           </div>
           <Dialog open={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen}>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <DialogTitle>{editingCategory ? "Edit Category" : "Add New Category"}</DialogTitle>
               </DialogHeader>
-              <form onSubmit={categoryForm.handleSubmit(onCategorySubmit)} id="categoryForm" className="grid gap-4 py-4">
+              <form onSubmit={handleCategoryFormSubmit} id="categoryForm" className="grid gap-4 py-4">
                 <div className="grid gap-2">
                   <Label htmlFor="categoryName">Name</Label>
                   <Input id="categoryName" {...categoryForm.register("name")} />
@@ -367,10 +493,13 @@ export default function AdminBlogManagementPage() {
                   <Label htmlFor="categoryDescription">Description (Optional)</Label>
                   <Textarea id="categoryDescription" {...categoryForm.register("description")} rows={3} />
                 </div>
+                {categoryFormServerState.message && !categoryFormServerState.isSuccess && (
+                    <p className="text-sm text-destructive text-center">{categoryFormServerState.message}</p>
+                 )}
               </form>
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsCategoryDialogOpen(false)}>Cancel</Button>
-                <Button type="submit" form="categoryForm">{editingCategory ? "Save Changes" : "Add Category"}</Button>
+                <Button type="button" variant="outline" onClick={() => setIsCategoryDialogOpen(false)} disabled={isPending}>Cancel</Button>
+                <Button type="submit" form="categoryForm" disabled={isPending}>{isPending ? "Saving..." : (editingCategory ? "Save Changes" : "Add Category")}</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -393,7 +522,7 @@ export default function AdminBlogManagementPage() {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
+                          <Button aria-haspopup="true" size="icon" variant="ghost" disabled={isPending}>
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -410,21 +539,26 @@ export default function AdminBlogManagementPage() {
               </TableBody>
             </Table>
           </div>
-          {categories.length === 0 && <p className="text-center text-muted-foreground py-8">No categories found.</p>}
+          {categories.length === 0 && <p className="text-center text-muted-foreground py-8">No categories found. {isPending && "Loading..."}</p>}
         </TabsContent>
 
         {/* Tags Tab Content */}
         <TabsContent value="tags" className="mt-6 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold text-foreground">Manage Tags</h2>
-            <Button onClick={openAddTagDialog}><Tags className="mr-2 h-4 w-4" /> Add New Tag</Button>
+             <div>
+              <Button onClick={fetchTags} variant="outline" size="icon" className="mr-2" aria-label="Refresh Tags" disabled={isPending}>
+                <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+              </Button>
+              <Button onClick={openAddTagDialog} disabled={isPending}><Tags className="mr-2 h-4 w-4" /> Add New Tag</Button>
+            </div>
           </div>
           <Dialog open={isTagDialogOpen} onOpenChange={setIsTagDialogOpen}>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <DialogTitle>{editingTag ? "Edit Tag" : "Add New Tag"}</DialogTitle>
               </DialogHeader>
-              <form onSubmit={tagForm.handleSubmit(onTagSubmit)} id="tagForm" className="grid gap-4 py-4">
+              <form onSubmit={handleTagFormSubmit} id="tagForm" className="grid gap-4 py-4">
                 <div className="grid gap-2">
                   <Label htmlFor="tagName">Name</Label>
                   <Input id="tagName" {...tagForm.register("name")} />
@@ -435,10 +569,13 @@ export default function AdminBlogManagementPage() {
                   <Input id="tagSlug" {...tagForm.register("slug")} placeholder="e.g., tef-canada" />
                   {tagForm.formState.errors.slug && <p className="text-sm text-destructive">{tagForm.formState.errors.slug.message}</p>}
                 </div>
+                {tagFormServerState.message && !tagFormServerState.isSuccess && (
+                    <p className="text-sm text-destructive text-center">{tagFormServerState.message}</p>
+                 )}
               </form>
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setIsTagDialogOpen(false)}>Cancel</Button>
-                <Button type="submit" form="tagForm">{editingTag ? "Save Changes" : "Add Tag"}</Button>
+                <Button type="button" variant="outline" onClick={() => setIsTagDialogOpen(false)} disabled={isPending}>Cancel</Button>
+                <Button type="submit" form="tagForm" disabled={isPending}>{isPending ? "Saving..." : (editingTag ? "Save Changes" : "Add Tag")}</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -459,7 +596,7 @@ export default function AdminBlogManagementPage() {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
+                          <Button aria-haspopup="true" size="icon" variant="ghost" disabled={isPending}>
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -476,10 +613,9 @@ export default function AdminBlogManagementPage() {
               </TableBody>
             </Table>
           </div>
-          {tags.length === 0 && <p className="text-center text-muted-foreground py-8">No tags found.</p>}
+          {tags.length === 0 && <p className="text-center text-muted-foreground py-8">No tags found. {isPending && "Loading..."}</p>}
         </TabsContent>
       </Tabs>
     </div>
   );
 }
-

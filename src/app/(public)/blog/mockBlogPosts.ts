@@ -1,6 +1,37 @@
 // src/app/(public)/blog/mockBlogPosts.ts
+import type { LucideIcon } from 'lucide-react';
+
+// Moved from admin/blog-management/page.tsx for wider use
+export type BlogCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+export type BlogTag = {
+  id: string;
+  name: string;
+  slug: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type BlogComment = {
+  id: string;
+  authorName: string;
+  authorEmail?: string; // For admin view, not public
+  authorImage?: string;
+  authorImageAiHint?: string;
+  date: string;
+  text: string;
+  // For potential future moderation:
+  // status: 'pending' | 'approved' | 'rejected'; 
+};
 
 export type BlogPost = {
+  id: string; // Use slug as ID for mock posts, or generate one
   slug: string;
   title: string;
   date: string;
@@ -9,13 +40,17 @@ export type BlogPost = {
   imageUrl?: string;
   imageAiHint?: string;
   content: string; // Can be Markdown or HTML string
-  categories: string[];
-  tags: string[];
+  categories: string[]; // For display, store names or IDs
+  tags: string[]; // For display, store names or IDs
   featured?: boolean;
+  comments?: BlogComment[];
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export const mockBlogPosts: BlogPost[] = [
   {
+    id: "mastering-tef-speaking-section-a", // Added ID
     slug: "mastering-tef-speaking-section-a",
     title: "Mastering TEF Canada Speaking: Section A Strategies",
     date: "2024-07-20",
@@ -42,8 +77,29 @@ export const mockBlogPosts: BlogPost[] = [
     categories: ["TEF Speaking", "Exam Strategies"],
     tags: ["Speaking Section A", "TEF Tips", "French Speaking"],
     featured: true,
+    createdAt: "2024-07-20T10:00:00Z",
+    updatedAt: "2024-07-20T10:00:00Z",
+    comments: [
+      { 
+        id: "comment1", 
+        authorName: "Amit Singh", 
+        authorImage: "https://placehold.co/40x40.png", 
+        authorImageAiHint: "male student",
+        date: "2024-07-21T14:30:00Z", 
+        text: "This is very helpful! Section A always makes me nervous." 
+      },
+      { 
+        id: "comment2", 
+        authorName: "Sarah Dubois", 
+        authorImage: "https://placehold.co/40x40.png",
+        authorImageAiHint: "female student",
+        date: "2024-07-22T09:15:00Z", 
+        text: "Great tips, especially about preparing opening lines. Thank you!" 
+      },
+    ]
   },
   {
+    id: "demystifying-clb-scores", // Added ID
     slug: "demystifying-clb-scores",
     title: "Demystifying CLB Scores for Canadian Immigration",
     date: "2024-07-15",
@@ -59,8 +115,11 @@ export const mockBlogPosts: BlogPost[] = [
     `,
     categories: ["Canadian Immigration", "TEF Scores"],
     tags: ["CLB", "Express Entry", "CRS Points"],
+    createdAt: "2024-07-15T10:00:00Z",
+    updatedAt: "2024-07-15T10:00:00Z",
   },
   {
+    id: "5-common-mistakes-in-tef-writing", // Added ID
     slug: "5-common-mistakes-in-tef-writing",
     title: "5 Common Mistakes to Avoid in TEF Canada Writing",
     date: "2024-07-10",
@@ -82,8 +141,11 @@ export const mockBlogPosts: BlogPost[] = [
     categories: ["TEF Writing", "Exam Tips"],
     tags: ["Writing Mistakes", "French Grammar", "TEF Preparation"],
     featured: true,
+    createdAt: "2024-07-10T10:00:00Z",
+    updatedAt: "2024-07-10T10:00:00Z",
   },
   {
+    id: "benefits-of-1-on-1-tef-coaching", // Added ID
     slug: "benefits-of-1-on-1-tef-coaching",
     title: "The Benefits of 1-on-1 TEF Canada Coaching",
     date: "2024-07-05",
@@ -104,5 +166,7 @@ export const mockBlogPosts: BlogPost[] = [
     `,
     categories: ["TEF Coaching", "Learning Strategies"],
     tags: ["Personalized Learning", "Tutoring", "French.GTA"],
+    createdAt: "2024-07-05T10:00:00Z",
+    updatedAt: "2024-07-05T10:00:00Z",
   },
 ];
