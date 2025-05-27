@@ -3,16 +3,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList, Home
+import {
+  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList, Home, FileText
 } from 'lucide-react';
-import { 
-  Sidebar, 
-  SidebarHeader, 
-  SidebarContent, 
-  SidebarFooter, 
-  SidebarMenu, 
-  SidebarMenuItem, 
+import {
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarMenu,
+  SidebarMenuItem,
   SidebarMenuButton,
   SidebarGroup,
   SidebarGroupLabel,
@@ -27,6 +27,7 @@ const adminNavItems = [
   { href: '/admin/students', label: 'Student Management', icon: Users },
   { href: '/admin/courses', label: 'Course Management', icon: BookOpen },
   { href: '/admin/enrollments', label: 'Enrollments', icon: ClipboardList },
+  { href: '/admin/blog-management', label: 'Blog Management', icon: FileText }, // New Link
   { href: '/admin/settings', label: 'Site Settings', icon: Settings },
 ];
 
@@ -63,7 +64,7 @@ export default function AdminSidebar() {
            <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === "/"} // Or simply never active if it's an exit link
+                isActive={pathname === "/"}
                 tooltip="Back to Main Content"
               >
                 <Link href="/">
