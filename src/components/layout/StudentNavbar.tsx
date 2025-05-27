@@ -1,9 +1,10 @@
+
 // src/components/layout/StudentNavbar.tsx
 "use client";
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, UserCircle, BookOpen, LogOut, BookMarked, Menu, Home } from 'lucide-react';
+import { LayoutDashboard, UserCircle, BookOpen, LogOut, BookMarked, Menu, Home, MessageSquareHeart } from 'lucide-react'; // Added MessageSquareHeart
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -19,6 +20,7 @@ import { cn } from '@/lib/utils';
 
 const studentNavLinks = [
   { href: '/student/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/student/ai-tutor', label: 'AI Tutor', icon: MessageSquareHeart }, // New AI Tutor link
   { href: '/student/profile', label: 'My Profile', icon: UserCircle },
   { href: '/', label: 'Back to Main Content', icon: Home },
   // Add more links like "My Courses", "Resources" when available
@@ -42,7 +44,8 @@ export default function StudentNavbar() {
               href={link.href}
               className={cn(
                 "transition-colors hover:text-foreground/80 flex items-center gap-2",
-                pathname === link.href ? "text-foreground font-semibold" : "text-foreground/60"
+                (pathname === link.href || (link.href !== '/student/dashboard' && pathname.startsWith(link.href)))
+                 ? "text-foreground font-semibold" : "text-foreground/60"
               )}
             >
               <link.icon className="h-4 w-4" />
@@ -98,9 +101,10 @@ export default function StudentNavbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={cn(
-                      "text-lg transition-colors hover:text-foreground/80 flex items-center gap-3 py-2",
-                      pathname === link.href ? "text-foreground font-semibold" : "text-foreground/60"
+                     className={cn(
+                        "text-lg transition-colors hover:text-foreground/80 flex items-center gap-3 py-2",
+                        (pathname === link.href || (link.href !== '/student/dashboard' && pathname.startsWith(link.href)))
+                        ? "text-foreground font-semibold" : "text-foreground/60"
                     )}
                   >
                     <link.icon className="h-5 w-5" />

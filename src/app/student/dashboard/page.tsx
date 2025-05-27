@@ -1,7 +1,8 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { BookOpen, UserCircle, Bell, CheckSquare } from 'lucide-react';
+import { BookOpen, UserCircle, Bell, CheckSquare, Mic, MessageSquare, Book, Headphones } from 'lucide-react';
 
 // Placeholder data
 const studentName = "Aisha K."; // Replace with dynamic data later
@@ -22,6 +23,44 @@ export default function StudentDashboardPage() {
           <Link href="/student/profile"><UserCircle className="mr-2 h-4 w-4" /> My Profile</Link>
         </Button>
       </div>
+
+      {/* AI Language Tutor Quick Access Panel */}
+      <section>
+        <h2 className="text-xl font-semibold text-foreground mb-4">AI Language Tutor</h2>
+        <Card className="shadow-md">
+            <CardHeader>
+                <CardTitle className="text-primary">Practice & Get Feedback</CardTitle>
+                <CardDescription>Sharpen your French skills with our AI-powered tools.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4">
+                    <Link href="/student/ai-tutor/speaking">
+                        <Mic className="h-8 w-8 mb-2"/>
+                        <span>Speaking</span>
+                    </Link>
+                </Button>
+                 <Button variant="outline" size="lg" className="flex flex-col h-auto py-4" disabled> {/* TODO: Enable for writing */}
+                    <MessageSquare className="h-8 w-8 mb-2"/>
+                    <span>Writing</span>
+                    <span className="text-xs mt-1">(Coming Soon)</span>
+                </Button>
+                 <Button variant="outline" size="lg" className="flex flex-col h-auto py-4" disabled>
+                    <Book className="h-8 w-8 mb-2"/>
+                    <span>Reading</span>
+                     <span className="text-xs mt-1">(Coming Soon)</span>
+                </Button>
+                 <Button variant="outline" size="lg" className="flex flex-col h-auto py-4" disabled>
+                    <Headphones className="h-8 w-8 mb-2"/>
+                    <span>Listening</span>
+                     <span className="text-xs mt-1">(Coming Soon)</span>
+                </Button>
+            </CardContent>
+            <CardFooter>
+                 <p className="text-xs text-muted-foreground">Click an area to start practicing.</p>
+            </CardFooter>
+        </Card>
+      </section>
+
 
       {/* Enrolled Courses Section */}
       <section>
