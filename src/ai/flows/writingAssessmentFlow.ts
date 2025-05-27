@@ -17,62 +17,48 @@ import {
   type WritingAssessmentOutput 
 } from './writingAssessmentSchemas';
 
-export type { WritingAssessmentInput, WritingAssessmentOutput }; // Re-export types for convenience if direct import is too long
+export type { WritingAssessmentInput, WritingAssessmentOutput };
 
 export async function assessWriting(
   input: WritingAssessmentInput
 ): Promise<WritingAssessmentOutput> {
-  // Placeholder: In a real scenario, this would call the Genkit flow.
-  // For now, return mock data.
-  console.log('assessWriting called with input:', input.promptText, input.studentResponseText.substring(0,50) + "...");
-
-  // Simulate AI analysis and feedback generation
-  return {
-    feedback: {
-      grammar: "Good use of basic sentence structures. Ensure subject-verb agreement in complex sentences.",
-      vocabulary: "Your vocabulary is appropriate for the task. Try to use more varied synonyms for common words.",
-      structure: "Paragraphs are generally well-organized. Ensure clear topic sentences for each paragraph.",
-      coherence: "Ideas are mostly logical and easy to follow. Use transition words more effectively between paragraphs.",
-      taskAchievement: "The response addresses the main points of the prompt. Could elaborate more on [specific aspect].",
-    },
-    score: 78, // Mock score
-    suggestionsForImprovement: [
-      "Review rules for adjective agreement.",
-      "Practice using different sentence openers to improve flow.",
-      "Expand on your arguments with more specific examples.",
-    ],
-  };
+  // Now calls the actual Genkit flow
+  return await writingAssessmentFlow(input);
 }
 
-// Define the Genkit prompt (actual AI interaction logic will go here)
-// For now, this prompt definition is a placeholder and the flow does not call it.
 const writingAssessmentInternalPrompt = ai.definePrompt({
   name: 'writingAssessmentInternalPrompt',
   input: { schema: WritingAssessmentInputSchema },
   output: { schema: WritingAssessmentOutputSchema },
   prompt: `
-    You are an expert French language tutor providing feedback on a student's written response.
-    The student was given the following prompt:
+    You are an expert French language examiner specializing in TEF Canada assessments.
+    The student was given the following writing prompt:
     "{{{promptText}}}"
 
     The student's written response is:
     "{{{studentResponseText}}}"
 
-    Please provide:
-    1. Feedback on grammar.
-    2. Feedback on vocabulary.
-    3. Feedback on structure.
-    4. Feedback on coherence.
-    5. Feedback on task achievement.
-    6. An overall score (0-100).
-    7. Specific suggestions for improvement.
+    Please evaluate the student's French writing performance based ONLY on their response and the original prompt. Provide:
+    1.  **Grammar Feedback**: Assess the grammatical accuracy of the sentences.
+    2.  **Vocabulary Feedback**: Evaluate the range and appropriateness of vocabulary used.
+    3.  **Structure Feedback**: Comment on the organization of ideas, paragraph structure, and use of linking words.
+    4.  **Coherence Feedback**: Judge how well the ideas are logically connected and if the response is easy to follow.
+    5.  **Task Achievement Feedback**: Assess how well the student's response addresses all parts of the given prompt.
+    6.  **Overall Score**: Provide an overall score from 0 to 100, considering all the above aspects.
+    7.  **Suggestions for Improvement**: Offer 2-3 specific, actionable suggestions for improving writing skills based on your analysis of the response.
 
-    Structure your output according to the defined schema.
+    Ensure your output strictly adheres to the JSON schema provided for feedback, score, and suggestions.
   `,
+  config: { // Added safety settings, can be adjusted
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+    ],
+  }
 });
 
-// Define the Genkit flow
-// This flow is currently NOT being called by the exported assessWriting function for simplicity.
 const writingAssessmentFlow = ai.defineFlow(
   {
     name: 'writingAssessmentFlow',
@@ -88,4 +74,3 @@ const writingAssessmentFlow = ai.defineFlow(
     return output;
   }
 );
-
