@@ -42,9 +42,9 @@ const _initialSimulatedTagsDb: BlogTag[] = mockBlogPosts.reduce((acc, post) => {
   return acc;
 }, [] as BlogTag[]);
 
-// Export as 'let' so server actions in this file can modify them (e.g., push, splice)
-export let simulatedCategoriesDb: BlogCategory[] = [..._initialSimulatedCategoriesDb];
-export let simulatedTagsDb: BlogTag[] = [..._initialSimulatedTagsDb];
+// These are module-local and NOT exported directly.
+let simulatedCategoriesDb: BlogCategory[] = [..._initialSimulatedCategoriesDb];
+let simulatedTagsDb: BlogTag[] = [..._initialSimulatedTagsDb];
 
 
 // --- Zod Schemas ---
@@ -77,8 +77,6 @@ export type TaxonomyFormState = {
   data?: BlogCategory | BlogTag | BlogCategory[] | BlogTag[];
 };
 
-const initialFormState: TaxonomyFormState = { message: "", isSuccess: false };
-
 // --- Category Actions ---
 export async function getCategoriesAction(): Promise<TaxonomyFormState> {
   try {
@@ -106,6 +104,14 @@ export async function addCategoryAction(
     return {
       message: "Validation failed.",
       errors: validatedFields.error.flatten().fieldErrors,
+      isSuccess: false,
+    };
+  }
+   // Check for duplicate slug before adding
+  if (simulatedCategoriesDb.some(cat => cat.slug === validatedFields.data.slug)) {
+    return {
+      message: "Category slug already exists. Please use a unique slug.",
+      errors: { slug: ["Slug already exists. Please use a unique slug."] },
       isSuccess: false,
     };
   }
@@ -148,12 +154,23 @@ export async function updateCategoryAction(
     return { message: "Category ID is missing for update.", isSuccess: false };
   }
 
+  const categoryId = validatedFields.data.id;
+  const categoryIndex = simulatedCategoriesDb.findIndex(cat => cat.id === categoryId);
+  if (categoryIndex === -1) {
+    return { message: "Category not found.", isSuccess: false };
+  }
+  
+  // Check for duplicate slug if it's being changed
+  if (validatedFields.data.slug !== simulatedCategoriesDb[categoryIndex].slug && 
+      simulatedCategoriesDb.some(cat => cat.slug === validatedFields.data.slug && cat.id !== categoryId)) {
+    return {
+      message: "Category slug already exists. Please use a unique slug.",
+      errors: { slug: ["Slug already exists. Please use a unique slug."] },
+      isSuccess: false,
+    };
+  }
+
   try {
-    const categoryId = validatedFields.data.id;
-    const categoryIndex = simulatedCategoriesDb.findIndex(cat => cat.id === categoryId);
-    if (categoryIndex === -1) {
-      return { message: "Category not found.", isSuccess: false };
-    }
     const originalCategory = simulatedCategoriesDb[categoryIndex];
     const updatedCategoryData = validatedFields.data;
 
@@ -227,6 +244,14 @@ export async function addTagAction(
       isSuccess: false,
     };
   }
+  // Check for duplicate slug before adding
+  if (simulatedTagsDb.some(tag => tag.slug === validatedFields.data.slug)) {
+    return {
+      message: "Tag slug already exists. Please use a unique slug.",
+      errors: { slug: ["Slug already exists. Please use a unique slug."] },
+      isSuccess: false,
+    };
+  }
 
   try {
     const newTag: BlogTag = {
@@ -263,13 +288,24 @@ export async function updateTagAction(
   if (!validatedFields.data.id) {
     return { message: "Tag ID is missing for update.", isSuccess: false };
   }
+  
+  const tagId = validatedFields.data.id;
+  const tagIndex = simulatedTagsDb.findIndex(tag => tag.id === tagId);
+  if (tagIndex === -1) {
+    return { message: "Tag not found.", isSuccess: false };
+  }
+
+  // Check for duplicate slug if it's being changed
+  if (validatedFields.data.slug !== simulatedTagsDb[tagIndex].slug && 
+      simulatedTagsDb.some(tag => tag.slug === validatedFields.data.slug && tag.id !== tagId)) {
+    return {
+      message: "Tag slug already exists. Please use a unique slug.",
+      errors: { slug: ["Slug already exists. Please use a unique slug."] },
+      isSuccess: false,
+    };
+  }
 
   try {
-    const tagId = validatedFields.data.id;
-    const tagIndex = simulatedTagsDb.findIndex(tag => tag.id === tagId);
-    if (tagIndex === -1) {
-      return { message: "Tag not found.", isSuccess: false };
-    }
     const originalTag = simulatedTagsDb[tagIndex];
     const updatedTagData = validatedFields.data;
 
@@ -311,3 +347,4 @@ export async function deleteTagAction(tagId: string): Promise<TaxonomyFormState>
     return { message: "Failed to delete tag.", isSuccess: false };
   }
 }
+

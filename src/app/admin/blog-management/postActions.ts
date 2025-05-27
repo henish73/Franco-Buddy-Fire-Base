@@ -3,8 +3,8 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { mockBlogPosts, type BlogPost } from "@/app/(public)/blog/mockBlogPosts"; // Import types
-import { simulatedCategoriesDb, simulatedTagsDb } from "./taxonomyActions"; // For lookups if needed
+import { mockBlogPosts, type BlogPost, type BlogCategory, type BlogTag } from "@/app/(public)/blog/mockBlogPosts"; // Import types
+import { getCategoriesAction, getTagsAction } from "./taxonomyActions"; // For lookups using server actions
 
 // --- Simulated Database for Posts ---
 // In a real app, this would be Firestore.
@@ -52,8 +52,6 @@ export type BlogPostFormState = {
   data?: BlogPost | BlogPost[] | null; // Can hold single post, array of posts, or null
 };
 
-const initialFormState: BlogPostFormState = { message: "", isSuccess: false, data: null };
-
 
 // --- Server Actions ---
 
@@ -92,8 +90,13 @@ export async function getPostBySlugAction(slug: string): Promise<BlogPostFormSta
 
 export async function getPostsByCategorySlugAction(categorySlug: string): Promise<BlogPostFormState> {
   try {
-    // Find the category name from the slug
-    const category = simulatedCategoriesDb.find(c => c.slug === categorySlug);
+    const categoriesResult = await getCategoriesAction();
+    if (!categoriesResult.isSuccess || !categoriesResult.data) {
+      return { message: `Could not fetch categories to find slug "${categorySlug}".`, isSuccess: false, data: [] };
+    }
+    const allCategories = categoriesResult.data as BlogCategory[];
+    const category = allCategories.find(c => c.slug === categorySlug);
+    
     if (!category) {
       return { message: `Category with slug "${categorySlug}" not found.`, isSuccess: false, data: [] };
     }
@@ -114,8 +117,13 @@ export async function getPostsByCategorySlugAction(categorySlug: string): Promis
 
 export async function getPostsByTagSlugAction(tagSlug: string): Promise<BlogPostFormState> {
   try {
-    // Find the tag name from the slug
-    const tag = simulatedTagsDb.find(t => t.slug === tagSlug);
+    const tagsResult = await getTagsAction();
+    if (!tagsResult.isSuccess || !tagsResult.data) {
+      return { message: `Could not fetch tags to find slug "${tagSlug}".`, isSuccess: false, data: [] };
+    }
+    const allTags = tagsResult.data as BlogTag[];
+    const tag = allTags.find(t => t.slug === tagSlug);
+
     if (!tag) {
       return { message: `Tag with slug "${tagSlug}" not found.`, isSuccess: false, data: [] };
     }
