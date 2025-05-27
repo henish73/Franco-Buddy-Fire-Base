@@ -2,8 +2,8 @@
 // src/app/student/ai-tutor/page.tsx
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mic, MessageSquare, Book, Headphones, Sparkles, BarChart3 } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Mic, MessageSquareText, BookOpenIcon as Book, Headphones, Sparkles, BarChart3 } from 'lucide-react'; // Renamed BookOpen to Book to avoid conflict
 
 export default function AITutorHubPage() {
   return (
@@ -34,16 +34,18 @@ export default function AITutorHubPage() {
             </CardFooter>
           </Card>
 
-          <Card className="shadow-lg hover:shadow-primary/20 transition-shadow opacity-70">
+          <Card className="shadow-lg hover:shadow-primary/20 transition-shadow">
             <CardHeader>
-              <MessageSquare className="h-10 w-10 text-primary mb-3" />
+              <MessageSquareText className="h-10 w-10 text-primary mb-3" />
               <CardTitle className="text-xl">Writing Practice</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>Submit written responses to TEF-style tasks and receive AI analysis on grammar, vocabulary, and structure.</CardDescription>
             </CardContent>
              <CardFooter>
-              <Button className="w-full" disabled>Coming Soon</Button>
+              <Button asChild className="w-full">
+                <Link href="/student/ai-tutor/writing">Practice Writing</Link>
+              </Button>
             </CardFooter>
           </Card>
 
