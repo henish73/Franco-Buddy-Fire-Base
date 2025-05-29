@@ -69,20 +69,27 @@ const speakingAssessmentFlow = ai.defineFlow(
   },
   async (input) => {
     // Step 1: Speech-to-Text (Simulated)
-    // TODO: Replace with actual Speech-to-Text service call.
-    // For now, we'll create a very basic simulated transcription.
-    // A real STT service would convert input.audioDataUri to text.
-    // Making the simulated transcription a bit more learner-like for better AI feedback.
-    const simulatedTranscription = `Bonjour, euh... je veux parler de mes vacances. Je suis allé à la plage et... c'était très amusant. Le temps était beau et je... je nage beaucoup. Aussi, j'ai mangé des bonnes nourritures. J'aime les vacances. Merci.`;
+    // TODO: Replace with actual Speech-to-Text service call using input.audioDataUri.
+    // For now, we simulate a transcription. This simulation does NOT process the actual audio.
+    // It provides a generic learner-like text for the AI to analyze based on the prompt.
+    let simulatedTranscription = `(Simulated Transcription for prompt: "${input.promptText}") \nBonjour. Euh, je voudrais parler de le sujet. C'est un sujet, uh, très intéressant. Je pense que... il y a beaucoup de choses à dire. Par exemple, si on regarde les statistiques, on voit que... Aussi, euh, il est important de considérer les opinions différentes. En conclusion, c'est complexe. Merci.`;
+
+    if (input.promptText.toLowerCase().includes("vacances") || input.promptText.toLowerCase().includes("holidays")) {
+        simulatedTranscription = `(Simulated Transcription for prompt: "${input.promptText}") \nSalut! Pour mes vacances, euh, je suis allé à la montagne. C'était, uh, super! J'ai fait de la randonnée et j'ai vu, um, des beaux paysages. J'ai aussi mangé de la bonne nourriture. Les vacances sont importantes pour relaxer. Merci.`;
+    } else if (input.promptText.toLowerCase().includes("travail") || input.promptText.toLowerCase().includes("work")) {
+        simulatedTranscription = `(Simulated Transcription for prompt: "${input.promptText}") \nBonjour. Concernant mon travail, je suis, euh, ingénieur. J'aime mon travail parce que c'est, um, stimulant. Je travaille sur des projets, uh, difficiles mais intéressants. Les collègues sont sympas. C'est tout.`;
+    } else if (input.promptText.toLowerCase().includes("routine") || input.promptText.toLowerCase().includes("daily")) {
+        simulatedTranscription = `(Simulated Transcription for prompt: "${input.promptText}") \nBonjour, euh... je veux parler de ma routine. Le matin, je me réveille et... je prends mon petit déjeuner. Après ça, je vais au travail. L'après-midi, je travaille beaucoup. Le soir, je rentre et je mange. J'aime ma routine. Merci.`;
+    }
     
-    console.log("Simulated Transcription:", simulatedTranscription);
+    console.log("Using Simulated Transcription for AI Analysis:", simulatedTranscription);
     console.log("Original Prompt for AI:", input.promptText);
     console.log("TEF Section for AI:", input.tefSection);
     console.log("Difficulty for AI:", input.difficultyLevel);
     
     // Step 2: Call the Gemini model for analysis using the defined prompt
     const { output } = await speakingAssessmentInternalPrompt({
-      transcribedText: simulatedTranscription,
+      transcribedText: simulatedTranscription, // Pass the new simulated transcription
       originalPrompt: input.promptText,
       tefSection: input.tefSection,
       difficultyLevel: input.difficultyLevel,
@@ -93,8 +100,8 @@ const speakingAssessmentFlow = ai.defineFlow(
     }
 
     return {
-      transcription: simulatedTranscription, // Return the (simulated) transcription
-      ...output, // Spread the AI's feedback, score, and suggestions
+      transcription: simulatedTranscription, // Return the new simulated transcription
+      ...output, 
     };
   }
 );
