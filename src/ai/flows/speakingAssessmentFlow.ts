@@ -28,28 +28,29 @@ export async function assessSpeaking(
 
 const speakingAssessmentInternalPrompt = ai.definePrompt({
   name: 'speakingAssessmentInternalPrompt',
-  input: { schema: z.object({ transcribedText: z.string(), originalPrompt: z.string() }) },
+  input: { schema: z.object({ transcribedText: z.string(), originalPrompt: z.string(), tefSection: z.string().optional(), difficultyLevel: z.string().optional() }) },
   output: { schema: SpeakingAssessmentOutputSchema.omit({ transcription: true }) }, // Output schema for feedback part
   prompt: `
     You are an expert French language examiner specializing in TEF Canada assessments.
     The student was given the following prompt to respond to orally:
     "{{{originalPrompt}}}"
+    (This prompt was for TEF Section: {{{tefSection}}}, Difficulty: {{{difficultyLevel}}})
 
-    The student's spoken response has been transcribed as:
+    The student's spoken response has been transcribed (simulated) as:
     "{{{transcribedText}}}"
 
     Based ONLY on the provided transcribed text and the original prompt, please evaluate the student's French speaking performance. Provide:
-    1.  **Fluency Feedback**: Comment on the flow and smoothness of the language used in the transcription.
-    2.  **Pronunciation Feedback**: Based on common phonetic challenges that might be inferred from a typical learner's speech pattern for the given text (as you cannot hear the audio), provide general pronunciation advice relevant to the words used. If the transcription is too short or simple for this, state that.
-    3.  **Grammar Feedback**: Assess the grammatical accuracy of the transcribed sentences.
-    4.  **Vocabulary Feedback**: Evaluate the range and appropriateness of vocabulary used in the transcription in relation to the prompt.
-    5.  **Coherence Feedback**: Judge how well the ideas in the transcription are organized and if they logically address the prompt.
-    6.  **Overall Score**: Provide an overall score from 0 to 100, considering all the above aspects, for the *transcribed text*.
-    7.  **Suggestions for Improvement**: Offer 2-3 specific, actionable suggestions for improving speaking skills based on your analysis of the transcription.
+    1.  **Fluency Feedback**: Assess the flow and smoothness. Note any textual evidence of hesitations (e.g., "euh", repeated short words if they seem like fillers), awkward pauses (if inferable from sentence structure), and overall pace.
+    2.  **Pronunciation Feedback**: Based *only* on the transcribed words, provide general advice on common pronunciation challenges French learners face with the specific vocabulary used. For example, if "beaucoup" is present, you might mention the 'eau' sound. Do not attempt to infer actual mispronunciations from the text. If the transcription is too short or simple for this, state that.
+    3.  **Grammar Feedback**: Identify any grammatical errors in the transcribed sentences. Provide specific examples of errors and suggest corrections. Comment on the correct use of tenses, agreements, and sentence structures.
+    4.  **Vocabulary Feedback**: Evaluate the range, appropriateness, and precision of vocabulary used in the transcription in relation to the prompt. Note any misuse of words or suggest more suitable alternatives.
+    5.  **Coherence & Task Achievement Feedback**: Judge how well the ideas in the transcription are organized and if they logically address all parts of the original prompt. Was the response relevant and complete?
+    6.  **Overall Score**: Provide an overall score from 0 to 100, considering all the above aspects, for the *transcribed text's* representation of spoken French.
+    7.  **Suggestions for Improvement**: Offer 2-3 specific, actionable suggestions for improving speaking skills based on your analysis of the transcription. These should be concrete steps the student can take.
 
     Ensure your output strictly adheres to the JSON schema provided for feedback, score, and suggestions.
   `,
-  config: { // Added safety settings, can be adjusted
+  config: {
     safetySettings: [
       { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
       { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
@@ -70,15 +71,20 @@ const speakingAssessmentFlow = ai.defineFlow(
     // TODO: Replace with actual Speech-to-Text service call.
     // For now, we'll create a very basic simulated transcription.
     // A real STT service would convert input.audioDataUri to text.
-    const simulatedTranscription = `This is a simulated transcription for the audio related to the prompt: "${input.promptText}". The student likely expressed some ideas clearly here, perhaps mentioning things relevant to the topic. The goal of this simulation is to provide text for the AI to analyze. Je suis en train de pratiquer mon français.`;
+    // Making the simulated transcription a bit more learner-like for better AI feedback.
+    const simulatedTranscription = `Bonjour, euh... je veux parler de mes vacances. Je suis allé à la plage et... c'était très amusant. Le temps était beau et je... je nage beaucoup. Aussi, j'ai mangé des bonnes nourritures. J'aime les vacances. Merci.`;
     
     console.log("Simulated Transcription:", simulatedTranscription);
     console.log("Original Prompt for AI:", input.promptText);
+    console.log("TEF Section for AI:", input.tefSection);
+    console.log("Difficulty for AI:", input.difficultyLevel);
     
     // Step 2: Call the Gemini model for analysis using the defined prompt
     const { output } = await speakingAssessmentInternalPrompt({
       transcribedText: simulatedTranscription,
       originalPrompt: input.promptText,
+      tefSection: input.tefSection,
+      difficultyLevel: input.difficultyLevel,
     });
 
     if (!output) {
