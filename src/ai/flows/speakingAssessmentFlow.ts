@@ -41,12 +41,13 @@ const speakingAssessmentInternalPrompt = ai.definePrompt({
 
     Based ONLY on the provided transcribed text and the original prompt, please evaluate the student's French speaking performance. Provide:
     1.  **Fluency Feedback**: Assess the flow and smoothness. Note any textual evidence of hesitations (e.g., "euh", repeated short words if they seem like fillers), awkward pauses (if inferable from sentence structure), and overall pace.
-    2.  **Pronunciation Feedback**: Based *only* on the transcribed words, provide general advice on common pronunciation challenges French learners face with the specific vocabulary used. For example, if "beaucoup" is present, you might mention the 'eau' sound. Do not attempt to infer actual mispronunciations from the text. If the transcription is too short or simple for this, state that.
+    2.  **Pronunciation Feedback**: Based *only* on the transcribed words, provide general advice on common pronunciation challenges French learners face with the specific vocabulary used. For example, if "beaucoup" is present, you might mention the 'eau' sound. Do not attempt to infer actual mispronunciations from the text. If the transcription is too short or simple for this, state that. This feedback is for guidance and does not directly contribute to the Overall Score.
     3.  **Grammar Feedback**: Identify any grammatical errors in the transcribed sentences. Provide specific examples of errors and suggest corrections. Comment on the correct use of tenses, agreements, and sentence structures.
     4.  **Vocabulary Feedback**: Evaluate the range, appropriateness, and precision of vocabulary used in the transcription in relation to the prompt. Note any misuse of words or suggest more suitable alternatives.
-    5.  **Coherence & Task Achievement Feedback**: Judge how well the ideas in the transcription are organized and if they logically address all parts of the original prompt. Was the response relevant and complete?
-    6.  **Overall Score**: Provide an overall score from 0 to 100, considering all the above aspects, for the *transcribed text's* representation of spoken French.
-    7.  **Suggestions for Improvement**: Offer 2-3 specific, actionable suggestions for improving speaking skills based on your analysis of the transcription. These should be concrete steps the student can take.
+    5.  **Coherence Feedback**: Judge how well the ideas in the transcription are organized and if they logically address all parts of the original prompt.
+    6.  **Task Achievement Feedback**: Assess how well the student's response addressed all parts of the original speaking prompt.
+    7.  **Overall Score**: Provide an overall score from 0 to 100. This score should be determined by evaluating fluency, grammar, vocabulary, coherence, and task achievement based on the transcribed text. Do not let the text-based pronunciation feedback directly influence this numerical score.
+    8.  **Suggestions for Improvement**: Offer 2-3 specific, actionable suggestions for improving speaking skills based on your analysis of the transcription. These should be concrete steps the student can take.
 
     Ensure your output strictly adheres to the JSON schema provided for feedback, score, and suggestions.
   `,

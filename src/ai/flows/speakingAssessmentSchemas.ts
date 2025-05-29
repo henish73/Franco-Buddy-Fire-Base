@@ -24,7 +24,7 @@ export const SpeakingAssessmentOutputSchema = z.object({
     coherence: z.string().describe('Assessment of how well ideas are organized and logically connected in the transcribed response.'),
     taskAchievement: z.string().describe('Feedback on how well the student\'s response addressed all parts of the original speaking prompt.'),
   }),
-  score: z.number().min(0).max(100).describe('An overall score for the speaking assessment (0-100), based on the analysis of the transcribed text.'),
+  score: z.number().min(0).max(100).describe('An overall score (0-100) based on the analysis of the transcribed text, considering fluency, grammar, vocabulary, coherence, and task achievement. Pronunciation feedback provided is general advice and does not directly contribute to this numerical score.'),
   suggestionsForImprovement: z.array(z.string()).describe('Specific, actionable suggestions for improving speaking skills based on the analysis of the transcription.'),
 });
 export type SpeakingAssessmentOutput = z.infer<typeof SpeakingAssessmentOutputSchema>;
