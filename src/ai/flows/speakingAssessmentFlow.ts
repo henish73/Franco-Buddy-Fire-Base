@@ -22,7 +22,7 @@ export { type SpeakingAssessmentInput, type SpeakingAssessmentOutput };
 export async function assessSpeaking(
   input: SpeakingAssessmentInput
 ): Promise<SpeakingAssessmentOutput> {
-  // Now calls the actual Genkit flow
+  // Calls the actual Genkit flow
   return await speakingAssessmentFlow(input);
 }
 
