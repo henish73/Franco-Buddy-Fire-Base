@@ -17,7 +17,7 @@ import {
   type SpeakingAssessmentOutput,
 } from './speakingAssessmentSchemas';
 
-export { type SpeakingAssessmentInput, type SpeakingAssessmentOutput };
+export type { SpeakingAssessmentInput, SpeakingAssessmentOutput };
 
 export async function assessSpeaking(
   input: SpeakingAssessmentInput
@@ -84,4 +84,3 @@ const speakingAssessmentFlow = ai.defineFlow(
     return output;
   }
 );
-
