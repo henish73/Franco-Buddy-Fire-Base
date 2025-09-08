@@ -31,7 +31,7 @@ const readingAssessmentInternalPrompt = ai.definePrompt({
   output: { schema: ReadingAssessmentOutputSchema },
   prompt: `
     You are an expert French language examiner specializing in TEF Canada reading comprehension assessments.
-    The student was given the following passage to read:
+    The student was given the following passage to read for TEF Section: {{{tefSection}}} (Difficulty: {{{difficultyLevel}}}):
     "{{{passageText}}}"
 
     The student's written response to questions or a summary task about the passage is:

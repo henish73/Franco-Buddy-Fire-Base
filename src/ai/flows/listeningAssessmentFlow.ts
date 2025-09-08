@@ -33,7 +33,7 @@ const listeningAssessmentInternalPrompt = ai.definePrompt({
   output: { schema: ListeningAssessmentOutputSchema },
   prompt: `
     You are an expert French language examiner specializing in TEF Canada listening comprehension assessments.
-    The student was provided with the following audio transcript:
+    The student was provided with the following audio transcript for TEF Section: {{{tefSection}}} (Difficulty: {{{difficultyLevel}}}):
     "{{{audioTranscript}}}"
 
     The student's written response to questions or a summary task about the audio content is:

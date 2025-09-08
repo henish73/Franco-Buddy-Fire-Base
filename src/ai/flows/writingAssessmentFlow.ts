@@ -32,7 +32,7 @@ const writingAssessmentInternalPrompt = ai.definePrompt({
   output: { schema: WritingAssessmentOutputSchema },
   prompt: `
     You are an expert French language examiner specializing in TEF Canada assessments.
-    The student was given the following writing prompt:
+    The student was given the following writing prompt for TEF Section: {{{tefSection}}} (Difficulty: {{{difficultyLevel}}}):
     "{{{promptText}}}"
 
     The student's written response is:
