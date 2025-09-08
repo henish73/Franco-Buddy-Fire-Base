@@ -13,7 +13,7 @@ export default function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
               <BookMarked className="h-8 w-8 text-primary" />
-              <span className="font-bold text-xl text-primary">French.GTA</span>
+              <span className="font-bold text-xl text-primary">FrancoBuddy</span>
             </Link>
             <p className="text-sm text-muted-foreground">
               Your TEF Canada Elite Learning & Success Platform.
@@ -47,7 +47,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2">
                 <Mail className="h-5 w-5 text-primary" />
-                <a href="mailto:info@frenchgta.ca" className="text-sm text-muted-foreground hover:text-primary">info@frenchgta.ca</a>
+                <a href="mailto:info@francobuddy.ca" className="text-sm text-muted-foreground hover:text-primary">info@francobuddy.ca</a>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-5 w-5 text-primary" />
@@ -63,7 +63,7 @@ export default function Footer() {
 
         <div className="mt-12 border-t border-border pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} French.GTA TEF Mastery Hub. All rights reserved.
+            &copy; {currentYear} FrancoBuddy TEF Mastery Hub. All rights reserved.
           </p>
         </div>
       </div>

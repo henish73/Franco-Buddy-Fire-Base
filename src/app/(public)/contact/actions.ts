@@ -55,7 +55,7 @@ export async function submitContactForm(
     //      status: 'New'
     //    });
     // 2. Send an email notification to the admin:
-    //    await sendEmail({ to: 'admin@frenchgta.ca', subject: 'New Contact Form Submission', ... });
+    //    await sendEmail({ to: 'admin@francobuddy.ca', subject: 'New Contact Form Submission', ... });
 
     console.log("Contact form submitted (simulated):", validatedFields.data);
 

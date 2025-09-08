@@ -10,7 +10,7 @@ export default function PrivacyPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-6 w-6 text-primary" />
-            French.GTA Privacy Policy
+            FrancoBuddy Privacy Policy
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-muted-foreground leading-relaxed">

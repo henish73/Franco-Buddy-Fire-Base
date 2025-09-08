@@ -14,11 +14,11 @@ const courses = [
 ];
 
 const testimonials = [
-  { quote: "French.GTA helped me achieve CLB 8! The personalized support was incredible.", author: "Priya S.", image: "https://placehold.co/100x100.png", dataAiHint: "student portrait" },
+  { quote: "FrancoBuddy helped me achieve CLB 8! The personalized support was incredible.", author: "Priya S.", image: "https://placehold.co/100x100.png", dataAiHint: "student portrait" },
   { quote: "Flexible classes and expert instructors. Highly recommend for TEF Canada.", author: "Ahmed K.", image: "https://placehold.co/100x100.png", dataAiHint: "professional male" },
 ];
 
-const whyFrenchGTAItems = [
+const whyFrancoBuddyItems = [
   { icon: Target, title: "TEF-Only Focus", description: "We specialize exclusively in TEF Canada, ensuring targeted and effective preparation." },
   { icon: Award, title: "Expert Instructors", description: "Learn from certified professionals with years of TEF Canada coaching experience." },
   { icon: Clock, title: "Flexible Classes", description: "Batch timings designed to fit your busy schedule, including evenings and weekends." },
@@ -79,12 +79,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Why French.GTA? Section */}
+      {/* Why FrancoBuddy? Section */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
-          <SectionTitle title="Why Choose French.GTA?" subtitle="Your dedicated partner for TEF Canada success. We offer unparalleled expertise and support tailored to your immigration and professional goals." />
+          <SectionTitle title="Why Choose FrancoBuddy?" subtitle="Your dedicated partner for TEF Canada success. We offer unparalleled expertise and support tailored to your immigration and professional goals." />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {whyFrenchGTAItems.map((item, index) => (
+            {whyFrancoBuddyItems.map((item, index) => (
               <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <CardHeader>
                   <div className="bg-primary/10 p-3 rounded-full w-fit mb-4">
@@ -158,7 +158,7 @@ export default async function HomePage() {
       {/* Social Proof - Testimonial Snippets */}
       <section className="py-16 md:py-24 bg-primary/5">
         <div className="container mx-auto px-4">
-          <SectionTitle title="Success Stories" subtitle="Hear from students who achieved their Canadian dreams with French.GTA." />
+          <SectionTitle title="Success Stories" subtitle="Hear from students who achieved their Canadian dreams with FrancoBuddy." />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {testimonials.map((testimonial, index) => (
               <Card key={index} className="shadow-lg flex flex-col items-center text-center p-6">
@@ -201,12 +201,12 @@ export default async function HomePage() {
         <div className="container mx-auto px-4">
           <SectionTitle title="Meet Your Guide" />
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 max-w-4xl mx-auto">
-            <Image src="https://placehold.co/300x300.png" alt="Henish Patel - Founder of French.GTA" width={250} height={250} className="rounded-full shadow-lg border-4 border-primary" data-ai-hint="founder portrait young" />
+            <Image src="https://placehold.co/300x300.png" alt="Henish Patel - Founder of FrancoBuddy" width={250} height={250} className="rounded-full shadow-lg border-4 border-primary" data-ai-hint="founder portrait young" />
             <div className="text-center md:text-left">
               <h3 className="text-2xl font-semibold text-primary mb-2">Henish Patel</h3>
               <p className="text-md text-muted-foreground mb-4">Founder & Lead TEF Canada Coach</p>
               <p className="text-foreground/80 mb-4">
-                As a Computer Science student at Algoma University, Brampton, with a passion for AI, I founded French.GTA to provide high-quality, tech-enhanced TEF Canada preparation. My goal is to help you succeed with a modern, supportive, and results-driven approach.
+                As a Computer Science student at Algoma University, Brampton, with a passion for AI, I founded FrancoBuddy to provide high-quality, tech-enhanced TEF Canada preparation. My goal is to help you succeed with a modern, supportive, and results-driven approach.
               </p>
               <Button asChild variant="outline">
                 <Link href="/about">Learn More About Henish <ChevronRight className="ml-2 h-4 w-4" /></Link>

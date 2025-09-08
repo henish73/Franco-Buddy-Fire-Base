@@ -41,7 +41,7 @@ export default function AdminSidebar() {
         <Link href="/admin/dashboard" className="flex items-center gap-2">
           <BookMarked className="h-7 w-7 text-sidebar-primary" />
           <span className="font-semibold text-lg text-sidebar-primary group-data-[collapsible=icon]:hidden">
-            French.GTA Admin
+            FrancoBuddy Admin
           </span>
         </Link>
       </SidebarHeader>

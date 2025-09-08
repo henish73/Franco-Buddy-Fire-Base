@@ -27,7 +27,7 @@ export default function Navbar() {
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <BookMarked className="h-7 w-7 text-primary" />
-          <span className="font-bold text-xl text-primary">French.GTA</span>
+          <span className="font-bold text-xl text-primary">FrancoBuddy</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -66,7 +66,7 @@ export default function Navbar() {
               <div className="flex flex-col p-6 gap-6">
                 <Link href="/" className="flex items-center gap-2 mb-4">
                   <BookMarked className="h-7 w-7 text-primary" />
-                  <span className="font-bold text-lg">French.GTA</span>
+                  <span className="font-bold text-lg">FrancoBuddy</span>
                 </Link>
                 {navLinks.map((link) => (
                   <Link

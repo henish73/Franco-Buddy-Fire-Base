@@ -34,7 +34,7 @@ export default async function EnrollmentPage({ params }: { params: { courseId: s
           <ShoppingCart className="h-16 w-16 text-primary mx-auto mb-6" />
           <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">Enroll in: {course.title}</h1>
           <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto">
-            You&apos;re just a few steps away from starting your TEF Canada journey with French.GTA.
+            You&apos;re just a few steps away from starting your TEF Canada journey with FrancoBuddy.
           </p>
         </div>
       </section>

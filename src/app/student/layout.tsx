@@ -13,7 +13,7 @@ export default function StudentLayout({ children }: PropsWithChildren) {
       </ScrollArea>
        <footer className="border-t bg-muted/50 py-4 text-center">
         <p className="text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} French.GTA Student Portal
+          &copy; {new Date().getFullYear()} FrancoBuddy Student Portal
         </p>
       </footer>
     </div>

@@ -14,9 +14,9 @@ const faqCategories = [
   {
     category: "General Questions",
     questions: [
-      { q: "What is French.GTA?", a: "French.GTA is an elite learning platform specializing in TEF Canada preparation for Canadian immigration (Express Entry, PR) and work permit holders." },
-      { q: "Who is French.GTA for?", a: "We cater to ambitious international students, work permit holders, and Express Entry applicants needing to prove French proficiency. We help learners from beginner to intermediate levels." },
-      { q: "What makes French.GTA different?", a: "Our key differentiators are unmatched instructor quality, flexible batch timings, personalized one-on-one support, and singular TEF Canada expertise." },
+      { q: "What is FrancoBuddy?", a: "FrancoBuddy is an elite learning platform specializing in TEF Canada preparation for Canadian immigration (Express Entry, PR) and work permit holders." },
+      { q: "Who is FrancoBuddy for?", a: "We cater to ambitious international students, work permit holders, and Express Entry applicants needing to prove French proficiency. We help learners from beginner to intermediate levels." },
+      { q: "What makes FrancoBuddy different?", a: "Our key differentiators are unmatched instructor quality, flexible batch timings, personalized one-on-one support, and singular TEF Canada expertise." },
     ],
   },
   {
@@ -54,7 +54,7 @@ export default function FAQPage() {
           <HelpCircle className="h-16 w-16 mx-auto mb-6" />
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
           <p className="text-lg md:text-xl text-primary-foreground/80 max-w-3xl mx-auto">
-            Find answers to common questions about French.GTA, TEF Canada, our courses, and enrollment.
+            Find answers to common questions about FrancoBuddy, TEF Canada, our courses, and enrollment.
           </p>
         </div>
       </section>

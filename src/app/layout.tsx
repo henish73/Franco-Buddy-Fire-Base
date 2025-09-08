@@ -5,7 +5,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'French.GTA TEF Mastery Hub',
+  title: 'FrancoBuddy TEF Mastery Hub',
   description: 'Your Elite Learning & Success Platform for TEF Canada.',
 };
 

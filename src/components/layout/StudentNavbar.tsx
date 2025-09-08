@@ -1,4 +1,3 @@
-
 // src/components/layout/StudentNavbar.tsx
 "use client";
 
@@ -34,7 +33,7 @@ export default function StudentNavbar() {
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
         <Link href="/student/dashboard" className="flex items-center gap-2">
           <BookMarked className="h-7 w-7 text-primary" />
-          <span className="font-bold text-xl text-primary">French.GTA Student</span>
+          <span className="font-bold text-xl text-primary">FrancoBuddy Student</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -95,7 +94,7 @@ export default function StudentNavbar() {
               <div className="flex flex-col p-6 gap-6">
                 <Link href="/student/dashboard" className="flex items-center gap-2 mb-4">
                   <BookMarked className="h-7 w-7 text-primary" />
-                  <span className="font-bold text-lg">French.GTA Student</span>
+                  <span className="font-bold text-lg">FrancoBuddy Student</span>
                 </Link>
                 {studentNavLinks.map((link) => (
                   <Link

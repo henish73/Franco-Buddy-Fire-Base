@@ -38,7 +38,7 @@ export default function ContactPage() {
                     <Mail className="h-6 w-6 text-accent mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-foreground">Email Us</h4>
-                      <a href="mailto:info@frenchgta.ca" className="text-muted-foreground hover:text-primary transition-colors">info@frenchgta.ca</a>
+                      <a href="mailto:info@francobuddy.ca" className="text-muted-foreground hover:text-primary transition-colors">info@francobuddy.ca</a>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
