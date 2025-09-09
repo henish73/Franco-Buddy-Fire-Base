@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { MoreHorizontal, PlusCircle, Edit3, Trash2, Tags, FolderTree, RefreshCw } from "lucide-react";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -394,8 +395,7 @@ export default function AdminBlogManagementPage() {
                         control={postForm.control}
                         render={({ field }) => (
                             <div className="col-span-3 flex items-center">
-                                <Input 
-                                    type="checkbox" 
+                                <Checkbox
                                     id="featured" 
                                     checked={field.value || false} 
                                     onCheckedChange={field.onChange}
