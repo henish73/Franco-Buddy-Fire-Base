@@ -8,7 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import Link from "next/link";
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { submitEnrollmentForm, type EnrollmentFormState } from './actions';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, AlertCircle, CreditCard } from "lucide-react";
@@ -37,7 +38,7 @@ type EnrollmentFormProps = {
 };
 
 export default function EnrollmentForm({ course }: EnrollmentFormProps) {
-  const [state, formAction] = useFormState(submitEnrollmentForm, initialState);
+  const [state, formAction] = useActionState(submitEnrollmentForm, initialState);
 
   return (
     <Card className="w-full max-w-2xl shadow-xl">
