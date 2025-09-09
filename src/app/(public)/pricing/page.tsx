@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import SectionTitle from '@/components/shared/SectionTitle';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { CheckCircle, HelpCircle, ShieldCheck, Zap, Gem } from 'lucide-react';
 
 const pricingTiers = [
