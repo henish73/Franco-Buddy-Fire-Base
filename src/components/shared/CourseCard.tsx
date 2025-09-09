@@ -82,7 +82,7 @@ export default function CourseCard({ course }: CourseCardProps) {
   }
 
   return (
-    <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
+    <Card className="flex flex-col overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 h-full hover:-translate-y-1">
       {course.imageUrl && (
         <div className="relative w-full h-56">
           <Image 

@@ -9,7 +9,7 @@ export default function CoursesPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20 md:py-32">
+      <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Master French for Your Future</h1>
           <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
@@ -21,7 +21,7 @@ export default function CoursesPage() {
             <span className="flex items-center gap-2"><Star className="h-5 w-5 text-secondary"/> 15+ Years Experience</span>
           </div>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-             <Button asChild size="lg" variant="secondary">
+             <Button asChild size="lg" variant="secondary" className="bg-gradient-to-br from-red-500 to-red-700 hover:brightness-110">
               <Link href="/pricing">View Plans</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
@@ -57,7 +57,7 @@ export default function CoursesPage() {
               Let our experts guide you. Book a free demo class to discuss your goals and get a personalized recommendation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+              <Button asChild size="lg" className="bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
                 <Link href="/book-demo">Book Free Demo</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
