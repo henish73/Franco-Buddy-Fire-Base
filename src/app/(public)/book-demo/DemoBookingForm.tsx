@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useFormStatus } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,7 +34,7 @@ function SubmitButton() {
 }
 
 export default function DemoBookingForm() {
-  const [state, formAction] = useFormState(submitDemoBookingForm, initialState);
+  const [state, formAction] = useActionState(submitDemoBookingForm, initialState);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
 
