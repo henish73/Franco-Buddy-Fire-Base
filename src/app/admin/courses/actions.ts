@@ -5,16 +5,10 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { coursesData as mockCoursesData } from '@/app/(public)/courses/mockCoursesData';
 import type { Course, Module, WhatsIncludedItem } from '@/components/shared/CourseCard';
-import { Users, Award, Video, FileText, Brain, ClipboardCheck, Target, MessageSquare, MessageCircle, Clock } from 'lucide-react';
 import type { ElementType } from 'react';
 
 // --- Simulated Database for Courses ---
 let simulatedCoursesDb: Course[] = JSON.parse(JSON.stringify(mockCoursesData));
-
-// Map icon names (strings) from form to actual Lucide components
-const iconMap: { [key: string]: ElementType } = {
-  Users, Award, Video, FileText, Brain, ClipboardCheck, Target, MessageSquare, MessageCircle, Clock
-};
 
 // --- Zod Schemas for Validation ---
 const whatsIncludedSchema = z.object({
@@ -63,7 +57,7 @@ export const courseFormSchema = z.object({
     }
   }).optional(),
   modules: z.string().transform((val, ctx) => {
-    if (!val) return [];
+    if (!val || val.trim() === "") return [];
     try {
       const parsed = JSON.parse(val);
       return z.array(moduleSchema).parse(parsed);
@@ -86,17 +80,11 @@ export type CourseFormState = {
 // --- Server Actions ---
 export async function getCoursesAction(): Promise<CourseFormState> {
   try {
-    const coursesWithIcons = simulatedCoursesDb.map(course => ({
-      ...course,
-      whatsIncluded: course.whatsIncluded?.map(item => ({
-        ...item,
-        icon: iconMap[item.icon as string] || Users,
-      })),
-    }));
+    // Icon components are handled on the client-side. We just pass the string names.
     return {
       message: "Courses fetched successfully.",
       isSuccess: true,
-      data: JSON.parse(JSON.stringify(coursesWithIcons)),
+      data: JSON.parse(JSON.stringify(simulatedCoursesDb)),
     };
   } catch (error) {
     return { message: "Failed to fetch courses.", isSuccess: false };
@@ -109,11 +97,11 @@ export async function getCourseCountAction(): Promise<number> {
 
 
 async function saveCourse(courseData: CourseFormData, id?: string): Promise<Course> {
-  const whatsIncludedWithIcons = courseData.whatsIncluded?.map(item => ({
+  // The icon is just a string in the data model. The component will map it.
+  const whatsIncludedWithStringIcons = courseData.whatsIncluded?.map(item => ({
     ...item,
-    icon: item.icon || 'Users' // Default icon if not provided
-  })) as WhatsIncludedItem[] | undefined;
-
+    icon: item.icon || 'Users'
+  }));
 
   if (id) { // Update existing course
     const courseIndex = simulatedCoursesDb.findIndex(c => c.id === id);
@@ -124,7 +112,7 @@ async function saveCourse(courseData: CourseFormData, id?: string): Promise<Cour
       ...courseData,
       id, // ensure id is present
       isForYou: courseData.isForYou || [],
-      whatsIncluded: whatsIncludedWithIcons as any, // stored as string name
+      whatsIncluded: whatsIncludedWithStringIcons as any, // Stored as string name in DB
       modules: courseData.modules || [],
     };
     simulatedCoursesDb[courseIndex] = updatedCourse;
@@ -134,7 +122,7 @@ async function saveCourse(courseData: CourseFormData, id?: string): Promise<Cour
       ...courseData,
       id: `crs_${Date.now()}`,
       isForYou: courseData.isForYou || [],
-      whatsIncluded: whatsIncludedWithIcons as any,
+      whatsIncluded: whatsIncludedWithStringIcons as any,
       modules: courseData.modules || [],
     };
     simulatedCoursesDb.push(newCourse);

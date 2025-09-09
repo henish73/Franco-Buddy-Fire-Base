@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
+import { addContactSubmissionAction } from '@/app/admin/leads/actions';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -33,7 +34,6 @@ export async function submitContactForm(
   formData: FormData
 ): Promise<ContactFormState> {
   const rawFormData = Object.fromEntries(formData.entries());
-
   const validatedFields = contactFormSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
@@ -45,10 +45,13 @@ export async function submitContactForm(
   }
 
   try {
-    const { name, email, phone, inquiryType, frenchLevel, timeline, message } = validatedFields.data;
+    const { name, email, phone, inquiryType, message } = validatedFields.data;
     
-    // In a real application, save the lead to a database here.
-    console.log("Contact form submitted (simulated save):", validatedFields.data);
+    // Save the lead to the database
+    const leadResult = await addContactSubmissionAction({ name, email, phone, inquiryType, message });
+    if (!leadResult.isSuccess) {
+        return { message: "Failed to save your submission. Please try again.", isSuccess: false };
+    }
 
     const whatsappMessage = `
 New Contact Form Submission from FRANCOBUDDY Website:
@@ -56,8 +59,8 @@ New Contact Form Submission from FRANCOBUDDY Website:
 *Email:* ${email}
 *Phone:* ${phone}
 *Inquiry Type:* ${inquiryType}
-*French Level:* ${frenchLevel || 'Not specified'}
-*Timeline:* ${timeline || 'Not specified'}
+*French Level:* ${validatedFields.data.frenchLevel || 'Not specified'}
+*Timeline:* ${validatedFields.data.timeline || 'Not specified'}
 ---
 *Message:*
 ${message}
@@ -65,12 +68,10 @@ ${message}
 
     const whatsappUrl = `https://wa.me/13653062049?text=${encodeURIComponent(whatsappMessage)}`;
     
-    // Redirect to the WhatsApp URL
     redirect(whatsappUrl);
 
   } catch (error) {
     console.error("Error submitting contact form:", error);
-    // This part might not be reached if redirect is successful
     if (error instanceof Error && error.message.includes('NEXT_REDIRECT')) {
       // This is expected, do nothing.
     } else {
@@ -80,9 +81,5 @@ ${message}
       };
     }
   }
-  // Fallback state, should not be reached on success due to redirect
-  return {
-    message: "",
-    isSuccess: false,
-  };
+  return { message: "", isSuccess: false };
 }

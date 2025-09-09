@@ -1,7 +1,8 @@
 // src/app/admin/students/page.tsx
 "use client";
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect, useTransition, FormEvent } from 'react';
+import { useActionState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,26 @@ import { useToast } from "@/hooks/use-toast";
 import { getStudentsAction, addStudentAction, updateStudentAction, deleteStudentAction, type Student, type StudentFormData, studentFormSchema, type StudentFormState } from './actions';
 
 const initialFormState: StudentFormState = { message: "", isSuccess: false, errors: {} };
+
+// This is a new function to handle form submission via useActionState
+const formActionHandler = (action: typeof addStudentAction | typeof updateStudentAction) => {
+    return async (prevState: StudentFormState, formData: FormData): Promise<StudentFormState> => {
+        const studentData: Record<string, unknown> = {};
+        formData.forEach((value, key) => { studentData[key] = value });
+        
+        // This is a workaround since addStudentAction expects an object, not formData
+        // In a more complex app, you might unify action signatures.
+        if (action.name === 'addStudentAction') {
+            const result = await addStudentAction(studentData as StudentFormData);
+            return result;
+        }
+
+        // updateStudentAction is already designed to work with useActionState and formData
+        const result = await updateStudentAction(prevState, formData);
+        return result;
+    };
+};
+
 
 export default function AdminStudentsPage() {
   const { toast } = useToast();
@@ -42,10 +63,11 @@ export default function AdminStudentsPage() {
   
   useEffect(() => {
     fetchStudents();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const openAddDialog = () => {
-    reset({ password: "", status: "Active" });
+    reset({ firstName: "", lastName: "", email: "", phone: "", password: "", status: "Active" });
     setEditingStudent(null);
     setIsDialogOpen(true);
   };
@@ -58,26 +80,39 @@ export default function AdminStudentsPage() {
 
   const onSubmit: SubmitHandler<StudentFormData> = (data) => {
     startTransition(async () => {
-      const actionToCall = editingStudent ? updateStudentAction : addStudentAction;
-      const formData = new FormData();
-       Object.entries(data).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
-              formData.append(key, String(value));
-          }
-      });
-      if (editingStudent) formData.append('id', editingStudent.id);
+        
+        const actionToCall = editingStudent ? updateStudentAction : (async (p: StudentFormState, f: FormData) => addStudentAction(Object.fromEntries(f) as StudentFormData));
+        const formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                formData.append(key, String(value));
+            }
+        });
 
-      const result = await actionToCall(initialFormState, formData);
-
-      if (result.isSuccess) {
-        toast({ title: "Success", description: result.message });
-        setIsDialogOpen(false);
-        fetchStudents();
-      } else {
-        toast({ title: "Error", description: result.message, variant: "destructive" });
-      }
+        if (editingStudent) {
+            formData.append('id', editingStudent.id);
+            const result = await updateStudentAction(initialFormState, formData);
+             if (result.isSuccess) {
+                toast({ title: "Success", description: result.message });
+                setIsDialogOpen(false);
+                fetchStudents();
+            } else {
+                toast({ title: "Error", description: result.message || "Failed to update student", variant: "destructive" });
+            }
+        } else {
+            const studentData = Object.fromEntries(formData) as unknown as StudentFormData;
+            const result = await addStudentAction(studentData);
+            if (result.isSuccess) {
+                toast({ title: "Success", description: result.message });
+                setIsDialogOpen(false);
+                fetchStudents();
+            } else {
+                 toast({ title: "Error", description: result.message || "Failed to add student", variant: "destructive" });
+            }
+        }
     });
-  };
+};
+
   
   const handleDelete = (studentId: string) => {
     startTransition(async () => {

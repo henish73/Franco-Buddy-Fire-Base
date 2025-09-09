@@ -2,6 +2,7 @@
 "use server";
 
 import { z } from 'zod';
+import { addDemoRequestAction } from '@/app/admin/leads/actions';
 
 const demoBookingSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -33,7 +34,6 @@ export async function submitDemoBookingForm(
 ): Promise<DemoBookingFormState> {
   
   const rawFormData = Object.fromEntries(formData.entries());
-
   const validatedFields = demoBookingSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
@@ -45,19 +45,21 @@ export async function submitDemoBookingForm(
   }
 
   try {
-    // In a real application, you would:
-    // 1. Save the lead to Firestore with status 'New Demo Request'.
-    // 2. Integrate with Google Calendar API to create an event.
-    // 3. Send a confirmation email to the user and a notification to the admin.
+    // This now calls the centralized action in the admin folder
+    const result = await addDemoRequestAction(validatedFields.data);
 
-    console.log("Demo booking submitted (simulated):", validatedFields.data);
-
-    // For now, simulate success.
-    return {
-      message: "Thank you! Your demo request has been submitted. We'll send you a confirmation email with the meeting link shortly.",
-      isSuccess: true,
-      errors: {},
-    };
+    if (result.isSuccess) {
+       return {
+        message: "Thank you! Your demo request has been submitted. We'll send you a confirmation email with the meeting link shortly.",
+        isSuccess: true,
+        errors: {},
+      };
+    } else {
+      return {
+        message: result.message || "An unexpected error occurred while saving the lead.",
+        isSuccess: false,
+      }
+    }
   } catch (error) {
     console.error("Error submitting demo booking form:", error);
     return {

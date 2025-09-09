@@ -52,8 +52,9 @@ export async function getStudentCountAction(): Promise<number> {
     return simulatedStudentsDb.length;
 }
 
-export async function addStudentAction(prevState: StudentFormState, formData: FormData): Promise<StudentFormState> {
-    const validatedFields = studentFormSchema.safeParse(Object.fromEntries(formData));
+// Action to add student, now accepts an object for easier programmatic use
+export async function addStudentAction(studentData: Omit<StudentFormData, 'id'>): Promise<StudentFormState> {
+    const validatedFields = studentFormSchema.safeParse(studentData);
 
     if (!validatedFields.success) {
         return { message: "Validation Failed", errors: validatedFields.error.flatten().fieldErrors, isSuccess: false };
@@ -66,16 +67,16 @@ export async function addStudentAction(prevState: StudentFormState, formData: Fo
     }
 
     try {
-        const { password, ...studentData } = validatedFields.data;
+        const { password, ...newStudentData } = validatedFields.data;
         // In a real app, hash the password here before saving
         const newStudent: Student = {
-            ...studentData,
+            ...newStudentData,
             id: `std_${Date.now()}`
         };
         simulatedStudentsDb.push(newStudent);
         console.log("New student added (password would be hashed):", newStudent);
         revalidatePath('/admin/students');
-        return { message: "Student added successfully!", isSuccess: true };
+        return { message: "Student added successfully!", isSuccess: true, data: newStudent };
     } catch (e) {
         return { message: "Failed to add student.", isSuccess: false };
     }

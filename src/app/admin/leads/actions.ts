@@ -36,7 +36,7 @@ let simulatedDemoLeadsDb: DemoRequestLead[] = [];
 let simulatedContactLeadsDb: ContactLead[] = [];
 
 // Form state for server actions
-type LeadsFormState = {
+export type LeadsFormState = {
   message: string;
   isSuccess: boolean;
   data?: {

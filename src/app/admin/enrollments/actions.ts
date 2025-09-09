@@ -37,10 +37,9 @@ export async function addEnrollmentAction(enrollmentData: Omit<Enrollment, 'id' 
         simulatedEnrollmentsDb.push(newEnrollment);
         console.log("[Server Action] New enrollment added:", newEnrollment);
         
-        // No revalidation needed here as this is called from public form, but we can if we want to immediately update admin views
         revalidatePath('/admin/enrollments');
 
-        return { message: `Enrollment successful for ${enrollmentData.courseName || 'our program'}! We have received your details and will contact you shortly with payment information and next steps.`, isSuccess: true, data: newEnrollment };
+        return { message: `Enrollment successful! We have received your details and will contact you shortly with payment information and next steps.`, isSuccess: true, data: newEnrollment };
     } catch(e) {
         const error = e as Error;
         console.error("Error adding enrollment:", error);

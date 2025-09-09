@@ -2,10 +2,12 @@
 "use server";
 
 import { z } from 'zod';
+import { addEnrollmentAction } from '@/app/admin/enrollments/actions';
+import { addStudentAction } from '@/app/admin/students/actions';
 
 const enrollmentSchema = z.object({
-  courseId: z.string().optional(),
-  courseName: z.string().optional(),
+  courseId: z.string(),
+  courseName: z.string(),
   fullName: z.string().min(3, { message: "Full name must be at least 3 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   phone: z.string().min(10, { message: "Please enter a valid phone number." }),
@@ -36,11 +38,9 @@ export async function submitEnrollmentForm(
 ): Promise<EnrollmentFormState> {
   
   const rawFormData = Object.fromEntries(formData.entries());
-
   const validatedFields = enrollmentSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
-    console.log("Validation errors:", validatedFields.error.flatten().fieldErrors);
     return {
       message: "Validation failed. Please check your input.",
       errors: validatedFields.error.flatten().fieldErrors,
@@ -49,18 +49,56 @@ export async function submitEnrollmentForm(
   }
 
   try {
-    // In a real application, you would:
-    // 1. Save this enrollment data to Firestore with status 'pending_payment'.
-    // 2. Send a confirmation email to the user with next steps (payment).
-    // 3. Send a notification email to the admin.
+    const { fullName, email, phone, courseId, courseName } = validatedFields.data;
+    const [firstName, ...lastNameParts] = fullName.split(' ');
+    const lastName = lastNameParts.join(' ') || '';
 
-    console.log("Enrollment form submitted (simulated save):", validatedFields.data);
+    // Step 1: Create a new student record
+    const studentResult = await addStudentAction({
+      firstName,
+      lastName,
+      email,
+      phone,
+      enrolledCourse: courseName,
+      status: "Active",
+      // A temporary password would be generated and emailed in a real app.
+      password: 'password123', // Placeholder password
+    });
+
+    if (!studentResult.isSuccess || !studentResult.data || Array.isArray(studentResult.data)) {
+      return { message: studentResult.message || "Failed to create a student profile for this enrollment.", isSuccess: false, errors: studentResult.errors };
+    }
     
-    // For now, simulate success
-    return {
-      message: `Enrollment successful for ${validatedFields.data.courseName || 'our program'}! We have received your details and will contact you shortly with payment information and next steps.`,
-      isSuccess: true,
-    };
+    const newStudent = studentResult.data;
+    const studentId = newStudent?.id;
+
+    if(!studentId) {
+        return { message: "Failed to retrieve new student ID.", isSuccess: false };
+    }
+
+    // Step 2: Create the enrollment record linked to the new student
+    const enrollmentResult = await addEnrollmentAction({
+      studentId: studentId,
+      fullName: fullName,
+      email: email,
+      phone: phone,
+      courseId: courseId,
+      courseName: courseName,
+      date: new Date().toISOString(),
+    });
+    
+    if (enrollmentResult.isSuccess) {
+      return {
+        message: enrollmentResult.message,
+        isSuccess: true,
+      };
+    } else {
+      // Potentially roll back student creation here if transaction fails
+      return {
+        message: enrollmentResult.message,
+        isSuccess: false
+      }
+    }
 
   } catch (error) {
     console.error("Error submitting enrollment form:", error);
