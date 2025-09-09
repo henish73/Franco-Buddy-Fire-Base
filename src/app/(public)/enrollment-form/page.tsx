@@ -5,8 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import EnrollmentForm from './EnrollmentForm';
 import { coursesData } from '@/app/(public)/courses/mockCoursesData';
 import { type Course } from '@/components/shared/CourseCard';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, CheckCircle, Star, Users, Award, Video, Lightbulb, UserCheck, BookOpen, Target, HelpCircle, Check } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { FileText, CheckCircle, Star, Users, Award, Video, Lightbulb, UserCheck, BookOpen, Target, HelpCircle, Check, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import SectionTitle from '@/components/shared/SectionTitle';
@@ -123,9 +123,28 @@ export default function EnrollmentPage() {
             </div>
         </div>
       </section>
+      
+        {/* AI Tutor Section */}
+      <section className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+                <div>
+                    <SectionTitle title="Practice Smarter with Your Personal AI Language Tutor" subtitle="Our AI Tutor is a revolutionary tool designed to accelerate your learning and build your confidence for the TEF Canada exam." className="text-left" />
+                    <ul className="space-y-3">
+                        <li className="flex items-start gap-3"><Sparkles className="h-5 w-5 text-primary mt-1 shrink-0"/><span>**Instant Feedback:** Get immediate, detailed feedback on your speaking and writing, 24/7.</span></li>
+                        <li className="flex items-start gap-3"><Sparkles className="h-5 w-5 text-primary mt-1 shrink-0"/><span>**TEF-Aligned Practice:** All exercises are modeled on the official TEF exam to give you realistic practice.</span></li>
+                        <li className="flex items-start gap-3"><Sparkles className="h-5 w-5 text-primary mt-1 shrink-0"/><span>**Identify Weaknesses:** The AI helps pinpoint your weak areas so you can focus your studies effectively.</span></li>
+                    </ul>
+                </div>
+                <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
+                    <Image src="https://picsum.photos/800/451" alt="AI Tutor Interface" fill className="object-cover" data-ai-hint="AI interface chart"/>
+                </div>
+            </div>
+        </div>
+      </section>
 
       {/* Pricing Plan Section */}
-      <section className="py-16 md:py-24 bg-muted/30">
+      <section className="py-16 md:py-24">
           <div className="container mx-auto px-4">
               <SectionTitle title="Choose Your Learning Path" subtitle="Select the plan that best fits your learning style and goals." />
               <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
@@ -168,7 +187,7 @@ export default function EnrollmentPage() {
       </section>
 
       {/* Enrollment Form Section */}
-      <section id="enroll" className="py-16 md:py-24">
+      <section id="enroll" className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="flex justify-center">
             <EnrollmentForm course={selectedCourse} />
@@ -177,7 +196,7 @@ export default function EnrollmentPage() {
       </section>
       
        {/* "Not Sure Which Course?" CTA */}
-      <section className="py-16 md:py-20 bg-muted/30">
+      <section className="py-16 md:py-20">
         <div className="container mx-auto px-4 text-center">
           <div className="bg-card p-8 md:p-12 rounded-2xl shadow-xl max-w-2xl mx-auto">
             <HelpCircle className="h-12 w-12 text-primary mx-auto mb-6" />
@@ -198,7 +217,7 @@ export default function EnrollmentPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4 max-w-3xl">
           <SectionTitle title="Frequently Asked Questions"/>
            <Accordion type="single" collapsible className="w-full">
