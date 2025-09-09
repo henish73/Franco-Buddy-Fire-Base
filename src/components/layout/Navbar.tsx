@@ -3,7 +3,7 @@
 
 import * as React from "react"
 import Link from 'next/link';
-import { Menu, ChevronDown } from 'lucide-react';
+import { Menu, ChevronDown, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -138,7 +138,10 @@ export default function Navbar() {
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-           <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
+           <Button asChild variant="ghost" size="sm" className="hidden lg:inline-flex">
+            <Link href="/login"><LogIn className="mr-2 h-4 w-4"/> Login</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
             <Link href="/enrollment-form">Enroll Now</Link>
           </Button>
           <Button asChild variant="default" size="sm" className="animate-pulse bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
@@ -164,6 +167,7 @@ export default function Navbar() {
                 <Link href="/testimonials" className="text-lg">Testimonials</Link>
                 <Link href="/blog" className="text-lg">Blog</Link>
                 <Link href="/contact" className="text-lg">Contact Us</Link>
+                 <Link href="/login" className="text-lg pt-4 border-t">Login</Link>
                 <Button asChild variant="default" className="mt-4 bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground">
                   <Link href="/book-demo">Book Free Demo</Link>
                 </Button>
