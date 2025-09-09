@@ -1,10 +1,11 @@
-
 // src/ai/flows/readingAssessmentSchemas.ts
 import { z } from 'zod';
 
 export const ReadingAssessmentInputSchema = z.object({
   passageText: z.string().min(1, "Passage text cannot be empty."),
   studentResponseText: z.string().min(10, "Student response must be at least 10 characters."),
+  tefSection: z.string().optional().describe('The specific TEF Canada section this passage relates to.'),
+  difficultyLevel: z.string().optional().describe('The difficulty level of the passage.'),
 });
 export type ReadingAssessmentInput = z.infer<typeof ReadingAssessmentInputSchema>;
 

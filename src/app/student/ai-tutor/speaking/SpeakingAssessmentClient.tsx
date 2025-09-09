@@ -9,13 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Mic, StopCircle, Play, AlertCircle, CheckCircle, RefreshCw, Sparkles, Send } from "lucide-react";
-import type { SpeakingPrompt } from '@/app/admin/ai-content/speakingPromptSchemas'; // Adjusted path for SpeakingPrompt type if it was moved
+import type { SpeakingPrompt } from '@/app/admin/ai-content/speakingPromptSchemas';
 import { submitSpeakingAssessment, type SpeakingAssessmentFormState } from "./actions";
-import type { SpeakingAssessmentOutput } from "@/ai/flows/speakingAssessmentSchemas"; // Import from new schema file
-
-type SpeakingAssessmentClientProps = {
-  prompts: SpeakingPrompt[];
-};
 
 const initialAssessmentState: SpeakingAssessmentFormState = {
   message: "",
@@ -23,7 +18,7 @@ const initialAssessmentState: SpeakingAssessmentFormState = {
   assessmentResult: undefined,
 };
 
-export default function SpeakingAssessmentClient({ prompts }: SpeakingAssessmentClientProps) {
+export default function SpeakingAssessmentClient({ prompts }: { prompts: SpeakingPrompt[] }) {
   const { toast } = useToast();
   const [selectedPrompt, setSelectedPrompt] = useState<SpeakingPrompt | null>(prompts[0] || null);
   const [isRecording, setIsRecording] = useState(false);
@@ -110,7 +105,12 @@ export default function SpeakingAssessmentClient({ prompts }: SpeakingAssessment
     reader.onloadend = () => {
       const base64Audio = reader.result as string;
       startSubmitTransition(async () => {
-        const result = await submitSpeakingAssessment(selectedPrompt.promptText, base64Audio);
+        const result = await submitSpeakingAssessment({
+          promptText: selectedPrompt.promptText,
+          tefSection: selectedPrompt.tefSection,
+          difficultyLevel: selectedPrompt.difficultyLevel,
+          audioDataUri: base64Audio
+        });
         setAssessmentState(result);
         if (result.isSuccess) {
           toast({ title: "Assessment Complete!", description: "Your feedback is ready below." });
@@ -159,6 +159,9 @@ export default function SpeakingAssessmentClient({ prompts }: SpeakingAssessment
             <Card className="mt-4 bg-muted/50">
               <CardHeader>
                 <CardTitle className="text-lg text-primary">{selectedPrompt.topic}</CardTitle>
+                 <CardDescription>
+                   {selectedPrompt.tefSection} - {selectedPrompt.difficultyLevel}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-foreground whitespace-pre-wrap">{selectedPrompt.promptText}</p>
@@ -209,10 +212,10 @@ export default function SpeakingAssessmentClient({ prompts }: SpeakingAssessment
         </CardFooter>
       </Card>
 
-      {assessmentState.message && (
-        <Alert variant={assessmentState.isSuccess ? "default" : "destructive"}>
-          {assessmentState.isSuccess ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-          <AlertTitle>{assessmentState.isSuccess ? "Assessment Feedback" : "Error"}</AlertTitle>
+      {assessmentState.message && !assessmentState.isSuccess && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
           <AlertDescription>{assessmentState.message}</AlertDescription>
         </Alert>
       )}

@@ -4,6 +4,8 @@ import { z } from 'zod';
 export const WritingAssessmentInputSchema = z.object({
   promptText: z.string().describe('The text of the prompt the student responded to.'),
   studentResponseText: z.string().describe("The student's written response."),
+  tefSection: z.string().optional().describe('The specific TEF Canada section this prompt relates to (e.g., "Section B: Expressing an Opinion").'),
+  difficultyLevel: z.string().optional().describe('The difficulty level of the prompt (e.g., "Intermediate (CLB 5-7)").'),
 });
 export type WritingAssessmentInput = z.infer<typeof WritingAssessmentInputSchema>;
 

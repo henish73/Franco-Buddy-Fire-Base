@@ -8,6 +8,8 @@ export type WritingPrompt = {
   taskType: string; // e.g., "Formal Letter", "Opinion Essay", "Summary"
   promptText: string;
   sampleResponse?: string;
+  difficultyLevel?: "Beginner (CLB 1-3)" | "Intermediate (CLB 4-6)" | "Advanced (CLB 7+)";
+  tefSection?: string;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -19,6 +21,8 @@ export const writingPromptSchema = z.object({
   taskType: z.string().min(3, "Task type is required (e.g., Formal Letter)"),
   promptText: z.string().min(10, "Prompt text is required (min 10 chars)"),
   sampleResponse: z.string().optional(),
+  difficultyLevel: z.enum(["Beginner (CLB 1-3)", "Intermediate (CLB 4-6)", "Advanced (CLB 7+)"]).optional(),
+  tefSection: z.string().optional(),
 });
 export type WritingPromptFormData = z.infer<typeof writingPromptSchema>;
 
@@ -30,6 +34,8 @@ export type WritingPromptFormState = {
     taskType?: string[];
     promptText?: string[];
     sampleResponse?: string[];
+    difficultyLevel?: string[];
+    tefSection?: string[];
     form?: string[];
   };
   isSuccess: boolean;

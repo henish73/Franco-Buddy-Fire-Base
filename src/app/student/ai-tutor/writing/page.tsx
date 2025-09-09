@@ -1,4 +1,3 @@
-
 // src/app/student/ai-tutor/writing/page.tsx
 import { getWritingPromptsAction } from '@/app/admin/ai-content/writingPromptActions';
 import type { WritingPrompt } from '@/app/admin/ai-content/writingPromptSchemas';

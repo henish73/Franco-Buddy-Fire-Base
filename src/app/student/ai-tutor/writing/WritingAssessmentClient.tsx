@@ -1,4 +1,3 @@
-
 // src/app/student/ai-tutor/writing/WritingAssessmentClient.tsx
 "use client";
 
@@ -46,7 +45,12 @@ export default function WritingAssessmentClient({ prompts }: WritingAssessmentCl
     }
 
     startSubmitTransition(async () => {
-      const result = await submitWritingAssessment(selectedPrompt.promptText, studentResponse);
+      const result = await submitWritingAssessment({
+        promptText: selectedPrompt.promptText,
+        studentResponseText: studentResponse,
+        tefSection: selectedPrompt.tefSection,
+        difficultyLevel: selectedPrompt.difficultyLevel
+      });
       setAssessmentState(result);
       if (result.isSuccess) {
         toast({ title: "Assessment Complete!", description: "Your feedback is ready below." });
@@ -75,7 +79,7 @@ export default function WritingAssessmentClient({ prompts }: WritingAssessmentCl
             <SelectContent>
               {prompts.map(prompt => (
                 <SelectItem key={prompt.id} value={prompt.id}>
-                  {prompt.topic} - {prompt.promptText.substring(0, 50)}... ({prompt.taskType})
+                  {prompt.topic} - ({prompt.taskType})
                 </SelectItem>
               ))}
             </SelectContent>
@@ -84,6 +88,9 @@ export default function WritingAssessmentClient({ prompts }: WritingAssessmentCl
             <Card className="mt-4 bg-muted/50">
               <CardHeader>
                 <CardTitle className="text-lg text-primary">{selectedPrompt.topic} ({selectedPrompt.taskType})</CardTitle>
+                 <CardDescription>
+                   {selectedPrompt.tefSection} - {selectedPrompt.difficultyLevel}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-foreground whitespace-pre-wrap">{selectedPrompt.promptText}</p>
@@ -125,10 +132,10 @@ export default function WritingAssessmentClient({ prompts }: WritingAssessmentCl
         </CardFooter>
       </Card>
 
-      {assessmentState.message && (
-        <Alert variant={assessmentState.isSuccess ? "default" : "destructive"}>
-          {assessmentState.isSuccess ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
-          <AlertTitle>{assessmentState.isSuccess ? "Assessment Feedback" : "Error"}</AlertTitle>
+      {assessmentState.message && !assessmentState.isSuccess && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
           <AlertDescription>{assessmentState.message}</AlertDescription>
         </Alert>
       )}

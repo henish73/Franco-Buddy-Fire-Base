@@ -1,10 +1,11 @@
-
 // src/ai/flows/listeningAssessmentSchemas.ts
 import { z } from 'zod';
 
 export const ListeningAssessmentInputSchema = z.object({
   audioTranscript: z.string().min(1, "Audio transcript cannot be empty."),
   studentResponseText: z.string().min(10, "Student response must be at least 10 characters."),
+  tefSection: z.string().optional().describe('The specific TEF Canada section this audio relates to.'),
+  difficultyLevel: z.string().optional().describe('The difficulty level of the audio transcript.'),
 });
 export type ListeningAssessmentInput = z.infer<typeof ListeningAssessmentInputSchema>;
 

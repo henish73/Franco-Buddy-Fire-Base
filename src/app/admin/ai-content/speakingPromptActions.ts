@@ -16,6 +16,8 @@ let simulatedSpeakingPromptsDb: SpeakingPrompt[] = [
     topic: "Daily Routine",
     promptText: "Parlez-moi de votre routine quotidienne. Que faites-vous habituellement le matin, l'après-midi et le soir?",
     expectedKeywords: ["matin", "réveille", "déjeuner", "travail", "soir", "dîner", "coucher"],
+    difficultyLevel: "Intermediate (CLB 4-6)",
+    tefSection: "Expression orale - Section A",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -24,6 +26,8 @@ let simulatedSpeakingPromptsDb: SpeakingPrompt[] = [
     topic: "Hobbies",
     promptText: "Quels sont vos passe-temps préférés? Pourquoi les aimez-vous?",
     expectedKeywords: ["loisirs", "temps libre", "aime", "préféré", "intéressant"],
+    difficultyLevel: "Beginner (CLB 1-3)",
+    tefSection: "Expression orale - Section A",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }
@@ -66,6 +70,8 @@ export async function addSpeakingPromptAction(
       topic: newPromptData.topic,
       promptText: newPromptData.promptText,
       expectedKeywords: newPromptData.expectedKeywords || [],
+      difficultyLevel: newPromptData.difficultyLevel,
+      tefSection: newPromptData.tefSection,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -115,6 +121,8 @@ export async function updateSpeakingPromptAction(
       topic: updatedData.topic,
       promptText: updatedData.promptText,
       expectedKeywords: updatedData.expectedKeywords || [],
+      difficultyLevel: updatedData.difficultyLevel,
+      tefSection: updatedData.tefSection,
       updatedAt: new Date().toISOString(),
     };
     

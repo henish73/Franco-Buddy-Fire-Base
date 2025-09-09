@@ -7,6 +7,8 @@ export type SpeakingPrompt = {
   topic: string;
   promptText: string;
   expectedKeywords?: string[];
+  difficultyLevel?: "Beginner (CLB 1-3)" | "Intermediate (CLB 4-6)" | "Advanced (CLB 7+)";
+  tefSection?: string; // e.g., "Section A: Introduction", "Section B: Role-play"
   createdAt?: string;
   updatedAt?: string;
 };
@@ -20,7 +22,8 @@ export const speakingPromptSchema = z.object({
     (val) => (typeof val === 'string' && val.trim() !== '' ? val.split(',').map(s => s.trim()).filter(Boolean) : []),
     z.array(z.string()).optional()
   ),
-  // Add other fields as they are implemented (e.g., audioExampleUrl, difficultyLevel)
+  difficultyLevel: z.enum(["Beginner (CLB 1-3)", "Intermediate (CLB 4-6)", "Advanced (CLB 7+)"]).optional(),
+  tefSection: z.string().optional(),
 });
 export type SpeakingPromptFormData = z.infer<typeof speakingPromptSchema>;
 
@@ -31,6 +34,8 @@ export type SpeakingPromptFormState = {
     topic?: string[];
     promptText?: string[];
     expectedKeywords?: string[];
+    difficultyLevel?: string[];
+    tefSection?: string[];
     form?: string[];
   };
   isSuccess: boolean;

@@ -119,7 +119,7 @@ export default function AdminAIContentPage() {
   
   const readingPassageForm = useForm<ReadingPassageFormData>({
     resolver: zodResolver(readingPassageSchema),
-    defaultValues: { topic: "", passageText: "", difficultyLevel: undefined, tefSection: "", questions: [] }
+    defaultValues: { topic: "", passageText: "", difficultyLevel: undefined, tefSection: "", questions: "[]" }
   });
   const [readingPassageServerState, readingPassageFormAction] = useFormState(
     editingReadingPassage ? updateReadingPassageAction : addReadingPassageAction,
@@ -133,7 +133,7 @@ export default function AdminAIContentPage() {
 
   const listeningAudioForm = useForm<ListeningAudioFormData>({
     resolver: zodResolver(listeningAudioSchema),
-    defaultValues: { topic: "", audioFileUrlOrName: "", transcript: "", difficultyLevel: undefined, tefSection: "", questions: [] }
+    defaultValues: { topic: "", audioFileUrlOrName: "", transcript: "", difficultyLevel: undefined, tefSection: "", questions: "[]" }
   });
   const [listeningAudioServerState, listeningAudioFormAction] = useFormState(
     editingListeningAudio ? updateListeningAudioAction : addListeningAudioAction,

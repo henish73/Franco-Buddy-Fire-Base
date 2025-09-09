@@ -1,19 +1,13 @@
-
 // src/app/student/ai-tutor/writing/actions.ts
 "use server";
 
 import { z } from "zod";
 import { assessWriting } from "@/ai/flows/writingAssessmentFlow";
 import { 
-  type WritingAssessmentInput, // Correct import path
-  type WritingAssessmentOutput, // Correct import path
-  WritingAssessmentInputSchema // If needed for validation within action
+  type WritingAssessmentInput,
+  type WritingAssessmentOutput,
+  WritingAssessmentInputSchema
 } from "@/ai/flows/writingAssessmentSchemas";
-
-
-// Client-side validation schema could be defined here if different from backend,
-// or re-use WritingAssessmentInputSchema if identical.
-const ClientWritingAssessmentSchema = WritingAssessmentInputSchema; // Re-using for simplicity
 
 export type WritingAssessmentFormState = {
   message: string;
@@ -27,14 +21,10 @@ export type WritingAssessmentFormState = {
 };
 
 export async function submitWritingAssessment(
-  promptText: string,
-  studentResponseText: string
+  input: WritingAssessmentInput
 ): Promise<WritingAssessmentFormState> {
   
-  const validatedFields = ClientWritingAssessmentSchema.safeParse({
-    promptText,
-    studentResponseText,
-  });
+  const validatedFields = WritingAssessmentInputSchema.safeParse(input);
 
   if (!validatedFields.success) {
     return {
@@ -45,8 +35,7 @@ export async function submitWritingAssessment(
   }
 
   try {
-    const input: WritingAssessmentInput = validatedFields.data;
-    const result = await assessWriting(input); // This currently returns mock data
+    const result = await assessWriting(validatedFields.data);
 
     if (result) {
       return {
@@ -62,10 +51,10 @@ export async function submitWritingAssessment(
     }
   } catch (error) {
     console.error("Error submitting writing assessment:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
     return {
-      message: "An unexpected error occurred while processing your assessment. Please try again.",
+      message: `An unexpected error occurred: ${errorMessage}`,
       isSuccess: false,
     };
   }
 }
-

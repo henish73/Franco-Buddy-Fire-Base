@@ -6,7 +6,7 @@ import { assessSpeaking } from "@/ai/flows/speakingAssessmentFlow";
 import { 
   type SpeakingAssessmentInput, 
   type SpeakingAssessmentOutput,
-  SpeakingAssessmentInputSchema // Using the schema for validation if needed directly, though input types are derived
+  SpeakingAssessmentInputSchema
 } from "@/ai/flows/speakingAssessmentSchemas";
 
 
@@ -22,14 +22,10 @@ export type SpeakingAssessmentFormState = {
 };
 
 export async function submitSpeakingAssessment(
-  promptText: string,
-  audioDataUri: string
+  input: SpeakingAssessmentInput
 ): Promise<SpeakingAssessmentFormState> {
   
-  const validatedFields = SpeakingAssessmentInputSchema.safeParse({ // Using the imported schema for validation
-    promptText,
-    audioDataUri,
-  });
+  const validatedFields = SpeakingAssessmentInputSchema.safeParse(input);
 
   if (!validatedFields.success) {
     return {
@@ -40,8 +36,7 @@ export async function submitSpeakingAssessment(
   }
 
   try {
-    const input: SpeakingAssessmentInput = validatedFields.data;
-    const result = await assessSpeaking(input); // This currently returns mock data
+    const result = await assessSpeaking(validatedFields.data);
 
     if (result) {
       return {
@@ -57,8 +52,9 @@ export async function submitSpeakingAssessment(
     }
   } catch (error) {
     console.error("Error submitting speaking assessment:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
     return {
-      message: "An unexpected error occurred while processing your assessment. Please try again.",
+      message: `An unexpected error occurred: ${errorMessage}`,
       isSuccess: false,
     };
   }

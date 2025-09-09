@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/sidebar'; 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Logo } from '../icons/Logo';
 
 const adminNavItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -39,7 +40,7 @@ export default function AdminSidebar() {
     <Sidebar collapsible="icon" variant="sidebar" side="left" className="border-r">
       <SidebarHeader className="p-4 items-center justify-center">
         <Link href="/admin/dashboard" className="flex items-center gap-2">
-          <BookMarked className="h-7 w-7 text-sidebar-primary" />
+          <Logo className="h-7 w-7 text-sidebar-primary" />
           <span className="font-semibold text-lg text-sidebar-primary group-data-[collapsible=icon]:hidden">
             FrancoBuddy Admin
           </span>

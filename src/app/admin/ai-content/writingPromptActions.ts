@@ -17,6 +17,8 @@ let simulatedWritingPromptsDb: WritingPrompt[] = [
     taskType: "Cover Letter Snippet",
     promptText: "Write a short paragraph describing your most relevant work experience for a customer service role. Mention your communication skills and problem-solving abilities.",
     sampleResponse: "In my previous role at Tech Solutions Inc., I served as a Senior Customer Support Specialist for three years, where I honed my communication skills by assisting over 50 clients daily via phone and email. A key part of my responsibilities involved troubleshooting complex technical issues, often requiring creative problem-solving to ensure customer satisfaction and swift resolution.",
+    difficultyLevel: "Intermediate (CLB 4-6)",
+    tefSection: "Expression écrite - Section B",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
