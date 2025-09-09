@@ -1,7 +1,8 @@
 // src/app/admin/settings/SiteSettingsForm.tsx
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,7 +37,7 @@ type SiteSettingsFormProps = {
 };
 
 export default function SiteSettingsForm({ initialData }: SiteSettingsFormProps) {
-  const [state, formAction] = useFormState(updateSiteSettings, initialState);
+  const [state, formAction] = useActionState(updateSiteSettings, initialState);
 
   return (
     <Card className="max-w-2xl">

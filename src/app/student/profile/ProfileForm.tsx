@@ -1,7 +1,8 @@
 // src/app/student/profile/ProfileForm.tsx
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,8 +33,8 @@ function SubmitButton({ children, pendingText = "Saving..." }: { children: React
 }
 
 export default function ProfileForm() {
-  const [detailsState, detailsFormAction] = useFormState(updateProfileDetails, initialDetailsState);
-  const [passwordState, passwordFormAction] = useFormState(changePassword, initialPasswordState);
+  const [detailsState, detailsFormAction] = useActionState(updateProfileDetails, initialDetailsState);
+  const [passwordState, passwordFormAction] = useActionState(changePassword, initialPasswordState);
   
   const passwordFormRef = useRef<HTMLFormElement>(null);
 

@@ -2,8 +2,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useActionState } from "react"; // Updated import
-import { useFormStatus } from "react-dom"; // Corrected import
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,7 @@ function SubmitButton() {
 }
 
 export default function LoginForm() {
-  const [state, formAction] = useActionState(handleLogin, initialState); // Renamed hook
+  const [state, formAction] = useActionState(handleLogin, initialState);
   const router = useRouter();
 
   useEffect(() => {

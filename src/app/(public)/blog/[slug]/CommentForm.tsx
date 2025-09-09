@@ -1,7 +1,8 @@
 // src/app/(public)/blog/[slug]/CommentForm.tsx
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,7 +33,7 @@ type CommentFormProps = {
 };
 
 export default function CommentForm({ postId, postSlug }: CommentFormProps) {
-  const [state, formAction] = useFormState(addCommentAction, initialState);
+  const [state, formAction] = useActionState(addCommentAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {

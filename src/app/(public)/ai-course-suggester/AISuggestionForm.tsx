@@ -1,7 +1,8 @@
 // src/app/(public)/ai-course-suggester/AISuggestionForm.tsx
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,7 +41,7 @@ function SubmitButton() {
 }
 
 export default function AISuggestionForm() {
-  const [state, formAction] = useFormState(getCourseSuggestion, initialState);
+  const [state, formAction] = useActionState(getCourseSuggestion, initialState);
 
   return (
     <div className="w-full max-w-2xl">
