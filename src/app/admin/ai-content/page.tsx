@@ -1,7 +1,7 @@
 // src/app/admin/ai-content/page.tsx
 "use client";
 
-import { useState, useEffect, useTransition, FormEvent } from 'react';
+import { useState, useEffect, useTransition, FormEvent, useActionState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -15,7 +15,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { useFormState } from 'react-dom';
 
 import {
   getSpeakingPromptsAction,
@@ -93,7 +92,7 @@ export default function AdminAIContentPage() {
     resolver: zodResolver(speakingPromptSchema), 
     defaultValues: { topic: "", promptText: "", expectedKeywords: "", difficultyLevel: undefined, tefSection: "" }
   });
-  const [speakingPromptServerState, speakingPromptFormAction] = useFormState(
+  const [speakingPromptServerState, speakingPromptFormAction] = useActionState(
     editingSpeakingPrompt ? updateSpeakingPromptAction : addSpeakingPromptAction,
     initialSpeakingPromptFormState
   );
@@ -107,7 +106,7 @@ export default function AdminAIContentPage() {
     resolver: zodResolver(writingPromptSchema),
     defaultValues: { topic: "", taskType: "", promptText: "", sampleResponse: "", difficultyLevel: undefined, tefSection: "" }
   });
-  const [writingPromptServerState, writingPromptFormAction] = useFormState(
+  const [writingPromptServerState, writingPromptFormAction] = useActionState(
     editingWritingPrompt ? updateWritingPromptAction : addWritingPromptAction,
     initialWritingPromptFormState
   );
@@ -121,7 +120,7 @@ export default function AdminAIContentPage() {
     resolver: zodResolver(readingPassageSchema),
     defaultValues: { topic: "", passageText: "", difficultyLevel: undefined, tefSection: "", questions: "[]" }
   });
-  const [readingPassageServerState, readingPassageFormAction] = useFormState(
+  const [readingPassageServerState, readingPassageFormAction] = useActionState(
     editingReadingPassage ? updateReadingPassageAction : addReadingPassageAction,
     initialReadingPassageFormState
   );
@@ -135,7 +134,7 @@ export default function AdminAIContentPage() {
     resolver: zodResolver(listeningAudioSchema),
     defaultValues: { topic: "", audioFileUrlOrName: "", transcript: "", difficultyLevel: undefined, tefSection: "", questions: "[]" }
   });
-  const [listeningAudioServerState, listeningAudioFormAction] = useFormState(
+  const [listeningAudioServerState, listeningAudioFormAction] = useActionState(
     editingListeningAudio ? updateListeningAudioAction : addListeningAudioAction,
     initialListeningAudioFormState
   );
