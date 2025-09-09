@@ -10,17 +10,23 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, AlertCircle } from "lucide-react";
 import { submitContactForm, type ContactFormState } from "./actions";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const initialState: ContactFormState = {
   message: "",
   isSuccess: false,
 };
 
+const frenchLevels = ["New Beginner", "A1-A2", "B1-B2", "C1-C2"];
+const inquiryTypes = ["General Question", "TEF Canada Course", "Beginner Course", "Pricing", "Partnership"];
+const timelines = ["Immediately", "Within 1 month", "Within 3 months", "Just researching"];
+
+
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} className="w-full">
-      {pending ? "Sending..." : "Send Message"}
+    <Button type="submit" disabled={pending} className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90">
+      {pending ? "Sending..." : "Send Message via WhatsApp"}
     </Button>
   );
 }
@@ -29,32 +35,59 @@ export default function ContactForm() {
   const [state, formAction] = useFormState(submitContactForm, initialState);
 
   return (
-    <Card className="w-full max-w-lg shadow-xl">
+    <Card className="w-full max-w-3xl shadow-xl">
       <CardHeader>
-        <CardTitle className="text-2xl">Send us a Message</CardTitle>
-        <CardDescription>We&apos;ll get back to you as soon as possible.</CardDescription>
+        <CardTitle className="text-2xl text-secondary">Send us a Message</CardTitle>
+        <CardDescription>We'll get back to you as soon as possible.</CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
-          <div>
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" name="name" placeholder="John Doe" required />
-            {state.errors?.name && <p className="text-sm text-destructive mt-1">{state.errors.name.join(', ')}</p>}
-          </div>
-          <div>
-            <Label htmlFor="email">Email Address</Label>
-            <Input id="email" name="email" type="email" placeholder="you@example.com" required />
-            {state.errors?.email && <p className="text-sm text-destructive mt-1">{state.errors.email.join(', ')}</p>}
-          </div>
-          <div>
-            <Label htmlFor="phone">Phone Number (Optional)</Label>
-            <Input id="phone" name="phone" type="tel" placeholder="(123) 456-7890" />
-            {state.errors?.phone && <p className="text-sm text-destructive mt-1">{state.errors.phone.join(', ')}</p>}
-          </div>
-          <div>
-            <Label htmlFor="subject">Subject</Label>
-            <Input id="subject" name="subject" placeholder="Inquiry about TEF Courses" required />
-            {state.errors?.subject && <p className="text-sm text-destructive mt-1">{state.errors.subject.join(', ')}</p>}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="name">Full Name</Label>
+              <Input id="name" name="name" placeholder="John Doe" required />
+              {state.errors?.name && <p className="text-sm text-destructive mt-1">{state.errors.name.join(', ')}</p>}
+            </div>
+            <div>
+              <Label htmlFor="email">Email Address</Label>
+              <Input id="email" name="email" type="email" placeholder="you@example.com" required />
+              {state.errors?.email && <p className="text-sm text-destructive mt-1">{state.errors.email.join(', ')}</p>}
+            </div>
+             <div>
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input id="phone" name="phone" type="tel" placeholder="(123) 456-7890" required/>
+              {state.errors?.phone && <p className="text-sm text-destructive mt-1">{state.errors.phone.join(', ')}</p>}
+            </div>
+             <div>
+                <Label htmlFor="inquiryType">Inquiry Type</Label>
+                <Select name="inquiryType" required>
+                    <SelectTrigger><SelectValue placeholder="Select inquiry type" /></SelectTrigger>
+                    <SelectContent>
+                        {inquiryTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+                {state.errors?.inquiryType && <p className="text-sm text-destructive mt-1">{state.errors.inquiryType.join(', ')}</p>}
+            </div>
+            <div>
+                <Label htmlFor="frenchLevel">Your French Level</Label>
+                <Select name="frenchLevel">
+                    <SelectTrigger><SelectValue placeholder="Select your level" /></SelectTrigger>
+                    <SelectContent>
+                        {frenchLevels.map(level => <SelectItem key={level} value={level}>{level}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+                 {state.errors?.frenchLevel && <p className="text-sm text-destructive mt-1">{state.errors.frenchLevel.join(', ')}</p>}
+            </div>
+            <div>
+                <Label htmlFor="timeline">Your Timeline</Label>
+                <Select name="timeline">
+                    <SelectTrigger><SelectValue placeholder="Select your timeline" /></SelectTrigger>
+                    <SelectContent>
+                        {timelines.map(time => <SelectItem key={time} value={time}>{time}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+                 {state.errors?.timeline && <p className="text-sm text-destructive mt-1">{state.errors.timeline.join(', ')}</p>}
+            </div>
           </div>
           <div>
             <Label htmlFor="message">Message</Label>

@@ -2,12 +2,15 @@
 "use server";
 
 import { z } from 'zod';
+import { redirect } from 'next/navigation';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  phone: z.string().optional(),
-  subject: z.string().min(5, { message: "Subject must be at least 5 characters." }),
+  phone: z.string().min(10, "Please enter a valid phone number."),
+  inquiryType: z.string().min(1, "Please select an inquiry type."),
+  frenchLevel: z.string().optional(),
+  timeline: z.string().optional(),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
 });
 
@@ -17,7 +20,9 @@ export type ContactFormState = {
     name?: string[];
     email?: string[];
     phone?: string[];
-    subject?: string[];
+    inquiryType?: string[];
+    frenchLevel?: string[];
+    timeline?: string[];
     message?: string[];
   };
   isSuccess: boolean;
@@ -27,13 +32,7 @@ export async function submitContactForm(
   prevState: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
-  const rawFormData = {
-    name: formData.get('name'),
-    email: formData.get('email'),
-    phone: formData.get('phone'),
-    subject: formData.get('subject'),
-    message: formData.get('message'),
-  };
+  const rawFormData = Object.fromEntries(formData.entries());
 
   const validatedFields = contactFormSchema.safeParse(rawFormData);
 
@@ -46,28 +45,44 @@ export async function submitContactForm(
   }
 
   try {
-    // In a real application, you would:
-    // 1. Save the lead to Firestore:
-    //    await db.collection('leads').add({
-    //      type: 'contact',
-    //      ...validatedFields.data,
-    //      timestamp: new Date(),
-    //      status: 'New'
-    //    });
-    // 2. Send an email notification to the admin:
-    //    await sendEmail({ to: 'admin@francobuddy.ca', subject: 'New Contact Form Submission', ... });
+    const { name, email, phone, inquiryType, frenchLevel, timeline, message } = validatedFields.data;
+    
+    // In a real application, save the lead to a database here.
+    console.log("Contact form submitted (simulated save):", validatedFields.data);
 
-    console.log("Contact form submitted (simulated):", validatedFields.data);
+    const whatsappMessage = `
+New Contact Form Submission from FRANCOBUDDY Website:
+*Name:* ${name}
+*Email:* ${email}
+*Phone:* ${phone}
+*Inquiry Type:* ${inquiryType}
+*French Level:* ${frenchLevel || 'Not specified'}
+*Timeline:* ${timeline || 'Not specified'}
+---
+*Message:*
+${message}
+    `.trim();
 
-    return {
-      message: "Thank you! Your message has been sent successfully. We'll get back to you soon.",
-      isSuccess: true,
-    };
+    const whatsappUrl = `https://wa.me/13653062049?text=${encodeURIComponent(whatsappMessage)}`;
+    
+    // Redirect to the WhatsApp URL
+    redirect(whatsappUrl);
+
   } catch (error) {
     console.error("Error submitting contact form:", error);
-    return {
-      message: "An unexpected error occurred. Please try again later.",
-      isSuccess: false,
-    };
+    // This part might not be reached if redirect is successful
+    if (error instanceof Error && error.message.includes('NEXT_REDIRECT')) {
+      // This is expected, do nothing.
+    } else {
+      return {
+        message: "An unexpected error occurred. Please try again later.",
+        isSuccess: false,
+      };
+    }
   }
+  // Fallback state, should not be reached on success due to redirect
+  return {
+    message: "",
+    isSuccess: false,
+  };
 }

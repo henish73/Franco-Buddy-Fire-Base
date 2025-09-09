@@ -13,9 +13,8 @@ const navLinks = [
   { href: '/about', label: 'About Us' },
   { href: '/courses', label: 'Courses' },
   { href: '/pricing', label: 'Pricing' },
+  { href: '/testimonials', label: 'Testimonials' },
   { href: '/blog', label: 'Blog' },
-  { href: '/ai-course-suggester', label: 'AI Course Suggester' },
-  { href: '/faq', label: 'FAQ' },
   { href: '/contact', label: 'Contact Us' },
 ];
 
@@ -26,8 +25,8 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <BookMarked className="h-7 w-7 text-primary" />
-          <span className="font-bold text-xl text-primary">FrancoBuddy</span>
+          <BookMarked className="h-7 w-7 text-secondary" />
+          <span className="font-bold text-xl text-secondary">FRANCOBUDDY</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -46,12 +45,6 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="sm" className="hidden sm:flex">
-            <Link href="/login">
-              <LogIn className="mr-2 h-4 w-4" />
-              Login
-            </Link>
-          </Button>
           <Button asChild variant="default" size="sm">
             <Link href="/book-demo">Book Free Demo</Link>
           </Button>
@@ -65,8 +58,8 @@ export default function Navbar() {
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <div className="flex flex-col p-6 gap-6">
                 <Link href="/" className="flex items-center gap-2 mb-4">
-                  <BookMarked className="h-7 w-7 text-primary" />
-                  <span className="font-bold text-lg">FrancoBuddy</span>
+                  <BookMarked className="h-7 w-7 text-secondary" />
+                  <span className="font-bold text-lg">FRANCOBUDDY</span>
                 </Link>
                 {navLinks.map((link) => (
                   <Link
@@ -80,12 +73,7 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <Button asChild variant="outline" className="mt-4">
-                  <Link href="/login">
-                     <LogIn className="mr-2 h-4 w-4" /> Login
-                  </Link>
-                </Button>
-                <Button asChild variant="default" className="mt-2">
+                <Button asChild variant="default" className="mt-4">
                   <Link href="/book-demo">Book Free Demo</Link>
                 </Button>
               </div>
