@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from '@/lib/utils';
+import { Logo } from '../icons/Logo';
 
 const studentNavLinks = [
   { href: '/student/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -29,10 +30,10 @@ export default function StudentNavbar() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
         <Link href="/student/dashboard" className="flex items-center gap-2">
-          <BookMarked className="h-7 w-7 text-primary" />
+          <Logo className="h-7 w-7 text-primary" />
           <span className="font-bold text-xl text-primary">FrancoBuddy Student</span>
         </Link>
 
@@ -93,7 +94,7 @@ export default function StudentNavbar() {
             <SheetContent side="right" className="w-[300px] sm:w-[360px]">
               <div className="flex flex-col p-6 gap-6">
                 <Link href="/student/dashboard" className="flex items-center gap-2 mb-4">
-                  <BookMarked className="h-7 w-7 text-primary" />
+                  <Logo className="h-7 w-7 text-primary" />
                   <span className="font-bold text-lg">FrancoBuddy Student</span>
                 </Link>
                 {studentNavLinks.map((link) => (
