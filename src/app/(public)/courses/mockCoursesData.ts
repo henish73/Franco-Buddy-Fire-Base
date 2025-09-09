@@ -22,6 +22,32 @@ export const coursesData: Course[] = [
       { text: "Basic Conversation Practice", icon: MessageSquare },
       { text: "Beginner Level Mock Tests", icon: ClipboardCheck },
     ],
+    modules: [
+        {
+            id: 'a1a2_m1',
+            order: 1,
+            title: 'Module 1: Introduction to French Basics (A1)',
+            description: 'Laying the groundwork for your French journey.',
+            lessons: [
+                { id: 'l1', title: 'Greetings & Introductions', keyTopics: ['Salutations (Bonjour, Bonsoir)', 'Introducing yourself (Je m\'appelle...)', 'Asking for names'] },
+                { id: 'l2', title: 'The Alphabet & Numbers', keyTopics: ['French alphabet pronunciation', 'Counting from 0 to 100', 'Telling time'] },
+                { id: 'l3', title: 'Essential Verbs: Être & Avoir', keyTopics: ['Conjugation in present tense', 'Forming simple sentences', 'Asking basic questions'] },
+                { id: 'l4', title: 'Nouns, Gender & Articles', keyTopics: ['Masculine and feminine nouns', 'Definite (le, la, les) and indefinite (un, une, des) articles'] },
+            ]
+        },
+        {
+            id: 'a1a2_m2',
+            order: 2,
+            title: 'Module 2: Building Sentences & Everyday Topics (A2)',
+            description: 'Expanding your ability to communicate in common situations.',
+            lessons: [
+                { id: 'l5', title: 'Present Tense (-er, -ir, -re verbs)', keyTopics: ['Regular verb conjugation patterns', 'Common irregular verbs (aller, faire, venir)'] },
+                { id: 'l6', title: 'Asking Questions', keyTopics: ['Est-ce que', 'Inversion', 'Question words (Qui, Que, Où, Quand, Pourquoi)'] },
+                { id: 'l7', title: 'Talking About Family & Hobbies', keyTopics: ['Vocabulary for family members', 'Expressing likes and dislikes (aimer, adorer, détester)'] },
+                { id: 'l8', title: 'Introduction to Past Tense (Passé Composé)', keyTopics: ['Forming the passé composé with avoir', 'Basic past participles'] },
+            ]
+        }
+    ]
   },
   { 
     id: "b1-b2-intermediate", 
@@ -43,6 +69,50 @@ export const coursesData: Course[] = [
       { text: "Extensive Official TEF Practice Materials", icon: ClipboardCheck },
       { text: "Multiple Full-Length Mock Tests & In-depth Feedback", icon: Target },
     ],
+    modules: [
+        {
+            id: 'b1b2_m1',
+            order: 1,
+            title: 'Module 1: Compréhension Orale (Listening)',
+            description: 'Strategies to understand spoken French in various contexts.',
+            lessons: [
+                { id: 'l1', title: 'Section A: Understanding short messages & announcements', keyTopics: ['Identifying key information (who, what, where)', 'Recognizing numbers, dates, and times'] },
+                { id: 'l2', title: 'Section B: Understanding public announcements & radio broadcasts', keyTopics: ['Identifying the main purpose', 'Understanding tone and intent'] },
+                { id: 'l3', title: 'Section C: Conversations & Interviews', keyTopics: ['Following the main points of a conversation', 'Identifying speakers\' opinions'] },
+            ]
+        },
+        {
+            id: 'b1b2_m2',
+            order: 2,
+            title: 'Module 2: Compréhension Écrite (Reading)',
+            description: 'Techniques for speed-reading and deep comprehension of texts.',
+            lessons: [
+                { id: 'l4', title: 'Section A: Reading for information', keyTopics: ['Skimming and scanning techniques', 'Understanding classified ads and short articles'] },
+                { id: 'l5', title: 'Section B: Understanding detailed articles & reports', keyTopics: ['Identifying main ideas and supporting details', 'Vocabulary in context'] },
+                { id: 'l6', title: 'Section C: Analyzing opinions and arguments', keyTopics: ['Understanding author\'s viewpoint', 'Making inferences'] },
+            ]
+        },
+        {
+            id: 'b1b2_m3',
+            order: 3,
+            title: 'Module 3: Expression Écrite (Writing)',
+            description: 'Mastering the structure and style for both writing sections.',
+            lessons: [
+                { id: 'l7', title: 'Section A: Writing a "fait divers" (news item)', keyTopics: ['Structuring a news story', 'Using past tenses (passé composé vs. imparfait)'] },
+                { id: 'l8', title: 'Section B: Expressing a reasoned opinion', keyTopics: ['Structuring an argumentative essay', 'Using connectors (connecteurs logiques)', 'Expressing nuances and hypotheses'] },
+            ]
+        },
+        {
+            id: 'b1b2_m4',
+            order: 4,
+            title: 'Module 4: Expression Orale (Speaking)',
+            description: 'Developing fluency and confidence for both speaking tasks.',
+            lessons: [
+                { id: 'l9', title: 'Section A: Formal information request', keyTopics: ['Using formal "vous"', 'Asking relevant questions', 'Managing the conversation flow'] },
+                { id: 'l10', title: 'Section B: Presenting and defending an opinion', keyTopics: ['Structuring a persuasive argument', 'Using vocabulary of persuasion', 'Handling counter-arguments'] },
+            ]
+        }
+    ]
   },
    { 
     id: "c1-c2-advanced", 
@@ -62,6 +132,29 @@ export const coursesData: Course[] = [
         { text: "Focus on Idiomatic Expressions", icon: MessageSquare },
         { text: "Dedicated WhatsApp Group", icon: MessageCircle },
     ],
+    modules: [
+        {
+            id: 'c1c2_m1',
+            order: 1,
+            title: 'Module 1: Mastering Complex Structures',
+            description: 'Going beyond standard grammar to achieve native-like expression.',
+            lessons: [
+                { id: 'l1', title: 'Advanced Subjunctive', keyTopics: ['Subjunctive in subordinate clauses', 'Subjunctive after expressions of opinion, doubt, and will'] },
+                { id: 'l2', title: 'Complex Relative Pronouns', keyTopics: ['Lequel, auquel, duquel', 'Dont vs. de qui/de quoi'] },
+                { id: 'l3', title: 'Advanced Connectors', keyTopics: ['Nuancing arguments with complex logical connectors', 'Causality, consequence, opposition'] },
+            ]
+        },
+        {
+            id: 'c1c2_m2',
+            order: 2,
+            title: 'Module 2: Advanced TEF/TCF Strategy',
+            description: 'Fine-tuning your approach to maximize points in every section.',
+            lessons: [
+                { id: 'l4', title: 'Lexique (Vocabulary) Enhancement', keyTopics: ['Identifying and using idiomatic expressions', 'Understanding nuanced vocabulary (paraphrasing)'] },
+                { id: 'l5', title: 'Structure des phrases complexes', keyTopics: ['Mastering complex sentence structures for writing and speaking exams'] },
+            ]
+        }
+    ]
   },
   { 
     id: "tef-canada-prep", 
@@ -82,5 +175,28 @@ export const coursesData: Course[] = [
         { text: "Time Management Techniques", icon: Clock },
         { text: "Access to AI Tutor", icon: Brain },
     ],
+    modules: [
+        {
+            id: 'prep_m1',
+            order: 1,
+            title: 'Module 1: Intensive Mock Testing & Review',
+            description: 'Simulating exam conditions to build stamina and strategy.',
+            lessons: [
+                { id: 'l1', title: 'Full-Length Mock Test 1', keyTopics: ['Timed practice for all four sections', 'Personalized error analysis'] },
+                { id: 'l2', title: 'Speaking Section Deep Dive', keyTopics: ['Analyzing high-scoring responses for Section A & B', 'Live practice with feedback'] },
+                { id: 'l3', title: 'Writing Section Correction', keyTopics: ['Detailed correction of mock test writing tasks', 'Strategies for improving structure and vocabulary'] },
+            ]
+        },
+        {
+            id: 'prep_m2',
+            order: 2,
+            title: 'Module 2: Advanced Strategies & Time Management',
+            description: 'Perfecting techniques to gain every possible point.',
+            lessons: [
+                { id: 'l4', title: 'Reading & Listening Speed Drills', keyTopics: ['Techniques for quickly identifying answers', 'Handling difficult question types'] },
+                { id: 'l5', title: 'Final Full-Length Mock Test 2', keyTopics: ['Final simulation before the real exam', 'Review of progress and final tips'] },
+            ]
+        }
+    ]
   },
 ];
