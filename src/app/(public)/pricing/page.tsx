@@ -79,7 +79,7 @@ export default function PricingPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32 animate-background-pan">
+      <section className="bg-gradient-to-br from-secondary via-background to-background text-foreground py-20 md:py-32 animate-background-pan">
         <div className="container mx-auto px-4 text-center animate-fade-in-up">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Transparent &amp; Flexible Pricing</h1>
           <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">

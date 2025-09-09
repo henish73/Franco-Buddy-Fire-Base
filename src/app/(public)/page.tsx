@@ -33,9 +33,9 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32 animate-background-pan">
+      <section className="bg-gradient-to-br from-secondary via-background to-background text-primary-foreground py-20 md:py-32 animate-background-pan">
         <div className="container mx-auto px-4 text-center animate-fade-in-up">
-          <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider shadow-lg bg-gradient-to-br from-red-500 to-red-700 hover:brightness-110">
+          <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider shadow-lg">
             🏆 TEF Canada Success Guaranteed
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -45,13 +45,13 @@ export default async function HomePage() {
             Expert French language training for immigration success, career advancement, and personal growth. Join 250+ successful students in Toronto & GTA.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110 animate-pulse">
+            <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow animate-pulse">
               <Link href="/book-demo">Book FREE Demo Class</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
               <Link href="/courses">Explore Our Courses</Link>
             </Button>
-            <Button asChild size="lg" variant="default" className="bg-gradient-to-br from-primary to-blue-700 hover:brightness-110">
+            <Button asChild size="lg" variant="default">
               <Link href="/enrollment-form">Enroll Now</Link>
             </Button>
           </div>
@@ -172,7 +172,7 @@ export default async function HomePage() {
       </section>
 
       {/* About Snippet Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-primary to-blue-800 text-primary-foreground">
+      <section className="py-16 md:py-24 bg-gradient-to-br from-primary via-background to-background text-primary-foreground">
         <div className="container mx-auto px-4 animate-fade-in-up">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 max-w-5xl mx-auto">
             <Image src="https://picsum.photos/300/300" alt="Certified French Instructor" width={300} height={300} className="rounded-full shadow-lg border-4 border-secondary" data-ai-hint="instructor teacher portrait" />
@@ -181,7 +181,7 @@ export default async function HomePage() {
               <p className="mb-4 opacity-90">
                 At FRANCOBUDDY, we are more than just a language school; we are your partners in achieving your Canadian dream. Our mission is to provide high-quality, personalized French instruction that empowers you to succeed in the TEF Canada exam and beyond. With over 250 students successfully trained, our results speak for themselves.
               </p>
-              <Button asChild variant="secondary" className="bg-gradient-to-br from-red-500 to-red-700 hover:brightness-110">
+              <Button asChild variant="secondary">
                 <Link href="/about">Learn More About Us <ChevronRight className="ml-2 h-4 w-4" /></Link>
               </Button>
             </div>
@@ -197,7 +197,7 @@ export default async function HomePage() {
           </h2>
           <p className="text-muted-foreground mb-2">Limited spots available for this month!</p>
           <div className="flex flex-wrap justify-center gap-4 my-8">
-             <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110 animate-pulse">
+             <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow animate-pulse">
               <Link href="/book-demo">Book Your FREE Demo Now</Link>
             </Button>
             <Button asChild size="lg" variant="outline">

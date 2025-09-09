@@ -97,8 +97,8 @@ export default function CourseCard({ course }: CourseCardProps) {
       )}
       <CardHeader>
         <div className="flex justify-between items-center mb-2">
-            <CardTitle className="text-xl text-secondary">{course.title}</CardTitle>
-            <div className="text-xs uppercase font-bold text-primary bg-primary/10 px-2 py-1 rounded-full">{course.targetCLB}</div>
+            <CardTitle className="text-xl text-primary">{course.title}</CardTitle>
+            <div className="text-xs uppercase font-bold text-secondary bg-secondary/20 px-2 py-1 rounded-full">{course.targetCLB}</div>
         </div>
         <CardDescription className="h-12 overflow-hidden text-ellipsis">{course.shortDescription}</CardDescription>
       </CardHeader>
@@ -107,7 +107,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         <p><strong className="text-foreground">Format:</strong> <span className="text-muted-foreground">{course.format}</span></p>
       </CardContent>
       <CardFooter>
-        <Button asChild className="w-full bg-gradient-to-r from-primary to-blue-600 text-primary-foreground hover:from-primary/90 hover:to-blue-500">
+        <Button asChild className="w-full">
           <Link href={`/courses/${course.id}`}>
             Learn More <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
