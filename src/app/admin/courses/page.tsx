@@ -11,13 +11,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MoreHorizontal, BookPlus, Edit, Trash2, RefreshCw } from "lucide-react";
+import { MoreHorizontal, BookPlus, Edit, Trash2, RefreshCw, Users, Award, Video, FileText, Brain, ClipboardCheck, Target, MessageSquare, MessageCircle, Clock } from "lucide-react";
 import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
-import { getCoursesAction, addCourseAction, updateCourseAction, deleteCourseAction, type Course, type CourseFormData, courseFormSchema, type CourseFormState } from './actions';
+import { getCoursesAction, addCourseAction, updateCourseAction, deleteCourseAction, type CourseFormState } from './actions';
+import type { Course } from '@/components/shared/CourseCard';
+import { courseFormSchema, type CourseFormData } from './schema';
 
 const initialFormState: CourseFormState = { message: "", isSuccess: false, errors: {} };
+
+const iconMap = {
+    Users, Award, Video, FileText, Brain, ClipboardCheck, Target, MessageSquare, MessageCircle, Clock
+};
 
 export default function AdminCoursesPage() {
   const { toast } = useToast();
@@ -56,7 +62,7 @@ export default function AdminCoursesPage() {
     reset({
       ...course,
       isForYou: course.isForYou?.join('\n') || '',
-      whatsIncluded: course.whatsIncluded ? JSON.stringify(course.whatsIncluded.map(item => ({ text: item.text, icon: item.icon.displayName || 'Users' })), null, 2) : '[]', // Simplified for form
+      whatsIncluded: course.whatsIncluded ? JSON.stringify(course.whatsIncluded.map(item => ({ text: item.text, icon: (item.icon as any).displayName || 'Users' })), null, 2) : '[]',
       modules: course.modules ? JSON.stringify(course.modules, null, 2) : '[]',
     });
     setIsDialogOpen(true);
@@ -68,7 +74,11 @@ export default function AdminCoursesPage() {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
           if (value !== undefined && value !== null) {
-              formData.append(key, String(value));
+              if (typeof value === 'object') {
+                  formData.append(key, JSON.stringify(value));
+              } else {
+                 formData.append(key, String(value));
+              }
           }
       });
       if (editingCourse) formData.append('id', editingCourse.id);
