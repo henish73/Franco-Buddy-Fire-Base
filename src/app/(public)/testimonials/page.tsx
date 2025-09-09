@@ -56,7 +56,7 @@ export default function TestimonialsPage() {
     return (
         <>
             {/* Hero Section */}
-            <section className="bg-primary text-primary-foreground py-20 md:py-32">
+            <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32 animate-background-pan">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">Real Students, Real Results, Real Transformation</h1>
                     <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
@@ -107,13 +107,13 @@ export default function TestimonialsPage() {
                   Ready to Start Your French Learning Journey?
                 </h2>
                 <div className="flex flex-wrap justify-center gap-4">
-                  <Button asChild size="lg" className="shadow-lg bg-secondary text-secondary-foreground hover:bg-secondary/90">
+                  <Button asChild size="lg" className="shadow-lg bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
                     <Link href="/book-demo">Book FREE Demo Class</Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
                     <Link href="/courses">Explore Courses</Link>
                   </Button>
-                   <Button asChild size="lg" variant="default">
+                   <Button asChild size="lg" variant="default" className="bg-gradient-to-br from-primary to-blue-700 hover:brightness-110">
                     <Link href="/enrollment-form">Enroll Now</Link>
                   </Button>
                 </div>

@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <Logo className="h-8 w-8 text-secondary" />
+              <Logo className="h-8 w-8" />
               <span className="font-bold text-xl">FRANCOBUDDY</span>
             </Link>
             <p className="text-sm opacity-80">

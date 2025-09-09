@@ -25,7 +25,7 @@ export default function ContactPage() {
                   <WhatsappIcon className="mr-2" /> WhatsApp
                 </a>
               </Button>
-              <Button asChild variant="outline" size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+              <Button asChild variant="default" size="lg" className="bg-gradient-to-br from-primary/90 to-blue-700 hover:brightness-110">
                 <a href="mailto:frenchgta.ca@gmail.com">Email Us</a>
               </Button>
           </div>

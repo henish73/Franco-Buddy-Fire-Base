@@ -35,7 +35,7 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32 animate-background-pan">
         <div className="container mx-auto px-4 text-center animate-fade-in-up">
-          <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider shadow-lg">
+          <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider shadow-lg bg-gradient-to-br from-red-500 to-red-700 hover:brightness-110">
             🏆 TEF Canada Success Guaranteed
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -51,7 +51,7 @@ export default async function HomePage() {
             <Button asChild size="lg" variant="outline" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
               <Link href="/courses">Explore Our Courses</Link>
             </Button>
-            <Button asChild size="lg" variant="secondary" className="bg-gradient-to-br from-secondary to-red-700 hover:brightness-110">
+            <Button asChild size="lg" variant="default" className="bg-gradient-to-br from-primary to-blue-700 hover:brightness-110">
               <Link href="/enrollment-form">Enroll Now</Link>
             </Button>
           </div>

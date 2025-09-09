@@ -70,8 +70,8 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Logo className="h-8 w-8 text-secondary" />
-          <span className="font-bold text-xl text-secondary hidden sm:inline-block">FRANCOBUDDY</span>
+          <Logo className="h-8 w-8" />
+          <span className="font-bold text-xl hidden sm:inline-block">FRANCOBUDDY</span>
         </Link>
 
         <NavigationMenu className="hidden md:flex">
@@ -141,7 +141,7 @@ export default function Navbar() {
            <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
             <Link href="/enrollment-form">Enroll Now</Link>
           </Button>
-          <Button asChild variant="default" size="sm" className="animate-pulse">
+          <Button asChild variant="default" size="sm" className="animate-pulse bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
             <Link href="/book-demo">Book Free Demo</Link>
           </Button>
           <Sheet>
@@ -154,7 +154,7 @@ export default function Navbar() {
             <SheetContent side="right" className="w-[300px]">
               <div className="flex flex-col p-6 gap-6">
                 <Link href="/" className="flex items-center gap-2 mb-4">
-                  <Logo className="h-8 w-8 text-secondary" />
+                  <Logo className="h-8 w-8" />
                   <span className="font-bold text-lg">FRANCOBUDDY</span>
                 </Link>
                 <Link href="/" className="text-lg">Home</Link>
@@ -164,7 +164,7 @@ export default function Navbar() {
                 <Link href="/testimonials" className="text-lg">Testimonials</Link>
                 <Link href="/blog" className="text-lg">Blog</Link>
                 <Link href="/contact" className="text-lg">Contact Us</Link>
-                <Button asChild variant="default" className="mt-4">
+                <Button asChild variant="default" className="mt-4 bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground">
                   <Link href="/book-demo">Book Free Demo</Link>
                 </Button>
               </div>

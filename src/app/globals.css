@@ -17,10 +17,10 @@ body {
     --popover: 222 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 100% 30%; /* New Professional Blue: #0055a4 */
+    --primary: 210 100% 30%; /* Professional Blue: #0055a4 */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 0 84% 60%; /* Bright Red */
+    --secondary: 3 86% 57%; /* Bright Red: #ef4135 */
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217 33% 17%;
@@ -64,9 +64,9 @@ body {
     --card-foreground: 210 40% 98%;
     --popover: 222 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 100% 30%; /* New Professional Blue: #0055a4 */
+    --primary: 210 100% 30%; /* Professional Blue: #0055a4 */
     --primary-foreground: 210 40% 98%;
-    --secondary: 0 84% 60%;
+    --secondary: 3 86% 57%; /* Bright Red: #ef4135 */
     --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;

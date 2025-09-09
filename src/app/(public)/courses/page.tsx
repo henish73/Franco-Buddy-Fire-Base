@@ -63,7 +63,7 @@ export default function CoursesPage() {
                 <Link href="/book-demo">Book Free Demo</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/contact">Contact Us</Link>
+                <Link href="/ai-course-suggester">Use AI Suggester</Link>
               </Button>
             </div>
           </div>
