@@ -28,7 +28,7 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-secondary via-background to-background text-foreground py-20 md:py-32 animate-background-pan">
         <div className="container mx-auto px-4 text-center animate-fade-in-up">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">About FRANCOBUDDY</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">About FRANCOBUDDY</h1>
           <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
             Your dedicated partner in online French education, specializing in TEF Canada success.
           </p>
@@ -68,7 +68,7 @@ export default function AboutPage() {
             {ourApproachItems.map((item, index) => (
               <div key={index} className="p-6 rounded-lg text-center bg-card shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <item.icon className="h-10 w-10 text-primary mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-secondary mb-2">{item.title}</h3>
+                <h3 className="text-xl font-semibold text-secondary-foreground mb-2">{item.title}</h3>
                 <p className="text-muted-foreground text-sm">{item.description}</p>
               </div>
             ))}
@@ -83,7 +83,7 @@ export default function AboutPage() {
            <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-8">
             {ourValuesItems.map((item, index) => (
               <div key={index} className="text-center">
-                <h3 className="text-xl font-semibold text-secondary mb-2">{item.title}</h3>
+                <h3 className="text-xl font-semibold text-secondary-foreground mb-2">{item.title}</h3>
                 <p className="text-muted-foreground text-sm">{item.description}</p>
               </div>
             ))}

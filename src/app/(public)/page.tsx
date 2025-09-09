@@ -33,12 +33,12 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-secondary via-background to-background text-primary-foreground py-20 md:py-32 animate-background-pan">
+      <section className="bg-gradient-to-br from-secondary via-background to-background text-foreground py-20 md:py-32 animate-background-pan">
         <div className="container mx-auto px-4 text-center animate-fade-in-up">
           <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider shadow-lg">
             🏆 TEF Canada Success Guaranteed
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-primary">
             Master French. Transform Your Future.
           </h1>
           <p className="text-lg md:text-xl opacity-90 mb-10 max-w-3xl mx-auto">
@@ -101,7 +101,7 @@ export default async function HomePage() {
               <Card key={course.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-card animate-fade-in-up">
                 <Image src={course.image} alt={course.title} width={600} height={400} className="w-full h-48 object-cover" data-ai-hint={course.dataAiHint} />
                 <CardHeader>
-                  <CardTitle className="text-xl text-secondary">{course.title}</CardTitle>
+                  <CardTitle className="text-xl text-secondary-foreground">{course.title}</CardTitle>
                   <CardDescription>Duration: {course.duration}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow">
@@ -129,7 +129,7 @@ export default async function HomePage() {
                   <div className="bg-primary/10 p-3 rounded-full w-fit mb-4">
                     <item.icon className="h-8 w-8 text-primary" />
                   </div>
-                  <CardTitle className="text-xl text-secondary">{item.title}</CardTitle>
+                  <CardTitle className="text-xl text-secondary-foreground">{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">{item.description}</p>
@@ -153,7 +153,7 @@ export default async function HomePage() {
                         <AvatarFallback>{testimonial.author.substring(0,2)}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <h4 className="font-semibold text-secondary">{testimonial.author}</h4>
+                        <h4 className="font-semibold text-secondary-foreground">{testimonial.author}</h4>
                         <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                         <p className="text-sm text-muted-foreground">{testimonial.location}</p>
                     </div>

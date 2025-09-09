@@ -12,7 +12,7 @@ export default function ContactPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary via-background to-background text-primary-foreground py-20 md:py-32 animate-background-pan">
         <div className="container mx-auto px-4 text-center animate-fade-in-up">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Let's Talk About Your French Goals</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Let's Talk About Your French Goals</h1>
           <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
             We're here to answer your questions and help you start your TEF Canada journey. Reach out to us today!
           </p>
@@ -100,7 +100,7 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
              <Card className="text-center p-6 shadow-lg">
               <Instagram className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-secondary mb-2">Instagram</h3>
+              <h3 className="text-xl font-semibold text-secondary-foreground mb-2">Instagram</h3>
               <p className="text-muted-foreground mb-4">Get daily tips, student spotlights, and behind-the-scenes content.</p>
               <Button asChild>
                 <a href="https://instagram.com/francobuddy" target="_blank" rel="noopener noreferrer">Follow @francobuddy</a>
@@ -108,7 +108,7 @@ export default function ContactPage() {
             </Card>
              <Card className="text-center p-6 shadow-lg">
               <Facebook className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-secondary mb-2">Facebook</h3>
+              <h3 className="text-xl font-semibold text-secondary-foreground mb-2">Facebook</h3>
               <p className="text-muted-foreground mb-4">Join our community, get updates, and connect with fellow learners.</p>
               <Button asChild>
                 <a href="https://facebook.com/francobuddy" target="_blank" rel="noopener noreferrer">Like our Page</a>

@@ -144,7 +144,7 @@ export default function Navbar() {
           <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
             <Link href="/enrollment-form">Enroll Now</Link>
           </Button>
-          <Button asChild variant="default" size="sm" className="bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
+          <Button asChild variant="default">
             <Link href="/book-demo">Book Free Demo</Link>
           </Button>
           <Sheet>
@@ -168,7 +168,7 @@ export default function Navbar() {
                 <Link href="/blog" className="text-lg">Blog</Link>
                 <Link href="/contact" className="text-lg">Contact Us</Link>
                  <Link href="/login" className="text-lg pt-4 border-t">Login</Link>
-                <Button asChild variant="default" className="mt-4 bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground">
+                <Button asChild variant="default" className="mt-4">
                   <Link href="/book-demo">Book Free Demo</Link>
                 </Button>
               </div>
@@ -205,3 +205,4 @@ const ListItem = React.forwardRef<
   )
 })
 ListItem.displayName = "ListItem"
+
