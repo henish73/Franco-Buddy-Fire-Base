@@ -4,6 +4,7 @@
 import { z } from 'zod';
 import { addEnrollmentAction } from '@/app/admin/enrollments/actions';
 import { addStudentAction } from '@/app/admin/students/actions';
+import type { StudentFormData } from '@/app/admin/students/schema';
 
 const enrollmentSchema = z.object({
   courseId: z.string(),
@@ -54,27 +55,22 @@ export async function submitEnrollmentForm(
     const lastName = lastNameParts.join(' ') || '';
 
     // Step 1: Create a new student record
-    // This is a simplified approach. A more robust system would check if the student
-    // already exists by email and link the new enrollment instead of creating a new student.
-    const newStudentData = new FormData();
-    newStudentData.append('firstName', firstName);
-    newStudentData.append('lastName', lastName);
-    newStudentData.append('email', email);
-    newStudentData.append('phone', phone);
-    newStudentData.append('enrolledCourse', courseName);
-    newStudentData.append('status', 'Active');
-    // A temporary password would be generated and emailed in a real app.
-    newStudentData.append('password', 'password123'); // Placeholder password
+    const studentResult = await addStudentAction({
+      firstName,
+      lastName,
+      email,
+      phone,
+      enrolledCourse: courseName,
+      status: "Active",
+      // A temporary password would be generated and emailed in a real app.
+      password: 'password123', // Placeholder password
+    });
 
-    const studentResult = await addStudentAction({message: '', isSuccess: false}, newStudentData);
-
-    if (!studentResult.isSuccess || !studentResult.data || !Array.isArray(studentResult.data) && !('id' in studentResult.data)) {
+    if (!studentResult.isSuccess || !studentResult.data || Array.isArray(studentResult.data)) {
       return { message: studentResult.message || "Failed to create a student profile for this enrollment.", isSuccess: false, errors: studentResult.errors };
     }
     
-    // We need to handle both cases where data is a single object or an array.
-    // Assuming addStudentAction returns the new student object in the data property.
-    const newStudent = Array.isArray(studentResult.data) ? studentResult.data[0] : studentResult.data;
+    const newStudent = studentResult.data;
     const studentId = newStudent?.id;
 
     if(!studentId) {

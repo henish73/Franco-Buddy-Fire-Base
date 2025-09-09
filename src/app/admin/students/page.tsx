@@ -15,7 +15,8 @@ import { MoreHorizontal, UserPlus, Edit, Trash2, RefreshCw } from "lucide-react"
 import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
-import { getStudentsAction, addStudentAction, updateStudentAction, deleteStudentAction, type Student, type StudentFormData, studentFormSchema, type StudentFormState } from './actions';
+import { getStudentsAction, addStudentAction, updateStudentAction, deleteStudentAction } from './actions';
+import { type Student, type StudentFormData, studentFormSchema, type StudentFormState } from './schema';
 
 const initialFormState: StudentFormState = { message: "", isSuccess: false, errors: {} };
 
@@ -28,7 +29,7 @@ const formActionHandler = (action: typeof addStudentAction | typeof updateStuden
         // This is a workaround since addStudentAction expects an object, not formData
         // In a more complex app, you might unify action signatures.
         if (action.name === 'addStudentAction') {
-            const result = await addStudentAction(studentData as StudentFormData);
+            const result = await addStudentAction(studentData as Omit<StudentFormData, 'id'>);
             return result;
         }
 
@@ -100,7 +101,7 @@ export default function AdminStudentsPage() {
                 toast({ title: "Error", description: result.message || "Failed to update student", variant: "destructive" });
             }
         } else {
-            const studentData = Object.fromEntries(formData) as unknown as StudentFormData;
+            const studentData = Object.fromEntries(formData) as unknown as Omit<StudentFormData, 'id'>;
             const result = await addStudentAction(studentData);
             if (result.isSuccess) {
                 toast({ title: "Success", description: result.message });
