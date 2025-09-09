@@ -1,7 +1,7 @@
 // src/app/admin/blog-management/page.tsx
 "use client";
 
-import { useState, useEffect, useTransition, FormEvent } from 'react';
+import { useState, useEffect, useTransition, FormEvent, useActionState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -16,7 +16,6 @@ import { z } from "zod";
 import { mockBlogPosts, type BlogPost, type BlogCategory, type BlogTag } from '@/app/(public)/blog/mockBlogPosts'; // Import types
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { useFormState } from 'react-dom';
 
 import { 
   getBlogPostsAction, 
@@ -91,7 +90,7 @@ export default function AdminBlogManagementPage() {
     resolver: zodResolver(blogPostClientSchema),
     defaultValues: { featured: false, categories: [], tags: [] }
   });
-  const [postFormServerState, postFormAction] = useFormState(editingPost ? updateBlogPostAction : addBlogPostAction, initialPostFormState);
+  const [postFormServerState, postFormAction] = useActionState(editingPost ? updateBlogPostAction : addBlogPostAction, initialPostFormState);
 
   // --- Categories State & Forms ---
   const [categories, setCategories] = useState<BlogCategory[]>([]);
@@ -101,7 +100,7 @@ export default function AdminBlogManagementPage() {
   const categoryForm = useForm<CategoryFormData>({
     resolver: zodResolver(categoryClientSchema),
   });
-  const [categoryFormServerState, categoryFormAction] = useFormState(editingCategory ? updateCategoryAction : addCategoryAction, initialTaxonomyFormState);
+  const [categoryFormServerState, categoryFormAction] = useActionState(editingCategory ? updateCategoryAction : addCategoryAction, initialTaxonomyFormState);
 
   // --- Tags State & Forms ---
   const [tags, setTags] = useState<BlogTag[]>([]);
@@ -111,7 +110,7 @@ export default function AdminBlogManagementPage() {
   const tagForm = useForm<TagFormData>({
     resolver: zodResolver(tagClientSchema),
   });
-  const [tagFormServerState, tagFormAction] = useFormState(editingTag ? updateTagAction : addTagAction, initialTaxonomyFormState);
+  const [tagFormServerState, tagFormAction] = useActionState(editingTag ? updateTagAction : addTagAction, initialTaxonomyFormState);
   
 
   // --- Data Fetching Effects ---
