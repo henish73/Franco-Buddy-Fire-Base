@@ -6,13 +6,7 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CheckCircle, Users, Clock, Award, UserCheck, BookOpen, Star, TrendingUp, Target, ChevronRight, ShieldCheck, Heart, GitCommit, User, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-
-const courses = [
-  { id: "a1-a2-beginner", title: "A1-A2 Beginner", description: "Start your French journey here. Build a strong foundation.", duration: "12 Weeks", image: "https://picsum.photos/600/400", dataAiHint: "students learning class" },
-  { id: "b1-b2-intermediate", title: "B1-B2 Intermediate", description: "Enhance your fluency and conversational skills for real-world scenarios.", duration: "16 Weeks", image: "https://picsum.photos/600/400", dataAiHint: "conversation discussion group" },
-  { id: "c1-c2-advanced", title: "C1-C2 Advanced", description: "Perfect your French to a near-native level for professional use.", duration: "20 Weeks", image: "https://picsum.photos/600/400", dataAiHint: "professional presentation" },
-  { id: "tef-canada-prep", title: "TEF Canada Test Prep", description: "Specialized, intensive preparation to ace the TEF exam.", duration: "8 Weeks", image: "https://picsum.photos/600/400", dataAiHint: "exam study focus" },
-];
+import { coursesData } from './courses/mockCoursesData';
 
 const testimonials = [
   { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF exam, which was crucial for my PR application. The instructors are simply the best.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
@@ -33,7 +27,7 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-secondary via-background to-background text-foreground py-20 md:py-32 animate-background-pan">
+      <section className="bg-gradient-to-br from-background via-primary/10 to-background text-foreground py-20 md:py-32">
         <div className="container mx-auto px-4 text-center animate-fade-in-up">
           <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider shadow-lg">
             🏆 TEF Canada Success Guaranteed
@@ -97,15 +91,15 @@ export default async function HomePage() {
         <div className="container mx-auto px-4">
           <SectionTitle title="Our Courses" subtitle="Programs designed for every stage of your French learning journey, from absolute beginner to advanced fluency and test preparation." />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {courses.map((course) => (
+            {coursesData.map((course) => (
               <Card key={course.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-card animate-fade-in-up">
-                <Image src={course.image} alt={course.title} width={600} height={400} className="w-full h-48 object-cover" data-ai-hint={course.dataAiHint} />
+                <Image src={course.imageUrl || 'https://placehold.co/600x400.png'} alt={course.title} width={600} height={400} className="w-full h-48 object-cover" data-ai-hint={course.imageAiHint} />
                 <CardHeader>
-                  <CardTitle className="text-xl text-secondary-foreground">{course.title}</CardTitle>
+                  <CardTitle className="text-xl text-primary">{course.title}</CardTitle>
                   <CardDescription>Duration: {course.duration}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow">
-                  <p className="text-sm text-muted-foreground">{course.description}</p>
+                  <p className="text-sm text-muted-foreground">{course.shortDescription}</p>
                 </CardContent>
                 <CardFooter>
                   <Button asChild variant="outline" className="w-full">
@@ -129,7 +123,7 @@ export default async function HomePage() {
                   <div className="bg-primary/10 p-3 rounded-full w-fit mb-4">
                     <item.icon className="h-8 w-8 text-primary" />
                   </div>
-                  <CardTitle className="text-xl text-secondary-foreground">{item.title}</CardTitle>
+                  <CardTitle className="text-xl text-foreground">{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">{item.description}</p>
@@ -153,7 +147,7 @@ export default async function HomePage() {
                         <AvatarFallback>{testimonial.author.substring(0,2)}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <h4 className="font-semibold text-secondary-foreground">{testimonial.author}</h4>
+                        <h4 className="font-semibold text-primary">{testimonial.author}</h4>
                         <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                         <p className="text-sm text-muted-foreground">{testimonial.location}</p>
                     </div>
@@ -172,12 +166,12 @@ export default async function HomePage() {
       </section>
 
       {/* About Snippet Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-primary via-background to-background text-primary-foreground">
+      <section className="py-16 md:py-24 bg-gradient-to-br from-background via-primary/10 to-background text-foreground">
         <div className="container mx-auto px-4 animate-fade-in-up">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 max-w-5xl mx-auto">
             <Image src="https://picsum.photos/300/300" alt="Certified French Instructor" width={300} height={300} className="rounded-full shadow-lg border-4 border-secondary" data-ai-hint="instructor teacher portrait" />
             <div className="text-center md:text-left">
-              <h3 className="text-3xl font-semibold mb-4">Meet Your Dedicated French Learning Partner</h3>
+              <h3 className="text-3xl font-semibold mb-4 text-primary">Meet Your Dedicated French Learning Partner</h3>
               <p className="mb-4 opacity-90">
                 At FRANCOBUDDY, we are more than just a language school; we are your partners in achieving your Canadian dream. Our mission is to provide high-quality, personalized French instruction that empowers you to succeed in the TEF Canada exam and beyond. With over 250 students successfully trained, our results speak for themselves.
               </p>

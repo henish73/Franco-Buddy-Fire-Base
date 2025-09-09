@@ -20,8 +20,8 @@ body {
     --primary: 177 25% 53%; /* #66a8a4 */
     --primary-foreground: 233 34% 10%; /* Darker for text on primary */
 
-    --secondary: 191 75% 18%; /* #0d414c */
-    --secondary-foreground: 0 0% 79%;
+    --secondary: 3 95% 54%; /* #EF4135 - Red from logo, for accents */
+    --secondary-foreground: 0 0% 95%;
 
     --muted: 233 34% 22%;
     --muted-foreground: 0 0% 60%;
@@ -64,8 +64,8 @@ body {
     --popover-foreground: 0 0% 79%;
     --primary: 177 25% 53%; /* #66a8a4 */
     --primary-foreground: 233 34% 10%;
-    --secondary: 191 75% 18%; /* #0d414c */
-    --secondary-foreground: 0 0% 79%;
+    --secondary: 3 95% 54%; /* #EF4135 - Red */
+    --secondary-foreground: 0 0% 95%;
     --muted: 233 34% 22%;
     --muted-foreground: 0 0% 60%;
     --accent: 233 34% 25%;

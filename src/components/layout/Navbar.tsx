@@ -146,12 +146,13 @@ export default function Navbar() {
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-          <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
-            <Link href="/enrollment-form">Enroll Now</Link>
-          </Button>
-          <Button asChild variant="default">
+          <Button asChild size="sm" className="hidden lg:inline-flex bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110 transition-all">
             <Link href="/book-demo">Book Free Demo</Link>
           </Button>
+           <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
+            <Link href="/enrollment-form">Enroll Now</Link>
+          </Button>
+
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="md:hidden">
@@ -175,6 +176,9 @@ export default function Navbar() {
                  <Link href="/login" className="text-lg pt-4 border-t">Login</Link>
                 <Button asChild variant="default" className="mt-4">
                   <Link href="/book-demo">Book Free Demo</Link>
+                </Button>
+                 <Button asChild variant="outline" className="mt-2">
+                  <Link href="/enrollment-form">Enroll Now</Link>
                 </Button>
               </div>
             </SheetContent>
