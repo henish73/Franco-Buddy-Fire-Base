@@ -1,58 +1,87 @@
 import SectionTitle from '@/components/shared/SectionTitle';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users } from 'lucide-react';
+import Link from 'next/link';
 
 export default function GuidelinesPage() {
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
-      <SectionTitle title="Community Guidelines" subtitle="Fostering a respectful and productive learning environment." />
+      <SectionTitle title="Community Guidelines & Policies" subtitle="Fostering a respectful and productive learning environment." />
       <Card className="max-w-3xl mx-auto shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-6 w-6 text-primary" />
-            FrancoBuddy Community Guidelines
+            FRANCOBUDDY Guidelines and Policies
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-          <p><strong>Last Updated:</strong> {new Date().toLocaleDateString()}</p>
-          
-          <p>Welcome to the FrancoBuddy community! To ensure a positive, respectful, and productive learning environment for everyone, we ask all members (students, instructors, and staff) to adhere to the following guidelines. These guidelines apply to all interactions on our platform, including live classes, forums, messaging, and any other communication channels.</p>
-          
-          <h3 className="font-semibold text-foreground pt-2">1. Be Respectful</h3>
-          <p>Placeholder: Treat all members with courtesy and respect. Disagreements may occur, but they should be handled constructively and politely. Harassment, discrimination, bullying, hate speech, or any form of personal attack will not be tolerated.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">2. Stay On Topic</h3>
-          <p>Placeholder: Keep discussions and contributions relevant to TEF Canada preparation, French language learning, and related topics. Avoid spamming, off-topic conversations, or excessive self-promotion.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">3. Protect Privacy</h3>
-          <p>Placeholder: Do not share personal information of others without their explicit consent. Be mindful of your own privacy and avoid sharing sensitive personal details in public forums.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">4. No Cheating or Plagiarism</h3>
-          <p>Placeholder: Academic integrity is paramount. Do not share or solicit exam answers, engage in plagiarism, or any form of academic dishonesty. All submitted work should be your own.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">5. Constructive Feedback</h3>
-          <p>Placeholder: When providing feedback to peers or instructors, ensure it is constructive, specific, and aimed at helping others improve. Similarly, be open to receiving constructive feedback.</p>
-          
-          <h3 className="font-semibold text-foreground pt-2">6. Appropriate Content</h3>
-          <p>Placeholder: Do not post or share content that is obscene, defamatory, threatening, infringing on intellectual property rights, or otherwise illegal or inappropriate.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">7. Use of Platform Resources</h3>
-          <p>Placeholder: Platform resources, including course materials, are for personal educational use only. Do not distribute, sell, or share these materials outside the FrancoBuddy platform without authorization.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">8. Reporting Violations</h3>
-          <p>Placeholder: If you witness or experience a violation of these guidelines, please report it to our support team immediately via [Contact Method, e.g., email or contact form].</p>
-          
-          <h3 className="font-semibold text-foreground pt-2">9. Consequences of Violations</h3>
-          <p>Placeholder: Violations of these guidelines may result in warnings, temporary suspension, or permanent removal from the FrancoBuddy platform, at our sole discretion. We reserve the right to remove any content deemed inappropriate.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">10. Amendments</h3>
-          <p>Placeholder: These guidelines may be updated from time to time. Please review them periodically.</p>
-
-          <p className="pt-4">Thank you for helping us create a supportive and enriching learning community at FrancoBuddy!</p>
-
-          <p className="font-bold text-destructive pt-4">
-            IMPORTANT: This is placeholder text. Develop these guidelines further to reflect the specific interactions and features of your platform.
-          </p>
+        <CardContent className="space-y-4 text-muted-foreground leading-relaxed prose prose-lg dark:prose-invert max-w-none">
+            <p>At FRANCOBUDDY, we are committed to providing a safe, respectful, and effective learning environment for all students, teachers, and staff. Please review our comprehensive guidelines and policies below.</p>
+            <h2>1. Student Conduct</h2>
+            <ul>
+                <li>Be respectful to instructors, staff, and fellow students at all times.</li>
+                <li>Participate actively and positively in all classes and activities.</li>
+                <li>Use appropriate language and behavior in all communications.</li>
+                <li>Do not engage in disruptive, harassing, or discriminatory behavior.</li>
+            </ul>
+            <h2>2. Teacher Conduct</h2>
+            <ul>
+                <li>Provide high-quality, professional instruction and support.</li>
+                <li>Foster an inclusive and respectful classroom environment.</li>
+                <li>Maintain confidentiality of student information.</li>
+                <li>Report any concerns or violations to administration promptly.</li>
+            </ul>
+            <h2>3. Online Class Etiquette</h2>
+            <ul>
+                <li>Join classes on time and be prepared with necessary materials.</li>
+                <li>Mute your microphone when not speaking to minimize background noise.</li>
+                <li>Dress appropriately for video sessions.</li>
+                <li>Use the chat and other tools respectfully and constructively.</li>
+            </ul>
+            <h2>4. Anti-Harassment and Discrimination</h2>
+            <ul>
+                <li>Harassment, bullying, or discrimination of any kind will not be tolerated.</li>
+                <li>Report any incidents to <a href="mailto:frenchgta.ca@gmail.com">frenchgta.ca@gmail.com</a> immediately.</li>
+            </ul>
+            <h2>5. Academic Honesty</h2>
+            <ul>
+                <li>All work submitted must be your own.</li>
+                <li>Do not engage in cheating, plagiarism, or unauthorized collaboration.</li>
+            </ul>
+            <h2>6. Attendance and Participation</h2>
+            <ul>
+                <li>Regular attendance is expected for all enrolled courses.</li>
+                <li>Notify your instructor in advance if you must miss a class.</li>
+                <li>Active participation is essential for language learning success.</li>
+            </ul>
+            <h2>7. Payment and Refund Policy</h2>
+            <ul>
+                <li>All course fees must be paid in advance unless otherwise stated.</li>
+                <li>Refunds are subject to our refund policy. Contact <a href="mailto:frenchgta.ca@gmail.com">frenchgta.ca@gmail.com</a> for details.</li>
+            </ul>
+            <h2>8. Technology Use</h2>
+            <ul>
+                <li>Use the online platform and resources for educational purposes only.</li>
+                <li>Do not share your login credentials or access with others.</li>
+                <li>Do not attempt to disrupt or compromise the security of our systems.</li>
+            </ul>
+            <h2>9. Privacy and Confidentiality</h2>
+            <ul>
+                <li>Respect the privacy of others. Do not record or share classes without permission.</li>
+                <li>Personal information is handled according to our <Link href="/privacy">Privacy Policy</Link>.</li>
+            </ul>
+            <h2>10. Reporting Issues</h2>
+            <ul>
+                <li>If you experience or witness any inappropriate behavior, technical issues, or policy violations, report them to <a href="mailto:frenchgta.ca@gmail.com">frenchgta.ca@gmail.com</a> immediately.</li>
+            </ul>
+            <h2>11. Disciplinary Actions</h2>
+            <ul>
+                <li>Violations of these guidelines may result in warnings, suspension, or removal from courses without refund.</li>
+                <li>Serious violations may be reported to appropriate authorities.</li>
+            </ul>
+            <h2>12. Updates to Guidelines</h2>
+            <p>We may update these guidelines and policies as needed. Please review them regularly for any changes.</p>
+            <h2>13. Contact Us</h2>
+            <p>If you have any questions or concerns about these guidelines, please contact us at <a href="mailto:frenchgta.ca@gmail.com">frenchgta.ca@gmail.com</a>.</p>
         </CardContent>
       </Card>
     </div>

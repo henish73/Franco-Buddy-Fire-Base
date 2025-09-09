@@ -5,55 +5,72 @@ import { FileText } from 'lucide-react';
 export default function TermsPage() {
   return (
     <div className="container mx-auto px-4 py-16 md:py-24">
-      <SectionTitle title="Terms of Service" subtitle="Please read these terms carefully." />
+      <SectionTitle title="Terms and Conditions" subtitle="Please read these terms carefully." />
       <Card className="max-w-3xl mx-auto shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-6 w-6 text-primary" />
-            FrancoBuddy Terms of Service
+            FRANCOBUDDY Terms and Conditions
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-          <p><strong>Last Updated:</strong> {new Date().toLocaleDateString()}</p>
-          
-          <p>This is a placeholder for the Terms of Service. It is crucial to replace this with comprehensive and legally sound terms before launching your platform.</p>
-          
-          <h3 className="font-semibold text-foreground pt-2">1. Acceptance of Terms</h3>
-          <p>Placeholder: By accessing or using the FrancoBuddy platform and services, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, do not use our services.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">2. Services Provided</h3>
-          <p>Placeholder: FrancoBuddy provides online TEF Canada preparation courses, learning materials, and related services as described on our platform.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">3. User Accounts</h3>
-          <p>Placeholder: You may need to register for an account to access certain features. You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">4. Payments and Refunds</h3>
-          <p>Placeholder: Course fees are as listed on our Pricing page. Payments are processed through third-party providers. Refund policies, if any, will be clearly stated (e.g., typically no refunds after course commencement, or specific conditions for refunds).</p>
-
-          <h3 className="font-semibold text-foreground pt-2">5. Intellectual Property</h3>
-          <p>Placeholder: All content on the FrancoBuddy platform, including course materials, text, graphics, logos, and software, is the property of FrancoBuddy or its licensors and is protected by copyright and other intellectual property laws. You may not reproduce, distribute, or create derivative works without explicit permission.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">6. User Conduct</h3>
-          <p>Placeholder: You agree to use our services responsibly and not to engage in any activity that is unlawful, harmful, or disruptive. Refer to our Community Guidelines for more details.</p>
-          
-          <h3 className="font-semibold text-foreground pt-2">7. Disclaimers</h3>
-          <p>Placeholder: While we strive to provide high-quality educational services, FrancoBuddy does not guarantee any specific TEF Canada exam results or immigration outcomes. Success depends on individual effort, proficiency, and other factors.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">8. Limitation of Liability</h3>
-          <p>Placeholder: To the fullest extent permitted by law, FrancoBuddy shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of or related to your use of our services.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">9. Changes to Terms</h3>
-          <p>Placeholder: We reserve the right to modify these Terms at any time. We will notify you of significant changes. Your continued use of the services after such changes constitutes acceptance of the new Terms.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">10. Governing Law</h3>
-          <p>Placeholder: These Terms shall be governed by and construed in accordance with the laws of the Province of Ontario, Canada, without regard to its conflict of law principles.</p>
-
-          <h3 className="font-semibold text-foreground pt-2">11. Contact Us</h3>
-          <p>Placeholder: If you have any questions about these Terms, please contact us at [Your Contact Email/Page].</p>
-
-          <p className="font-bold text-destructive pt-4">
-            IMPORTANT: This is placeholder text. Consult with a legal professional to draft proper Terms of Service tailored to your specific operations and legal requirements.
-          </p>
+        <CardContent className="space-y-4 text-muted-foreground leading-relaxed prose prose-lg dark:prose-invert max-w-none">
+            <p>Welcome to FRANCOBUDDY. By accessing or using our website and services, you agree to comply with and be bound by the following terms and conditions. Please read them carefully before using our platform.</p>
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing or using FRANCOBUDDY, you agree to be bound by these Terms and Conditions and our Privacy Policy. If you do not agree, please do not use our services.</p>
+            <h2>2. Eligibility</h2>
+            <p>You must be at least 13 years old to use our services. If you are under 18, you must have parental or guardian consent.</p>
+            <h2>3. Account Registration and Security</h2>
+            <ul>
+                <li>You agree to provide accurate, current, and complete information during registration.</li>
+                <li>You are responsible for maintaining the confidentiality of your account and password.</li>
+                <li>You agree to notify us immediately of any unauthorized use of your account.</li>
+            </ul>
+            <h2>4. Payments and Refunds</h2>
+            <ul>
+                <li>All course fees must be paid in advance unless otherwise stated.</li>
+                <li>Refunds are subject to our refund policy. Please contact <a href="mailto:frenchgta.ca@gmail.com">frenchgta.ca@gmail.com</a> for details.</li>
+                <li>We reserve the right to change pricing at any time, but changes will not affect existing enrollments.</li>
+            </ul>
+            <h2>5. Intellectual Property</h2>
+            <ul>
+                <li>All content, materials, and resources on this site are the intellectual property of FRANCOBUDDY or its licensors.</li>
+                <li>You may not reproduce, distribute, modify, or create derivative works without written permission.</li>
+            </ul>
+            <h2>6. User Content</h2>
+            <ul>
+                <li>You retain ownership of content you submit, but grant us a worldwide, royalty-free license to use, display, and distribute it for educational and promotional purposes.</li>
+                <li>You are responsible for the legality and appropriateness of your content.</li>
+            </ul>
+            <h2>7. Prohibited Conduct</h2>
+            <ul>
+                <li>Do not use our services for unlawful, harmful, or abusive purposes.</li>
+                <li>Do not harass, threaten, or impersonate others.</li>
+                <li>Do not upload viruses, malware, or any harmful code.</li>
+                <li>Do not attempt to gain unauthorized access to our systems or data.</li>
+                <li>Do not use our content for commercial purposes without permission.</li>
+            </ul>
+            <h2>8. Third-Party Links</h2>
+            <p>Our website may contain links to third-party sites. We are not responsible for the content or privacy practices of those sites.</p>
+            <h2>9. Disclaimers</h2>
+            <ul>
+                <li>Our services are provided "as is" and "as available" without warranties of any kind.</li>
+                <li>We do not guarantee that our services will be error-free, secure, or uninterrupted.</li>
+                <li>We are not responsible for any loss or damage resulting from your use of our services.</li>
+            </ul>
+            <h2>10. Limitation of Liability</h2>
+            <p>To the fullest extent permitted by law, FRANCOBUDDY and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues.</p>
+            <h2>11. Indemnification</h2>
+            <p>You agree to indemnify and hold harmless FRANCOBUDDY, its officers, employees, and affiliates from any claims, damages, or expenses arising from your use of our services or violation of these terms.</p>
+            <h2>12. Termination</h2>
+            <p>We reserve the right to suspend or terminate your account at our discretion, without notice, for any violation of these terms.</p>
+            <h2>13. Governing Law</h2>
+            <p>These terms are governed by the laws of Ontario, Canada. Any disputes shall be resolved in the courts of Ontario.</p>
+            <h2>14. Dispute Resolution</h2>
+            <p>We encourage you to contact us first to resolve any issues. If a dispute cannot be resolved informally, it will be subject to binding arbitration in Ontario, Canada.</p>
+            <h2>15. Changes to Terms</h2>
+            <p>We may update these terms at any time. Continued use of our services constitutes acceptance of the revised terms.</p>
+            <h2>16. Contact Us</h2>
+            <p>If you have any questions about these Terms and Conditions, please contact us at <a href="mailto:frenchgta.ca@gmail.com">frenchgta.ca@gmail.com</a>.</p>
         </CardContent>
       </Card>
     </div>
