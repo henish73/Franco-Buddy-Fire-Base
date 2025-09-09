@@ -3,9 +3,7 @@
 
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-// For now, comments are added to the in-memory mock data.
-// In a real app, this would interact with Firestore.
-import { simulatedBlogPostsDb } from '@/app/admin/blog-management/postActions'; 
+import { db } from '@/app/admin/blog-management/db'; // Import the persistent in-memory DB
 import { type BlogComment } from './mockBlogPosts';
 
 const commentSchema = z.object({
@@ -54,7 +52,7 @@ export async function addCommentAction(
   }
 
   try {
-    const postIndex = simulatedBlogPostsDb.findIndex(p => p.id === postId);
+    const postIndex = db.posts.findIndex(p => p.id === postId);
     if (postIndex === -1) {
       return { message: "Blog post not found.", isSuccess: false };
     }
@@ -69,10 +67,10 @@ export async function addCommentAction(
       // status: 'pending' // Add this when moderation is implemented
     };
 
-    if (!simulatedBlogPostsDb[postIndex].comments) {
-      simulatedBlogPostsDb[postIndex].comments = [];
+    if (!db.posts[postIndex].comments) {
+      db.posts[postIndex].comments = [];
     }
-    simulatedBlogPostsDb[postIndex].comments!.push(newComment);
+    db.posts[postIndex].comments!.push(newComment);
     
     console.log(`Comment submitted for post ID ${postId} (simulated save):`, newComment);
     
