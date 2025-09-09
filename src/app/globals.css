@@ -17,7 +17,7 @@ body {
     --popover: 222 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217 91% 60%; /* Bright Blue */
+    --primary: 210 100% 30%; /* New Professional Blue: #0055a4 */
     --primary-foreground: 210 40% 98%;
 
     --secondary: 0 84% 60%; /* Bright Red */
@@ -64,7 +64,7 @@ body {
     --card-foreground: 210 40% 98%;
     --popover: 222 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
+    --primary: 210 100% 30%; /* New Professional Blue: #0055a4 */
     --primary-foreground: 210 40% 98%;
     --secondary: 0 84% 60%;
     --secondary-foreground: 210 40% 98%;

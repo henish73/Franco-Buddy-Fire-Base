@@ -10,14 +10,14 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20 md:py-32">
-        <div className="container mx-auto px-4 text-center">
+      <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32 animate-background-pan">
+        <div className="container mx-auto px-4 text-center animate-fade-in-up">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Let's Talk About Your French Goals</h1>
           <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
             We're here to answer your questions and help you start your TEF Canada journey. Reach out to us today!
           </p>
            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Button asChild variant="secondary" size="lg">
+              <Button asChild variant="secondary" size="lg" className="bg-gradient-to-br from-red-500 to-red-700 hover:brightness-110">
                 <a href="tel:+13653062049">Call Now</a>
               </Button>
                <Button asChild variant="outline" size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
