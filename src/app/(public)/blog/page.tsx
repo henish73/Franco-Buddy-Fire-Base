@@ -7,6 +7,8 @@ import BlogList from './BlogList'; // New component for client-side logic
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
+export const revalidate = 0; // Ensure this page is always dynamically rendered
+
 async function getBlogData() {
   const [postsResult, categoriesResult, tagsResult] = await Promise.all([
     getBlogPostsAction(),

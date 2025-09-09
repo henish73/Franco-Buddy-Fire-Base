@@ -3,49 +3,8 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { type BlogCategory, type BlogTag, mockBlogPosts } from "@/app/(public)/blog/mockBlogPosts"; // Import types
-
-// --- Simulated Database for Categories & Tags ---
-// In a real app, this would be Firestore.
-
-// Initialize with reduce and store in internal temporary const variables
-const _initialSimulatedCategoriesDb: BlogCategory[] = mockBlogPosts.reduce((acc, post) => {
-  post.categories.forEach(catName => {
-    if (!acc.find(c => c.name === catName)) {
-      const slug = catName.toLowerCase().replace(/\s+/g, '-');
-      acc.push({ 
-        id: `cat-${slug}-${Math.random().toString(36).substring(7)}`, 
-        name: catName, 
-        slug: slug, 
-        description: `Description for ${catName}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
-    }
-  });
-  return acc;
-}, [] as BlogCategory[]);
-
-const _initialSimulatedTagsDb: BlogTag[] = mockBlogPosts.reduce((acc, post) => {
-  post.tags.forEach(tagName => {
-    if (!acc.find(t => t.name === tagName)) {
-      const slug = tagName.toLowerCase().replace(/\s+/g, '-');
-      acc.push({ 
-        id: `tag-${slug}-${Math.random().toString(36).substring(7)}`, 
-        name: tagName, 
-        slug: slug,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      });
-    }
-  });
-  return acc;
-}, [] as BlogTag[]);
-
-// These are module-local and NOT exported directly.
-let simulatedCategoriesDb: BlogCategory[] = [..._initialSimulatedCategoriesDb];
-let simulatedTagsDb: BlogTag[] = [..._initialSimulatedTagsDb];
-
+import { type BlogCategory, type BlogTag } from "@/app/(public)/blog/mockBlogPosts";
+import { db } from "./db"; // Import the persistent in-memory DB
 
 // --- Zod Schemas ---
 const categoryActionSchema = z.object({
@@ -63,7 +22,6 @@ const tagActionSchema = z.object({
 });
 export type TagFormData = z.infer<typeof tagActionSchema>;
 
-
 // --- Form State Type ---
 export type TaxonomyFormState = {
   message: string;
@@ -71,7 +29,7 @@ export type TaxonomyFormState = {
     name?: string[];
     slug?: string[];
     description?: string[];
-    form?: string[]; // For general form errors
+    form?: string[];
   };
   isSuccess: boolean;
   data?: BlogCategory | BlogTag | BlogCategory[] | BlogTag[];
@@ -80,12 +38,10 @@ export type TaxonomyFormState = {
 // --- Category Actions ---
 export async function getCategoriesAction(): Promise<TaxonomyFormState> {
   try {
-    // In a real app: await db.collection('blog_categories').orderBy('name').get();
-    console.log("[Server Action] Fetching categories from simulated DB.");
     return {
       message: "Categories fetched successfully.",
       isSuccess: true,
-      data: [...simulatedCategoriesDb].sort((a, b) => a.name.localeCompare(b.name)),
+      data: [...db.categories].sort((a, b) => a.name.localeCompare(b.name)),
     };
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -107,8 +63,8 @@ export async function addCategoryAction(
       isSuccess: false,
     };
   }
-   // Check for duplicate slug before adding
-  if (simulatedCategoriesDb.some(cat => cat.slug === validatedFields.data.slug)) {
+
+  if (db.categories.some(cat => cat.slug === validatedFields.data.slug)) {
     return {
       message: "Category slug already exists. Please use a unique slug.",
       errors: { slug: ["Slug already exists. Please use a unique slug."] },
@@ -123,11 +79,9 @@ export async function addCategoryAction(
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    // In a real app: await db.collection('blog_categories').add(newCategory);
-    simulatedCategoriesDb.push(newCategory);
-    console.log("[Server Action] Added new category to simulated DB:", newCategory);
+    db.categories.push(newCategory);
     revalidatePath("/admin/blog-management");
-    revalidatePath("/blog");
+    revalidatePath("/blog", "layout");
     return { message: "Category added successfully!", isSuccess: true, data: newCategory };
   } catch (error) {
     console.error("Error adding category:", error);
@@ -155,14 +109,13 @@ export async function updateCategoryAction(
   }
 
   const categoryId = validatedFields.data.id;
-  const categoryIndex = simulatedCategoriesDb.findIndex(cat => cat.id === categoryId);
+  const categoryIndex = db.categories.findIndex(cat => cat.id === categoryId);
   if (categoryIndex === -1) {
     return { message: "Category not found.", isSuccess: false };
   }
   
-  // Check for duplicate slug if it's being changed
-  if (validatedFields.data.slug !== simulatedCategoriesDb[categoryIndex].slug && 
-      simulatedCategoriesDb.some(cat => cat.slug === validatedFields.data.slug && cat.id !== categoryId)) {
+  if (validatedFields.data.slug !== db.categories[categoryIndex].slug && 
+      db.categories.some(cat => cat.slug === validatedFields.data.slug && cat.id !== categoryId)) {
     return {
       message: "Category slug already exists. Please use a unique slug.",
       errors: { slug: ["Slug already exists. Please use a unique slug."] },
@@ -171,7 +124,7 @@ export async function updateCategoryAction(
   }
 
   try {
-    const originalCategory = simulatedCategoriesDb[categoryIndex];
+    const originalCategory = db.categories[categoryIndex];
     const updatedCategoryData = validatedFields.data;
 
     const updatedCategory: BlogCategory = {
@@ -180,14 +133,10 @@ export async function updateCategoryAction(
       updatedAt: new Date().toISOString(),
     };
     
-    simulatedCategoriesDb[categoryIndex] = updatedCategory;
-    console.log("[Server Action] Updated category in simulated DB:", updatedCategory);
+    db.categories[categoryIndex] = updatedCategory;
     revalidatePath("/admin/blog-management");
-    revalidatePath("/blog");
-    revalidatePath(`/blog/category/${updatedCategory.slug}`);
-    if (originalCategory.slug !== updatedCategory.slug) {
-      revalidatePath(`/blog/category/${originalCategory.slug}`);
-    }
+    revalidatePath("/blog", "layout");
+
     return { message: "Category updated successfully!", isSuccess: true, data: updatedCategory };
   } catch (error) {
     console.error("Error updating category:", error);
@@ -197,16 +146,13 @@ export async function updateCategoryAction(
 
 export async function deleteCategoryAction(categoryId: string): Promise<TaxonomyFormState> {
   try {
-    const initialLength = simulatedCategoriesDb.length;
-    const deletedCategory = simulatedCategoriesDb.find(cat => cat.id === categoryId);
-    simulatedCategoriesDb = simulatedCategoriesDb.filter(cat => cat.id !== categoryId);
-    if (!deletedCategory || simulatedCategoriesDb.length === initialLength) {
+    const initialLength = db.categories.length;
+    db.categories = db.categories.filter(cat => cat.id !== categoryId);
+    if (db.categories.length === initialLength) {
         return { message: "Category not found or already deleted.", isSuccess: false };
     }
-    console.log(`[Server Action] Deleted category ${categoryId} from simulated DB.`);
     revalidatePath("/admin/blog-management");
-    revalidatePath("/blog");
-    revalidatePath(`/blog/category/${deletedCategory.slug}`);
+    revalidatePath("/blog", "layout");
     return { message: "Category deleted successfully!", isSuccess: true };
   } catch (error) {
     console.error("Error deleting category:", error);
@@ -214,15 +160,13 @@ export async function deleteCategoryAction(categoryId: string): Promise<Taxonomy
   }
 }
 
-
 // --- Tag Actions ---
 export async function getTagsAction(): Promise<TaxonomyFormState> {
   try {
-    console.log("[Server Action] Fetching tags from simulated DB.");
     return {
       message: "Tags fetched successfully.",
       isSuccess: true,
-      data: [...simulatedTagsDb].sort((a, b) => a.name.localeCompare(b.name)),
+      data: [...db.tags].sort((a, b) => a.name.localeCompare(b.name)),
     };
   } catch (error) {
     console.error("Error fetching tags:", error);
@@ -244,8 +188,7 @@ export async function addTagAction(
       isSuccess: false,
     };
   }
-  // Check for duplicate slug before adding
-  if (simulatedTagsDb.some(tag => tag.slug === validatedFields.data.slug)) {
+  if (db.tags.some(tag => tag.slug === validatedFields.data.slug)) {
     return {
       message: "Tag slug already exists. Please use a unique slug.",
       errors: { slug: ["Slug already exists. Please use a unique slug."] },
@@ -260,10 +203,9 @@ export async function addTagAction(
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    simulatedTagsDb.push(newTag);
-    console.log("[Server Action] Added new tag to simulated DB:", newTag);
+    db.tags.push(newTag);
     revalidatePath("/admin/blog-management");
-    revalidatePath("/blog");
+    revalidatePath("/blog", "layout");
     return { message: "Tag added successfully!", isSuccess: true, data: newTag };
   } catch (error) {
     console.error("Error adding tag:", error);
@@ -290,14 +232,13 @@ export async function updateTagAction(
   }
   
   const tagId = validatedFields.data.id;
-  const tagIndex = simulatedTagsDb.findIndex(tag => tag.id === tagId);
+  const tagIndex = db.tags.findIndex(tag => tag.id === tagId);
   if (tagIndex === -1) {
     return { message: "Tag not found.", isSuccess: false };
   }
 
-  // Check for duplicate slug if it's being changed
-  if (validatedFields.data.slug !== simulatedTagsDb[tagIndex].slug && 
-      simulatedTagsDb.some(tag => tag.slug === validatedFields.data.slug && tag.id !== tagId)) {
+  if (validatedFields.data.slug !== db.tags[tagIndex].slug && 
+      db.tags.some(tag => tag.slug === validatedFields.data.slug && tag.id !== tagId)) {
     return {
       message: "Tag slug already exists. Please use a unique slug.",
       errors: { slug: ["Slug already exists. Please use a unique slug."] },
@@ -306,7 +247,7 @@ export async function updateTagAction(
   }
 
   try {
-    const originalTag = simulatedTagsDb[tagIndex];
+    const originalTag = db.tags[tagIndex];
     const updatedTagData = validatedFields.data;
 
     const updatedTag: BlogTag = {
@@ -314,14 +255,9 @@ export async function updateTagAction(
       ...updatedTagData,
       updatedAt: new Date().toISOString(),
     };
-    simulatedTagsDb[tagIndex] = updatedTag;
-    console.log("[Server Action] Updated tag in simulated DB:", updatedTag);
+    db.tags[tagIndex] = updatedTag;
     revalidatePath("/admin/blog-management");
-    revalidatePath("/blog");
-    revalidatePath(`/blog/tag/${updatedTag.slug}`);
-    if (originalTag.slug !== updatedTag.slug) {
-      revalidatePath(`/blog/tag/${originalTag.slug}`);
-    }
+    revalidatePath("/blog", "layout");
     return { message: "Tag updated successfully!", isSuccess: true, data: updatedTag };
   } catch (error) {
     console.error("Error updating tag:", error);
@@ -331,20 +267,16 @@ export async function updateTagAction(
 
 export async function deleteTagAction(tagId: string): Promise<TaxonomyFormState> {
   try {
-    const initialLength = simulatedTagsDb.length;
-    const deletedTag = simulatedTagsDb.find(tag => tag.id === tagId);
-    simulatedTagsDb = simulatedTagsDb.filter(tag => tag.id !== tagId);
-     if (!deletedTag || simulatedTagsDb.length === initialLength) {
+    const initialLength = db.tags.length;
+    db.tags = db.tags.filter(tag => tag.id !== tagId);
+     if (db.tags.length === initialLength) {
         return { message: "Tag not found or already deleted.", isSuccess: false };
     }
-    console.log(`[Server Action] Deleted tag ${tagId} from simulated DB.`);
     revalidatePath("/admin/blog-management");
-    revalidatePath("/blog");
-    revalidatePath(`/blog/tag/${deletedTag.slug}`);
+    revalidatePath("/blog", "layout");
     return { message: "Tag deleted successfully!", isSuccess: true };
   } catch (error) {
     console.error("Error deleting tag:", error);
     return { message: "Failed to delete tag.", isSuccess: false };
   }
 }
-

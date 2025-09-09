@@ -3,8 +3,10 @@ import { type BlogPost } from '../mockBlogPosts';
 import BlogPostCard from '@/components/shared/BlogPostCard';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Tag as TagIcon, RefreshCw } from 'lucide-react'; // Renamed to avoid conflict
+import { Tag as TagIcon, RefreshCw } from 'lucide-react';
 import { getPostsByTagSlugAction } from '@/app/admin/blog-management/postActions';
+
+export const revalidate = 0; // Ensure this page is always dynamically rendered
 
 // Helper function to format tag title from slug
 function formatTagTitle(slug: string): string {
@@ -25,7 +27,7 @@ export default async function BlogTagPage({ params }: { params: { tagName: strin
      console.error("Error fetching posts for tag:", result.message);
   }
 
-  if (posts.length === 0 && !result.isSuccess) { // If fetch failed and no posts
+  if (posts.length === 0 && !result.isSuccess) {
      return (
       <div className="container mx-auto px-4 py-16 text-center">
         <TagIcon className="h-12 w-12 text-primary mx-auto mb-4" />

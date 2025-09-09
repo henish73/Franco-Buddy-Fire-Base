@@ -3,19 +3,13 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { mockBlogPosts, type BlogPost, type BlogCategory, type BlogTag } from "@/app/(public)/blog/mockBlogPosts"; // Import types
-import { getCategoriesAction, getTagsAction } from "./taxonomyActions"; // For lookups using server actions
-
-// --- Simulated Database for Posts ---
-// In a real app, this would be Firestore.
-// Initialize with a deep copy of mockBlogPosts to avoid modifying the original import
-let simulatedBlogPostsDb: BlogPost[] = JSON.parse(JSON.stringify(mockBlogPosts));
-
+import { db } from "./db"; // Import the persistent in-memory DB
+import { type BlogPost, type BlogCategory, type BlogTag } from "@/app/(public)/blog/mockBlogPosts";
+import { getCategoriesAction, getTagsAction } from "./taxonomyActions";
 
 // --- Zod Schema for Post Actions (CRUD) ---
-// This schema should align with what the form provides and what the DB expects.
 const blogPostActionSchema = z.object({
-  id: z.string().optional(), // Present for updates, absent for creates
+  id: z.string().optional(),
   slug: z.string().min(3, "Slug is required (min 3 chars, e.g., my-first-post)").regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug format (e.g., 'my-post-slug')"),
   title: z.string().min(5, "Title is required (min 5 chars)"),
   date: z.string().refine(val => !isNaN(Date.parse(val)), { message: "Invalid date format" }),
@@ -46,10 +40,10 @@ export type BlogPostFormState = {
     categories?: string[];
     tags?: string[];
     featured?: string[];
-    form?: string[]; // For general form errors
+    form?: string[];
   };
   isSuccess: boolean;
-  data?: BlogPost | BlogPost[] | null; // Can hold single post, array of posts, or null
+  data?: BlogPost | BlogPost[] | null;
 };
 
 
@@ -57,9 +51,7 @@ export type BlogPostFormState = {
 
 export async function getBlogPostsAction(): Promise<BlogPostFormState> {
   try {
-    // In a real app: await db.collection('blog_posts').orderBy('date', 'desc').get();
-    // Make sure to return a deep copy to prevent direct modification of the "DB"
-    const postsToReturn = JSON.parse(JSON.stringify(simulatedBlogPostsDb));
+    const postsToReturn = JSON.parse(JSON.stringify(db.posts));
     return {
       message: "Posts fetched successfully.",
       isSuccess: true,
@@ -73,12 +65,12 @@ export async function getBlogPostsAction(): Promise<BlogPostFormState> {
 
 export async function getPostBySlugAction(slug: string): Promise<BlogPostFormState> {
   try {
-    const post = simulatedBlogPostsDb.find(p => p.slug === slug);
+    const post = db.posts.find(p => p.slug === slug);
     if (post) {
       return {
         message: "Post fetched successfully.",
         isSuccess: true,
-        data: JSON.parse(JSON.stringify(post)), // Return a copy
+        data: JSON.parse(JSON.stringify(post)),
       };
     }
     return { message: "Post not found.", isSuccess: false, data: null };
@@ -101,7 +93,7 @@ export async function getPostsByCategorySlugAction(categorySlug: string): Promis
       return { message: `Category with slug "${categorySlug}" not found.`, isSuccess: false, data: [] };
     }
     const categoryName = category.name;
-    const filteredPosts = simulatedBlogPostsDb.filter(post => 
+    const filteredPosts = db.posts.filter(post => 
       post.categories.map(c => c.toLowerCase()).includes(categoryName.toLowerCase())
     );
     return {
@@ -128,7 +120,7 @@ export async function getPostsByTagSlugAction(tagSlug: string): Promise<BlogPost
       return { message: `Tag with slug "${tagSlug}" not found.`, isSuccess: false, data: [] };
     }
     const tagName = tag.name;
-    const filteredPosts = simulatedBlogPostsDb.filter(post => 
+    const filteredPosts = db.posts.filter(post => 
       post.tags.map(t => t.toLowerCase()).includes(tagName.toLowerCase())
     );
     return {
@@ -141,7 +133,6 @@ export async function getPostsByTagSlugAction(tagSlug: string): Promise<BlogPost
     return { message: `Failed to fetch posts for tag: ${tagSlug}.`, isSuccess: false, data: [] };
   }
 }
-
 
 export async function addBlogPostAction(
   prevState: BlogPostFormState,
@@ -158,8 +149,7 @@ export async function addBlogPostAction(
     };
   }
 
-  // Check for duplicate slug before adding
-  if (simulatedBlogPostsDb.some(post => post.slug === validatedFields.data.slug)) {
+  if (db.posts.some(post => post.slug === validatedFields.data.slug)) {
     return {
       message: "Slug already exists. Please use a unique slug.",
       errors: { slug: ["Slug already exists. Please use a unique slug."] },
@@ -171,21 +161,18 @@ export async function addBlogPostAction(
     const newPostData = validatedFields.data;
     const newPost: BlogPost = {
       ...newPostData,
-      id: `post-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`, // Generate a unique ID
-      imageUrl: newPostData.imageUrl || undefined, // Ensure empty string becomes undefined
+      id: `post-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      imageUrl: newPostData.imageUrl || undefined,
       imageAiHint: newPostData.imageAiHint || undefined,
-      comments: [], // Initialize with empty comments array
+      comments: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
-    // In a real app: await db.collection('blog_posts').add(newPost);
-    simulatedBlogPostsDb.push(newPost);
-    console.log("[Server Action] Added new post to simulated DB:", newPost);
+    db.posts.push(newPost);
     
     revalidatePath("/admin/blog-management");
-    revalidatePath("/blog"); // Revalidate blog listing
-    revalidatePath(`/blog/${newPost.slug}`); // Revalidate the new post's page
+    revalidatePath("/blog", "layout");
     
     return { message: "Blog post added successfully!", isSuccess: true, data: newPost };
   } catch (error) {
@@ -209,19 +196,18 @@ export async function updateBlogPostAction(
     };
   }
 
-  const postId = formData.get('id') as string; // ID should be passed in form for updates
+  const postId = formData.get('id') as string;
   if (!postId) {
     return { message: "Post ID is missing for update.", isSuccess: false };
   }
   
-  const postIndex = simulatedBlogPostsDb.findIndex(p => p.id === postId);
+  const postIndex = db.posts.findIndex(p => p.id === postId);
   if (postIndex === -1) {
     return { message: "Post not found for update.", isSuccess: false };
   }
 
-  // Check for duplicate slug if it's being changed
-  if (validatedFields.data.slug !== simulatedBlogPostsDb[postIndex].slug && 
-      simulatedBlogPostsDb.some(post => post.slug === validatedFields.data.slug && post.id !== postId)) {
+  if (validatedFields.data.slug !== db.posts[postIndex].slug && 
+      db.posts.some(post => post.slug === validatedFields.data.slug && post.id !== postId)) {
     return {
       message: "Slug already exists. Please use a unique slug.",
       errors: { slug: ["Slug already exists. Please use a unique slug."] },
@@ -231,25 +217,19 @@ export async function updateBlogPostAction(
 
   try {
     const updatedPostData = validatedFields.data;
-    const originalPost = simulatedBlogPostsDb[postIndex];
+    const originalPost = db.posts[postIndex];
     const updatedPost: BlogPost = {
-      ...originalPost, // Preserve existing fields like comments, createdAt
+      ...originalPost,
       ...updatedPostData,
       imageUrl: updatedPostData.imageUrl || undefined,
       imageAiHint: updatedPostData.imageAiHint || undefined,
       updatedAt: new Date().toISOString(),
     };
     
-    // In a real app: await db.collection('blog_posts').doc(postId).update(updatedPost);
-    simulatedBlogPostsDb[postIndex] = updatedPost;
-    console.log("[Server Action] Updated post in simulated DB:", updatedPost);
+    db.posts[postIndex] = updatedPost;
 
     revalidatePath("/admin/blog-management");
-    revalidatePath("/blog");
-    revalidatePath(`/blog/${updatedPost.slug}`);
-    if (originalPost.slug !== updatedPost.slug) { // Revalidate old slug path if changed
-        revalidatePath(`/blog/${originalPost.slug}`);
-    }
+    revalidatePath("/blog", "layout");
     
     return { message: "Blog post updated successfully!", isSuccess: true, data: updatedPost };
   } catch (error) {
@@ -260,19 +240,15 @@ export async function updateBlogPostAction(
 
 export async function deleteBlogPostAction(postId: string): Promise<BlogPostFormState> {
   try {
-    const postIndex = simulatedBlogPostsDb.findIndex(p => p.id === postId);
+    const postIndex = db.posts.findIndex(p => p.id === postId);
     if (postIndex === -1) {
       return { message: "Post not found for deletion.", isSuccess: false };
     }
-    const deletedPost = simulatedBlogPostsDb[postIndex];
     
-    // In a real app: await db.collection('blog_posts').doc(postId).delete();
-    simulatedBlogPostsDb.splice(postIndex, 1);
-    console.log(`[Server Action] Deleted post ${postId} from simulated DB.`);
+    db.posts.splice(postIndex, 1);
 
     revalidatePath("/admin/blog-management");
-    revalidatePath("/blog");
-    revalidatePath(`/blog/${deletedPost.slug}`); // Revalidate the deleted post's page
+    revalidatePath("/blog", "layout");
     
     return { message: "Blog post deleted successfully!", isSuccess: true };
   } catch (error) {

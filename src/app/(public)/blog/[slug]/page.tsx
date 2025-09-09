@@ -11,7 +11,9 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { getPostBySlugAction, getBlogPostsAction } from '@/app/admin/blog-management/postActions';
-import CommentForm from './CommentForm'; // Create this component
+import CommentForm from './CommentForm';
+
+export const revalidate = 0; // Ensure this page is always dynamically rendered
 
 export default async function BlogPostDetailPage({ params }: { params: { slug: string } }) {
   const postResult = await getPostBySlugAction(params.slug);
@@ -28,7 +30,6 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
   }
   const post = postResult.data as BlogPost;
 
-  // Fetch all posts for related posts section (can be optimized later)
   const allPostsResult = await getBlogPostsAction();
   const allPosts = (allPostsResult.isSuccess && Array.isArray(allPostsResult.data)) ? allPostsResult.data as BlogPost[] : [];
   
@@ -36,14 +37,12 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
     .filter(p => p.slug !== post.slug && Array.isArray(p.categories) && Array.isArray(post.categories) && p.categories.some(cat => post.categories.includes(cat)))
     .slice(0, 3);
 
-  // Estimate read time (simple version)
   const wordsPerMinute = 200;
-  const textLength = post.content.replace(/<[^>]+>/g, '').split(/\s+/).length; // Strip HTML for word count
+  const textLength = post.content.replace(/<[^>]+>/g, '').split(/\s+/).length;
   const readTime = Math.ceil(textLength / wordsPerMinute);
 
   return (
     <>
-      {/* Breadcrumbs (simplified) */}
       <div className="bg-muted/50 py-4">
         <div className="container mx-auto px-4 text-sm">
           <Link href="/blog" className="text-primary hover:underline">Blog</Link>
@@ -51,7 +50,6 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
         </div>
       </div>
 
-      {/* Post Header */}
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4 max-w-3xl text-center">
           <div className="mb-4">
@@ -65,13 +63,12 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-6">{post.title}</h1>
           <div className="flex justify-center items-center gap-4 text-muted-foreground text-sm">
             <span className="flex items-center gap-1"><UserCircle className="h-4 w-4" /> {post.author}</span>
-            <span className="flex items-center gap-1"><CalendarDays className="h-4 w-4" /> {new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            <span className="flex items-center gap-1"><CalendarDays className="h-4 w-4" /> {new Date(post.date).toLocaleDateString('en-US', { timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric' })}</span>
             <span>{readTime} min read</span>
           </div>
         </div>
       </section>
 
-      {/* Featured Image */}
       {post.imageUrl && (
         <div className="container mx-auto px-4 max-w-4xl mb-8 md:mb-12">
           <Image
@@ -86,15 +83,12 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
         </div>
       )}
       
-      {/* Post Content & Sidebar Layout */}
       <div className="container mx-auto px-4 py-8 md:py-12">
         <div className="grid lg:grid-cols-12 gap-12 items-start">
-          {/* Main Content */}
           <article className="lg:col-span-8 prose prose-lg dark:prose-invert max-w-none text-foreground/90">
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </article>
 
-          {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-8 sticky top-24">
             <Card className="shadow-md">
               <CardHeader>
@@ -133,7 +127,7 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
                   {relatedPosts.map(relatedPost => (
                     <Link key={relatedPost.slug} href={`/blog/${relatedPost.slug}`} className="block group">
                       <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">{relatedPost.title}</h4>
-                      <p className="text-xs text-muted-foreground">{new Date(relatedPost.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
+                      <p className="text-xs text-muted-foreground">{new Date(relatedPost.date).toLocaleDateString('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric' })}</p>
                     </Link>
                   ))}
                 </CardContent>
@@ -143,7 +137,6 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
         </div>
       </div>
 
-      {/* Comments Section */}
       <section className="py-12 md:py-16 bg-muted/30">
         <div className="container mx-auto px-4 max-w-3xl">
           <h2 className="text-2xl md:text-3xl font-bold text-primary mb-8">Leave a Comment</h2>
@@ -175,7 +168,6 @@ export default async function BlogPostDetailPage({ params }: { params: { slug: s
         </div>
       </section>
 
-       {/* CTA Section */}
        <section className="py-16 md:py-20">
         <div className="container mx-auto px-4 text-center">
           <div className="bg-primary text-primary-foreground p-8 md:p-12 rounded-lg shadow-xl max-w-2xl mx-auto">
