@@ -26,13 +26,13 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-secondary text-secondary-foreground py-20 md:py-32">
+      <section className="bg-primary text-primary-foreground py-20 md:py-32">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">About FRANCOBUDDY</h1>
-          <p className="text-lg md:text-xl text-secondary-foreground/80 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
             Your dedicated partner in online French education, specializing in TEF Canada success.
           </p>
-          <div className="mt-8 flex justify-center gap-x-8 gap-y-4 text-secondary-foreground/90">
+          <div className="mt-8 flex justify-center gap-x-8 gap-y-4 opacity-90">
             <span className="font-semibold">184+ Students Trained</span>
             <span className="font-semibold">96% Satisfaction Rate</span>
             <span className="font-semibold">89% TEF Canada Pass Rate</span>
@@ -83,7 +83,7 @@ export default function AboutPage() {
            <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-8">
             {ourValuesItems.map((item, index) => (
               <div key={index} className="text-center">
-                <h3 className="text-xl font-semibold text-primary mb-2">{item.title}</h3>
+                <h3 className="text-xl font-semibold text-secondary mb-2">{item.title}</h3>
                 <p className="text-muted-foreground text-sm">{item.description}</p>
               </div>
             ))}
@@ -92,32 +92,32 @@ export default function AboutPage() {
       </section>
 
       {/* Why Choose Us Section (Summarized) */}
-      <section className="py-16 md:py-24 bg-secondary text-secondary-foreground">
+      <section className="py-16 md:py-24 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4">
-          <SectionTitle title="Why Choose Us?" subtitle="The distinct advantages that set us apart." titleClassName="text-background" subtitleClassName="text-secondary-foreground/80" />
+          <SectionTitle title="Why Choose Us?" subtitle="The distinct advantages that set us apart." titleClassName="text-background" subtitleClassName="opacity-80" />
           <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 max-w-4xl mx-auto text-lg">
             <li className="flex items-start gap-3">
-              <Award className="h-6 w-6 text-primary mt-1 shrink-0" />
+              <Award className="h-6 w-6 text-secondary mt-1 shrink-0" />
               <span><strong>Certified Expertise:</strong> Learn from the best C1/C2 certified instructors.</span>
             </li>
             <li className="flex items-start gap-3">
-              <Clock className="h-6 w-6 text-primary mt-1 shrink-0" />
+              <Clock className="h-6 w-6 text-secondary mt-1 shrink-0" />
               <span><strong>Flexible Scheduling:</strong> Online & In-person classes that fit your life.</span>
             </li>
             <li className="flex items-start gap-3">
-              <Users className="h-6 w-6 text-primary mt-1 shrink-0" />
+              <Users className="h-6 w-6 text-secondary mt-1 shrink-0" />
               <span><strong>Small Class Sizes:</strong> Maximum 3-5 students for personalized attention.</span>
             </li>
              <li className="flex items-start gap-3">
-              <BookOpen className="h-6 w-6 text-primary mt-1 shrink-0" />
+              <BookOpen className="h-6 w-6 text-secondary mt-1 shrink-0" />
               <span><strong>Proven Curriculum:</strong> A results-driven curriculum focused on TEF Canada success.</span>
             </li>
              <li className="flex items-start gap-3">
-              <ShieldCheck className="h-6 w-6 text-primary mt-1 shrink-0" />
+              <ShieldCheck className="h-6 w-6 text-secondary mt-1 shrink-0" />
               <span><strong>Success Guarantee:</strong> We are committed to helping you achieve your goals.</span>
             </li>
              <li className="flex items-start gap-3">
-              <Lightbulb className="h-6 w-6 text-primary mt-1 shrink-0" />
+              <Lightbulb className="h-6 w-6 text-secondary mt-1 shrink-0" />
               <span><strong>24/7 Support:</strong> Our team and community are here for you every step of the way.</span>
             </li>
           </ul>
@@ -144,7 +144,7 @@ export default function AboutPage() {
       {/* CTA Section */}
       <section className="py-20 bg-primary/10">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-secondary mb-6">Ready to Excel in Your TEF Canada Exam?</h2>
+          <h2 className="text-3xl font-bold text-primary mb-6">Ready to Excel in Your TEF Canada Exam?</h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
             Join FRANCOBUDDY and take the definitive step towards achieving your Canadian aspirations.
           </p>

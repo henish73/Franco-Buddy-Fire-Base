@@ -7,12 +7,12 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-secondary text-secondary-foreground border-t">
+    <footer className="bg-primary text-primary-foreground border-t">
       <div className="container py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <BookMarked className="h-8 w-8 text-primary" />
+              <BookMarked className="h-8 w-8 text-secondary" />
               <span className="font-bold text-xl">FRANCOBUDDY</span>
             </Link>
             <p className="text-sm opacity-80">
@@ -26,20 +26,20 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-semibold tracking-wider uppercase mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link href="/about" className="text-sm opacity-80 hover:text-primary">About Us</Link></li>
-              <li><Link href="/courses" className="text-sm opacity-80 hover:text-primary">Courses</Link></li>
-              <li><Link href="/pricing" className="text-sm opacity-80 hover:text-primary">Pricing</Link></li>
-              <li><Link href="/faq" className="text-sm opacity-80 hover:text-primary">FAQ</Link></li>
-              <li><Link href="/blog" className="text-sm opacity-80 hover:text-primary">Blog</Link></li>
+              <li><Link href="/about" className="text-sm opacity-80 hover:text-primary-foreground/80">About Us</Link></li>
+              <li><Link href="/courses" className="text-sm opacity-80 hover:text-primary-foreground/80">Courses</Link></li>
+              <li><Link href="/pricing" className="text-sm opacity-80 hover:text-primary-foreground/80">Pricing</Link></li>
+              <li><Link href="/faq" className="text-sm opacity-80 hover:text-primary-foreground/80">FAQ</Link></li>
+              <li><Link href="/blog" className="text-sm opacity-80 hover:text-primary-foreground/80">Blog</Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold tracking-wider uppercase mb-4">Legal</h3>
             <ul className="space-y-2">
-              <li><Link href="/privacy" className="text-sm opacity-80 hover:text-primary">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="text-sm opacity-80 hover:text-primary">Terms of Service</Link></li>
-              <li><Link href="/guidelines" className="text-sm opacity-80 hover:text-primary">Community Guidelines</Link></li>
+              <li><Link href="/privacy" className="text-sm opacity-80 hover:text-primary-foreground/80">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-sm opacity-80 hover:text-primary-foreground/80">Terms of Service</Link></li>
+              <li><Link href="/guidelines" className="text-sm opacity-80 hover:text-primary-foreground/80">Community Guidelines</Link></li>
             </ul>
           </div>
 
@@ -47,16 +47,16 @@ export default function Footer() {
             <h3 className="text-sm font-semibold tracking-wider uppercase mb-4">Contact Us</h3>
             <ul className="space-y-3">
               <li className="flex items-center gap-2">
-                <Mail className="h-5 w-5 text-primary" />
-                <a href="mailto:frenchgta.ca@gmail.com" className="text-sm opacity-80 hover:text-primary">frenchgta.ca@gmail.com</a>
+                <Mail className="h-5 w-5 text-secondary" />
+                <a href="mailto:frenchgta.ca@gmail.com" className="text-sm opacity-80 hover:text-primary-foreground/80">frenchgta.ca@gmail.com</a>
               </li>
               <li className="flex items-center gap-2">
-                <Phone className="h-5 w-5 text-primary" />
-                <a href="tel:+13653062049" className="text-sm opacity-80 hover:text-primary">+1 (365) 306-2049</a>
+                <Phone className="h-5 w-5 text-secondary" />
+                <a href="tel:+13653062049" className="text-sm opacity-80 hover:text-primary-foreground/80">+1 (365) 306-2049</a>
               </li>
               <li className="flex items-center gap-2">
-                <WhatsappIcon className="h-5 w-5 text-primary" />
-                <a href="https://wa.me/13653062049" target="_blank" rel="noopener noreferrer" className="text-sm opacity-80 hover:text-primary">Chat on WhatsApp</a>
+                <WhatsappIcon className="h-5 w-5 text-secondary" />
+                <a href="https://wa.me/13653062049" target="_blank" rel="noopener noreferrer" className="text-sm opacity-80 hover:text-primary-foreground/80">Chat on WhatsApp</a>
               </li>
             </ul>
           </div>

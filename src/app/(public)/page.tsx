@@ -33,36 +33,36 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-background py-20 md:py-32">
+      <section className="bg-primary text-primary-foreground py-20 md:py-32">
         <div className="container mx-auto px-4 text-center">
           <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider">
             🏆 TEF Canada Success Guaranteed
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold text-secondary mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Master French. Transform Your Future.
           </h1>
-          <p className="text-lg md:text-xl text-foreground/80 mb-10 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl opacity-90 mb-10 max-w-3xl mx-auto">
             Expert French language training for immigration success, career advancement, and personal growth. Join 250+ successful students in Toronto & GTA.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow bg-secondary text-secondary-foreground hover:bg-secondary/90">
               <Link href="/book-demo">Book FREE Demo Class</Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
+            <Button asChild size="lg" variant="outline" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
               <Link href="/courses">Explore Our Courses</Link>
             </Button>
-            <Button asChild size="lg" variant="default">
+            <Button asChild size="lg" variant="secondary">
               <Link href="/enrollment-form">Enroll Now</Link>
             </Button>
           </div>
-           <div className="mt-12 flex justify-center items-center gap-8 text-foreground/80">
+           <div className="mt-12 flex justify-center items-center gap-8 opacity-90">
                 <div className="flex -space-x-4 rtl:space-x-reverse">
                     <Avatar><AvatarImage src="https://placehold.co/40x40.png" alt="Student 1" data-ai-hint="person avatar"/><AvatarFallback>S1</AvatarFallback></Avatar>
                     <Avatar><AvatarImage src="https://placehold.co/40x40.png" alt="Student 2" data-ai-hint="person avatar"/><AvatarFallback>S2</AvatarFallback></Avatar>
                     <Avatar><AvatarImage src="https://placehold.co/40x40.png" alt="Student 3" data-ai-hint="person avatar"/><AvatarFallback>S3</AvatarFallback></Avatar>
                 </div>
                 <div>
-                    <p className="font-semibold text-foreground">250+ Students</p>
+                    <p className="font-semibold">250+ Students</p>
                     <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-yellow-400 fill-yellow-400"/>
                         <span className="font-semibold">4.8/5</span> Rating
@@ -172,16 +172,16 @@ export default async function HomePage() {
       </section>
 
       {/* About Snippet Section */}
-      <section className="py-16 md:py-24 bg-secondary text-secondary-foreground">
+      <section className="py-16 md:py-24 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 max-w-5xl mx-auto">
-            <Image src="https://placehold.co/400x400.png" alt="Certified French Instructor" width={300} height={300} className="rounded-full shadow-lg border-4 border-primary" data-ai-hint="instructor teacher portrait" />
+            <Image src="https://placehold.co/400x400.png" alt="Certified French Instructor" width={300} height={300} className="rounded-full shadow-lg border-4 border-secondary" data-ai-hint="instructor teacher portrait" />
             <div className="text-center md:text-left">
               <h3 className="text-3xl font-semibold mb-4">Meet Your Dedicated French Learning Partner</h3>
               <p className="mb-4 opacity-90">
                 At FRANCOBUDDY, we are more than just a language school; we are your partners in achieving your Canadian dream. Our mission is to provide high-quality, personalized French instruction that empowers you to succeed in the TEF Canada exam and beyond. With over 250 students successfully trained, our results speak for themselves.
               </p>
-              <Button asChild variant="outline" className="bg-secondary-foreground text-secondary hover:bg-secondary-foreground/90">
+              <Button asChild variant="secondary" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
                 <Link href="/about">Learn More About Us <ChevronRight className="ml-2 h-4 w-4" /></Link>
               </Button>
             </div>
@@ -192,7 +192,7 @@ export default async function HomePage() {
       {/* Final CTA Section */}
       <section className="py-20 md:py-32 bg-background">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Ready to Start Your French Journey?
           </h2>
           <p className="text-muted-foreground mb-2">Limited spots available for this month!</p>

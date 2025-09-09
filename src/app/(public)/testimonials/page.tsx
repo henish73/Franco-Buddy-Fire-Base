@@ -32,7 +32,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: typeof allTestimonials[
                 <AvatarFallback>{testimonial.name.substring(0, 2)}</AvatarFallback>
             </Avatar>
             <div>
-                <h4 className="font-semibold text-secondary">{testimonial.name}</h4>
+                <h4 className="font-semibold text-primary">{testimonial.name}</h4>
                 <p className="text-sm text-muted-foreground">{testimonial.role}, {testimonial.location}</p>
             </div>
         </div>
@@ -56,17 +56,17 @@ export default function TestimonialsPage() {
     return (
         <>
             {/* Hero Section */}
-            <section className="bg-secondary text-secondary-foreground py-20 md:py-32">
+            <section className="bg-primary text-primary-foreground py-20 md:py-32">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">Real Students, Real Results, Real Transformation</h1>
-                    <p className="text-lg md:text-xl text-secondary-foreground/80 max-w-3xl mx-auto">
+                    <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
                         See what our students have to say about their journey to French fluency with FRANCOBUDDY.
                     </p>
-                    <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-4 text-secondary-foreground/90">
-                        <span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary"/> 500+ Happy Students</span>
-                        <span className="flex items-center gap-2"><Award className="h-5 w-5 text-primary"/> 96% Success Rate</span>
-                        <span className="flex items-center gap-2"><Star className="h-5 w-5 text-primary"/> 4.9/5 Average Rating</span>
-                        <span className="flex items-center gap-2"><TrendingUp className="h-5 w-5 text-primary"/> 3-6 Months to Fluency</span>
+                    <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-4 opacity-90">
+                        <span className="flex items-center gap-2"><Users className="h-5 w-5 text-secondary"/> 500+ Happy Students</span>
+                        <span className="flex items-center gap-2"><Award className="h-5 w-5 text-secondary"/> 96% Success Rate</span>
+                        <span className="flex items-center gap-2"><Star className="h-5 w-5 text-secondary"/> 4.9/5 Average Rating</span>
+                        <span className="flex items-center gap-2"><TrendingUp className="h-5 w-5 text-secondary"/> 3-6 Months to Fluency</span>
                     </div>
                 </div>
             </section>
@@ -103,7 +103,7 @@ export default function TestimonialsPage() {
             {/* CTA Section */}
             <section className="py-20 bg-background">
               <div className="container mx-auto px-4 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-6">
+                <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
                   Ready to Start Your French Learning Journey?
                 </h2>
                 <div className="flex flex-wrap justify-center gap-4">

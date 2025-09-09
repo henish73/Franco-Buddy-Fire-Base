@@ -79,10 +79,10 @@ export default function PricingPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-secondary text-secondary-foreground py-20 md:py-32">
+      <section className="bg-primary text-primary-foreground py-20 md:py-32">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Transparent &amp; Flexible Pricing</h1>
-          <p className="text-lg md:text-xl text-secondary-foreground/80 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
             Invest in your future with our clear and competitive TEF Canada course fees. Find the perfect plan to match your goals and budget.
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function PricingPage() {
               <Card key={tier.title} className={`flex flex-col shadow-xl hover:scale-105 transition-transform duration-300 ${tier.badge === 'Most Popular' ? 'border-primary border-2' : ''}`}>
                 <CardHeader className="text-center py-8">
                   {tier.badge && <Badge variant={tier.badge === 'Most Popular' ? 'default' : 'secondary'} className="absolute top-0 -translate-y-1/2">{tier.badge}</Badge>}
-                  <CardTitle className="text-2xl text-secondary">{tier.title}</CardTitle>
+                  <CardTitle className="text-2xl text-primary">{tier.title}</CardTitle>
                   <CardDescription className="flex items-baseline justify-center gap-2">
                     <span className="text-4xl font-bold text-foreground">${tier.price}</span>
                     <span className="text-muted-foreground">/month</span>
@@ -134,7 +134,7 @@ export default function PricingPage() {
                 <Card key={tier.title} className="flex flex-col shadow-xl hover:shadow-primary/20 transition-all duration-300">
                     <CardHeader className="text-center">
                         <Gem className="h-10 w-10 mx-auto text-primary mb-2"/>
-                        <CardTitle className="text-2xl text-secondary">{tier.title}</CardTitle>
+                        <CardTitle className="text-2xl text-primary">{tier.title}</CardTitle>
                         <p className="text-3xl font-bold text-foreground">${tier.price}<span className="text-base font-normal text-muted-foreground">/month</span></p>
                     </CardHeader>
                     <CardContent className="flex-grow">
@@ -162,7 +162,7 @@ export default function PricingPage() {
         <div className="container mx-auto px-4 text-center">
           <div className="bg-card p-8 md:p-12 rounded-lg shadow-xl max-w-2xl mx-auto">
             <HelpCircle className="h-12 w-12 text-primary mx-auto mb-6" />
-            <h2 className="text-2xl md:text-3xl font-semibold text-secondary mb-4">Confused About Plans?</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4">Confused About Plans?</h2>
             <p className="text-muted-foreground mb-8">
               We're here to help! Book a free demo session, and we'll discuss your needs and guide you to the best TEF Canada preparation plan.
             </p>
