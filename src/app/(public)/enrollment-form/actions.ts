@@ -4,8 +4,8 @@
 import { z } from 'zod';
 
 const enrollmentSchema = z.object({
-  courseId: z.string(),
-  courseName: z.string(),
+  courseId: z.string().optional(),
+  courseName: z.string().optional(),
   fullName: z.string().min(3, { message: "Full name must be at least 3 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   phone: z.string().min(10, { message: "Please enter a valid phone number." }),
@@ -14,8 +14,8 @@ const enrollmentSchema = z.object({
   currentLevel: z.string().min(2, "Please enter your current French level."),
   learningGoal: z.string().min(5, "Please describe your learning goal."),
   previousExperience: z.string().optional(),
-  preferredDays: z.enum(["Saturdays", "Sundays", "Both"], { errorMap: () => ({ message: "Please select your preferred day(s)." }) }),
-  preferredTime: z.enum(["Morning", "Afternoon", "Evening"], { errorMap: () => ({ message: "Please select your preferred time." }) }),
+  preferredDays: z.enum(["Saturdays", "Sundays", "Both"], { errorMap: () => ({ message: "Please select your preferred day(s)." }) }).optional(),
+  preferredTime: z.enum(["Morning", "Afternoon", "Evening"], { errorMap: () => ({ message: "Please select your preferred time." }) }).optional(),
   terms: z.literal("on", { errorMap: () => ({ message: "You must accept the terms and conditions." })}),
 });
 
@@ -58,7 +58,7 @@ export async function submitEnrollmentForm(
     
     // For now, simulate success
     return {
-      message: `Enrollment successful for ${validatedFields.data.courseName}! We have received your details and will contact you shortly with payment information and next steps.`,
+      message: `Enrollment successful for ${validatedFields.data.courseName || 'our program'}! We have received your details and will contact you shortly with payment information and next steps.`,
       isSuccess: true,
     };
 

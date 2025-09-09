@@ -43,13 +43,16 @@ export default function EnrollmentForm({ course }: EnrollmentFormProps) {
   return (
     <Card className="w-full max-w-2xl shadow-xl">
       <CardHeader>
-        <CardTitle className="text-3xl text-secondary">Enrollment Details</CardTitle>
-        {course && <CardDescription>Confirm your information for: <strong>{course.title}</strong>.</CardDescription>}
+        <CardTitle className="text-3xl text-primary">Secure Your Spot Now</CardTitle>
+        {course ? 
+            <CardDescription>You're enrolling in: <strong>{course.title}</strong>.</CardDescription>
+            : <CardDescription>Fill out your details to join our next TEF/TCF batch.</CardDescription>
+        }
       </CardHeader>
       <form action={formAction}>
         <CardContent className="space-y-6">
-          <input type="hidden" name="courseId" value={course?.id || ''} />
-          <input type="hidden" name="courseName" value={course?.title || 'Not Selected'} />
+          <input type="hidden" name="courseId" value={course?.id || 'general-enrollment'} />
+          <input type="hidden" name="courseName" value={course?.title || 'General Enrollment'} />
 
           <fieldset className="space-y-4">
             <legend className="text-lg font-semibold text-foreground mb-2">1. Personal Information</legend>
@@ -104,7 +107,7 @@ export default function EnrollmentForm({ course }: EnrollmentFormProps) {
             <legend className="text-lg font-semibold text-foreground mb-2">3. Schedule Preferences</legend>
             <div className="space-y-2">
                 <Label>Preferred Days</Label>
-                <RadioGroup name="preferredDays" className="flex gap-4">
+                <RadioGroup name="preferredDays" className="flex flex-wrap gap-4">
                   {preferredDaysOptions.map(day => (
                     <div key={day} className="flex items-center space-x-2">
                       <RadioGroupItem value={day} id={`day-${day}`} />
@@ -116,7 +119,7 @@ export default function EnrollmentForm({ course }: EnrollmentFormProps) {
             </div>
              <div className="space-y-2">
                 <Label>Preferred Time (EST)</Label>
-                 <RadioGroup name="preferredTime" className="flex gap-4">
+                 <RadioGroup name="preferredTime" className="flex flex-wrap gap-4">
                   {preferredTimeOptions.map(time => (
                     <div key={time} className="flex items-center space-x-2">
                       <RadioGroupItem value={time} id={`time-${time}`} />
@@ -132,7 +135,7 @@ export default function EnrollmentForm({ course }: EnrollmentFormProps) {
                 <legend className="text-lg font-semibold text-foreground mb-2">4. Payment & Terms</legend>
                 <div className="bg-muted/50 p-4 rounded-md">
                     <h4 className="font-medium text-foreground">Payment Information</h4>
-                    <p className="text-sm text-muted-foreground">Your selected monthly fee will be displayed based on your course. We accept Credit Card, PayPal, and Interac e-Transfer. Payment details will be provided after enrollment confirmation.</p>
+                    <p className="text-sm text-muted-foreground">Your selected monthly fee will be based on your chosen plan (1:1 or Group). We accept Credit/Debit Card, and Interac e-Transfer. Payment details will be provided via email after enrollment confirmation.</p>
                 </div>
                 <div className="flex items-start space-x-2 pt-2">
                     <Checkbox id="terms" name="terms" required />

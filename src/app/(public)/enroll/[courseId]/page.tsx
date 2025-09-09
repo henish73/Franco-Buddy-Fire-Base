@@ -1,40 +1,46 @@
 // src/app/(public)/enroll/[courseId]/page.tsx
+'use client'
+
+import { useSearchParams } from 'next/navigation';
 import SectionTitle from '@/components/shared/SectionTitle';
-import EnrollmentForm from './EnrollmentForm';
-import { coursesData } from '@/app/(public)/courses/mockCoursesData'; // Using a shared mock data for now
+import EnrollmentForm from '@/app/(public)/enrollment-form/EnrollmentForm'; // Point to the new shared form
+import { coursesData } from '@/app/(public)/courses/mockCoursesData';
 import { type Course } from '@/components/shared/CourseCard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShoppingCart } from 'lucide-react';
+import { FileText, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
-// In a real app, fetch course details from a service/API
-async function getCourseDetails(courseId: string): Promise<Course | undefined> {
-  return coursesData.find(course => course.id === courseId);
-}
+export default function SpecificCourseEnrollmentPage() {
+  const searchParams = useSearchParams();
+  const courseId = searchParams.get('course'); // This component is now more of a redirect/prefill mechanism
+  const selectedCourse = coursesData.find(c => c.id === courseId);
 
-export default async function EnrollmentPage({ params }: { params: { courseId: string } }) {
-  const course = await getCourseDetails(params.courseId);
-
-  if (!course) {
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <SectionTitle title="Course Not Found" subtitle="The course you are trying to enroll in does not exist." />
-        <Button asChild>
-          <Link href="/courses">Browse Courses</Link>
-        </Button>
-      </div>
-    );
+  // This page can be simplified or even removed in favor of just using /enrollment-form?course=...
+  // For now, let's make it show the selected course and the main form.
+  
+  if (!selectedCourse) {
+     return (
+        <div className="space-y-8 py-16 md:py-24 container mx-auto px-4">
+            <SectionTitle 
+                title="Enroll in Our Program"
+                subtitle="Please fill out the form below to get started. If you had a specific course in mind, you can select it on our main courses page."
+            />
+            <div className="flex justify-center">
+                 <EnrollmentForm />
+            </div>
+        </div>
+     )
   }
 
   return (
     <>
       <section className="bg-gradient-to-br from-primary/10 to-accent/10 py-20 md:py-28">
         <div className="container mx-auto px-4 text-center">
-          <ShoppingCart className="h-16 w-16 text-primary mx-auto mb-6" />
-          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">Enroll in: {course.title}</h1>
+          <FileText className="h-16 w-16 text-primary mx-auto mb-6" />
+          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4">Enroll in: {selectedCourse.title}</h1>
           <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto">
-            You&apos;re just a few steps away from starting your TEF Canada journey with FrancoBuddy.
+            You're just a few steps away from starting your journey with FrancoBuddy.
           </p>
         </div>
       </section>
@@ -45,30 +51,31 @@ export default async function EnrollmentPage({ params }: { params: { courseId: s
             <Card className="shadow-md">
               <CardHeader>
                 <CardTitle className="text-2xl text-primary">Order Summary</CardTitle>
-                <CardDescription>Review your selected course.</CardDescription>
+                <CardDescription>You have selected:</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <h3 className="text-xl font-semibold text-foreground">{course.title}</h3>
-                <p className="text-sm text-muted-foreground">{course.shortDescription}</p>
+                <h3 className="text-xl font-semibold text-foreground">{selectedCourse.title}</h3>
+                <p className="text-sm text-muted-foreground">{selectedCourse.shortDescription}</p>
                 <div className="border-t pt-3">
-                  <p className="text-lg font-semibold text-foreground">Format: <span className="text-accent">{course.format}</span></p>
-                  {/* Add more details like price if needed, assuming 1on1 for simplicity or choice later */}
-                  {course.price1on1 && (
-                    <p className="text-2xl font-bold text-primary mt-2">${course.price1on1}</p>
+                  {selectedCourse.price1on1 && (
+                    <p className="text-xl font-bold text-primary">${selectedCourse.price1on1}<span className="text-sm font-normal text-muted-foreground">/month (1:1)</span></p>
                   )}
-                   <p className="text-xs text-muted-foreground">Full course fee. Payment options available on the next step.</p>
+                   {selectedCourse.price1on3 && (
+                    <p className="text-xl font-bold text-primary mt-1">${selectedCourse.price1on3}<span className="text-sm font-normal text-muted-foreground">/month (Group)</span></p>
+                  )}
                 </div>
               </CardContent>
             </Card>
              <p className="text-sm text-muted-foreground italic">
-                Secure your spot by completing the enrollment form. Payment will be processed on the next page.
+                Complete the form to secure your spot. Payment will be handled after submission.
             </p>
           </div>
           <div className="lg:w-2/3 flex justify-center">
-            <EnrollmentForm courseName={course.title} courseId={course.id} />
+            <EnrollmentForm course={selectedCourse} />
           </div>
         </div>
       </section>
     </>
   );
 }
+
