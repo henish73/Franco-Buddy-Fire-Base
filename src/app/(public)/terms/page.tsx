@@ -1,11 +1,31 @@
 import SectionTitle from '@/components/shared/SectionTitle';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText } from 'lucide-react';
+import Image from 'next/image';
 
 export default function TermsPage() {
   return (
+    <>
+    {/* Hero Section */}
+      <section className="relative h-80">
+        <Image 
+          src="https://picsum.photos/1920/1080?random=9" 
+          alt="Terms and conditions document" 
+          className="object-cover w-full h-full"
+          fill
+          data-ai-hint="document scroll abstract"
+        />
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+          <div className="text-center text-white p-4">
+            <FileText className="h-16 w-16 mx-auto mb-4" />
+            <h1 className="text-4xl md:text-6xl font-bold">Terms and Conditions</h1>
+            <p className="text-lg md:text-xl mt-4 max-w-2xl">
+              Please read these terms carefully before using our services.
+            </p>
+          </div>
+        </div>
+      </section>
     <div className="container mx-auto px-4 py-16 md:py-24">
-      <SectionTitle title="Terms and Conditions" subtitle="Please read these terms carefully." />
       <Card className="max-w-3xl mx-auto shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -74,5 +94,6 @@ export default function TermsPage() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

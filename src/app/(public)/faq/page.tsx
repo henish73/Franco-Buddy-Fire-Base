@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { HelpCircle, MessageSquare } from 'lucide-react';
+import Image from 'next/image';
 
 // Placeholder FAQ data
 const faqCategories = [
@@ -49,13 +50,21 @@ export default function FAQPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20 md:py-32">
-        <div className="container mx-auto px-4 text-center">
-          <HelpCircle className="h-16 w-16 mx-auto mb-6" />
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
-          <p className="text-lg md:text-xl text-primary-foreground/80 max-w-3xl mx-auto">
-            Find answers to common questions about FrancoBuddy, TEF Canada, our courses, and enrollment.
-          </p>
+      <section className="relative h-96">
+        <Image 
+          src="https://picsum.photos/1920/1080?random=7" 
+          alt="Frequently Asked Questions about French courses" 
+          className="object-cover w-full h-full"
+          fill
+          data-ai-hint="question mark abstract"
+        />
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+          <div className="text-center text-white p-4">
+            <h1 className="text-4xl md:text-6xl font-bold">Frequently Asked Questions</h1>
+            <p className="text-lg md:text-xl mt-4 max-w-2xl">
+              Find answers to common questions about FrancoBuddy, TEF Canada, and our courses.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -93,7 +102,7 @@ export default function FAQPage() {
             <p className="text-muted-foreground mb-8">
               If you can&apos;t find the answer you&apos;re looking for, please don&apos;t hesitate to reach out to us.
             </p>
-            <Button asChild size="lg">
+            <Button asChild size="lg" className="rounded-full">
               <Link href="/contact">Contact Us</Link>
             </Button>
           </div>

@@ -4,6 +4,7 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, HelpCircle, ShieldCheck, Zap, Gem } from 'lucide-react';
+import Image from 'next/image';
 
 const pricingTiers = [
   {
@@ -79,12 +80,21 @@ export default function PricingPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-secondary via-background to-background text-foreground py-20 md:py-32 animate-background-pan">
-        <div className="container mx-auto px-4 text-center animate-fade-in-up">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Transparent &amp; Flexible Pricing</h1>
-          <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
-            Invest in your future with our clear and competitive TEF Canada course fees. Find the perfect plan to match your goals and budget.
-          </p>
+      <section className="relative h-96">
+        <Image 
+          src="https://picsum.photos/1920/1080?random=6" 
+          alt="Pricing plans for French courses" 
+          className="object-cover w-full h-full"
+          fill
+          data-ai-hint="pricing chart graph"
+        />
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+          <div className="text-center text-white p-4">
+            <h1 className="text-4xl md:text-6xl font-bold">Pricing Plans</h1>
+            <p className="text-lg md:text-xl mt-4 max-w-2xl">
+              Invest in your future with our clear and competitive TEF Canada course fees.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -115,7 +125,7 @@ export default function PricingPage() {
                   </ul>
                 </CardContent>
                 <CardFooter className="mt-auto p-6">
-                  <Button asChild size="lg" className="w-full" variant={tier.buttonVariant}>
+                  <Button asChild size="lg" className="w-full rounded-full" variant={tier.buttonVariant}>
                     <Link href="/enrollment-form">{tier.buttonText}</Link>
                   </Button>
                 </CardFooter>
@@ -148,7 +158,7 @@ export default function PricingPage() {
                         </ul>
                     </CardContent>
                     <CardFooter>
-                        <Button asChild className="w-full" variant="outline"><Link href="#">Subscribe (Coming Soon)</Link></Button>
+                        <Button asChild className="w-full rounded-full" variant="outline"><Link href="#">Subscribe (Coming Soon)</Link></Button>
                     </CardFooter>
                 </Card>
              ))}
@@ -167,7 +177,7 @@ export default function PricingPage() {
               We're here to help! Book a free demo session, and we'll discuss your needs and guide you to the best TEF Canada preparation plan.
             </p>
              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+              <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-full">
                 <Link href="/book-demo">Book Your Free Demo</Link>
               </Button>
             </div>

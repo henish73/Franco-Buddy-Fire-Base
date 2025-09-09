@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Star, Users, Award, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Mock data for testimonials
 const allTestimonials = [
@@ -56,64 +57,71 @@ export default function TestimonialsPage() {
     return (
         <>
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32 animate-background-pan">
-                <div className="container mx-auto px-4 text-center">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">Real Students, Real Results, Real Transformation</h1>
-                    <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
-                        See what our students have to say about their journey to French fluency with FRANCOBUDDY.
+            <section className="relative h-96">
+                <Image 
+                  src="https://picsum.photos/1920/1080?random=3" 
+                  alt="Students celebrating success with FrancoBuddy" 
+                  className="object-cover w-full h-full"
+                  fill
+                  data-ai-hint="success celebration people"
+                />
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                  <div className="text-center text-white p-4">
+                    <h1 className="text-4xl md:text-6xl font-bold">Student Success Stories</h1>
+                    <p className="text-lg md:text-xl mt-4 max-w-2xl">
+                        See what our students have to say about their journey to French fluency.
                     </p>
-                    <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-4 opacity-90">
-                        <span className="flex items-center gap-2"><Users className="h-5 w-5 text-secondary"/> 500+ Happy Students</span>
-                        <span className="flex items-center gap-2"><Award className="h-5 w-5 text-secondary"/> 96% Success Rate</span>
-                        <span className="flex items-center gap-2"><Star className="h-5 w-5 text-secondary"/> 4.9/5 Average Rating</span>
-                        <span className="flex items-center gap-2"><TrendingUp className="h-5 w-5 text-secondary"/> 3-6 Months to Fluency</span>
+                  </div>
+                </div>
+            </section>
+            
+            <section className="bg-muted py-8">
+                <div className="container mx-auto px-4">
+                    <div className="flex justify-around items-center text-center max-w-4xl mx-auto">
+                        <div>
+                            <p className="text-3xl font-bold text-primary">500+</p>
+                            <p className="text-sm text-muted-foreground">Happy Students</p>
+                        </div>
+                        <div>
+                            <p className="text-3xl font-bold text-primary">96%</p>
+                            <p className="text-sm text-muted-foreground">Success Rate</p>
+                        </div>
+                        <div>
+                            <p className="text-3xl font-bold text-primary">4.9/5</p>
+                            <p className="text-sm text-muted-foreground">Average Rating</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Featured Testimonials */}
-            <section className="py-16 md:py-24">
-                 <div className="container mx-auto px-4">
-                    <SectionTitle title="Featured Stories" />
-                    <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
-                        {allTestimonials.slice(0, 3).map((testimonial, index) => (
-                            <TestimonialCard key={index} testimonial={testimonial} />
-                        ))}
-                    </div>
-                 </div>
-            </section>
-            
             {/* All Testimonials Grid */}
-            <section className="py-16 md:py-24 bg-muted/30">
+            <section className="py-16 md:py-24">
                 <div className="container mx-auto px-4">
                     <SectionTitle title="What Our Students Say" />
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {allTestimonials.slice(3, visibleCount).map((testimonial, index) => (
+                        {allTestimonials.slice(0, visibleCount).map((testimonial, index) => (
                            <TestimonialCard key={index} testimonial={testimonial} />
                         ))}
                     </div>
                     {visibleCount < allTestimonials.length && (
                         <div className="text-center mt-12">
-                            <Button onClick={loadMore} size="lg">Load More Testimonials</Button>
+                            <Button onClick={loadMore} size="lg" className="rounded-full">Load More Testimonials</Button>
                         </div>
                     )}
                 </div>
             </section>
             
             {/* CTA Section */}
-            <section className="py-20 bg-background">
+            <section className="py-20 bg-primary/10">
               <div className="container mx-auto px-4 text-center">
                 <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
                   Ready to Start Your French Learning Journey?
                 </h2>
                 <div className="flex flex-wrap justify-center gap-4">
-                  <Button asChild size="lg" className="shadow-lg bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
+                  <Button asChild size="lg" className="shadow-lg bg-secondary text-secondary-foreground hover:brightness-110 rounded-full">
                     <Link href="/book-demo">Book FREE Demo Class</Link>
                   </Button>
-                  <Button asChild size="lg" variant="outline">
-                    <Link href="/courses">Explore Courses</Link>
-                  </Button>
-                   <Button asChild size="lg" variant="default" className="bg-gradient-to-br from-primary to-blue-700 hover:brightness-110">
+                   <Button asChild size="lg" variant="default" className="bg-primary text-primary-foreground hover:brightness-110 rounded-full">
                     <Link href="/enrollment-form">Enroll Now</Link>
                   </Button>
                 </div>

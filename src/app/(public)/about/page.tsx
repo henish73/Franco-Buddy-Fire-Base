@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -26,16 +27,40 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-secondary via-background to-background text-foreground py-20 md:py-32 animate-background-pan">
-        <div className="container mx-auto px-4 text-center animate-fade-in-up">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">About FRANCOBUDDY</h1>
-          <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
-            Your dedicated partner in online French education, specializing in TEF Canada success.
-          </p>
-          <div className="mt-8 flex justify-center gap-x-8 gap-y-4 opacity-90">
-            <span className="font-semibold">184+ Students Trained</span>
-            <span className="font-semibold">96% Satisfaction Rate</span>
-            <span className="font-semibold">89% TEF Canada Pass Rate</span>
+      <section className="relative h-96">
+        <Image 
+          src="https://picsum.photos/1920/1080" 
+          alt="About FrancoBuddy Team" 
+          className="object-cover w-full h-full"
+          fill
+          data-ai-hint="team collaboration office"
+        />
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+          <div className="text-center text-white p-4">
+            <h1 className="text-4xl md:text-6xl font-bold">About FRANCOBUDDY</h1>
+            <p className="text-lg md:text-xl mt-4 max-w-2xl">
+              Your dedicated partner in online French education, specializing in TEF Canada success.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="bg-muted py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-around items-center text-center max-w-4xl mx-auto">
+            <div>
+              <p className="text-3xl font-bold text-primary">184+</p>
+              <p className="text-sm text-muted-foreground">Students Trained</p>
+            </div>
+             <div>
+              <p className="text-3xl font-bold text-primary">96%</p>
+              <p className="text-sm text-muted-foreground">Satisfaction Rate</p>
+            </div>
+             <div>
+              <p className="text-3xl font-bold text-primary">89%</p>
+              <p className="text-sm text-muted-foreground">TEF Canada Pass Rate</p>
+            </div>
           </div>
         </div>
       </section>
@@ -148,7 +173,7 @@ export default function AboutPage() {
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
             Join FRANCOBUDDY and take the definitive step towards achieving your Canadian aspirations.
           </p>
-          <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 animate-pulse">
+          <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 animate-pulse rounded-full">
             <Link href="/book-demo">Book Your Free Demo!</Link>
           </Button>
         </div>

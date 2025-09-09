@@ -4,29 +4,26 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import CourseCard from '@/components/shared/CourseCard';
 import { HelpCircle, Star, Users, Award } from 'lucide-react';
 import { coursesData } from './mockCoursesData'; 
+import Image from 'next/image';
 
 export default function CoursesPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-secondary via-background to-background text-foreground py-20 md:py-32 animate-background-pan">
-        <div className="container mx-auto px-4 text-center animate-fade-in-up">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Master French for Your Future</h1>
-          <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
-            Choose the perfect TEF Canada preparation course designed to meet your specific CLB goals and learning preferences.
-          </p>
-           <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 opacity-90">
-            <span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary"/> 184+ Students Helped</span>
-            <span className="flex items-center gap-2"><Award className="h-5 w-5 text-primary"/> 96% Success Rate</span>
-            <span className="flex items-center gap-2"><Star className="h-5 w-5 text-primary"/> 15+ Years Experience</span>
-          </div>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-             <Button asChild size="lg" variant="default">
-              <Link href="/pricing">View Plans</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/book-demo">Book Free Demo</Link>
-            </Button>
+      <section className="relative h-96">
+        <Image 
+          src="https://picsum.photos/1920/1080?random=1" 
+          alt="French courses for Canadian immigration" 
+          className="object-cover w-full h-full"
+          fill
+          data-ai-hint="learning online education"
+        />
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+          <div className="text-center text-white p-4">
+            <h1 className="text-4xl md:text-6xl font-bold">Our Courses</h1>
+            <p className="text-lg md:text-xl mt-4 max-w-2xl">
+              Choose the perfect TEF Canada preparation course designed to meet your specific CLB goals.
+            </p>
           </div>
         </div>
       </section>
@@ -59,10 +56,10 @@ export default function CoursesPage() {
               Let our experts guide you. Book a free demo class to discuss your goals and get a personalized recommendation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="animate-pulse">
+              <Button asChild size="lg" className="animate-pulse rounded-full">
                 <Link href="/book-demo">Book Free Demo</Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="outline" className="rounded-full">
                 <Link href="/ai-course-suggester">Use AI Suggester</Link>
               </Button>
             </div>

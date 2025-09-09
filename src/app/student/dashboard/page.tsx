@@ -13,24 +13,31 @@ const enrolledCourses = [
 ];
 const testimonials = [
   { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application in Toronto. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
-  { quote: "I needed a high TCF score for my work permit extension in Mississauga. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Mississauga, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional man portrait", rating: 5 },
-  { quote: "Living in Brampton, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Brampton, ON", image: "https://picsum.photos/100/100", dataAiHint: "female student portrait", rating: 4.8 },
+  { quote: "I needed a high TCF score for my work permit extension in Mississauga. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Mississauga, ON", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "Living in Brampton, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Brampton, ON", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 4.8 },
 ];
 
 export default async function StudentDashboardPage() {
   const recentFeedback: RecentFeedbackSnippet | null = await getMostRecentAiTutorFeedbackAction();
 
   return (
-    <div className="space-y-16"> {/* Increased spacing */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-primary">Welcome back, {studentName}!</h1>
-          <p className="text-muted-foreground">Here&apos;s an overview of your learning journey.</p>
+    <div className="space-y-8">
+      {/* Hero Section */}
+      <section className="relative h-64 rounded-2xl overflow-hidden flex items-center justify-center text-center">
+        <Image 
+          src="https://picsum.photos/1920/400?random=11"
+          alt="Student learning environment"
+          fill
+          className="object-cover"
+          data-ai-hint="library learning student"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="container relative mx-auto px-4 text-white">
+          <h1 className="text-3xl md:text-4xl font-bold">Welcome back, {studentName}!</h1>
+          <p className="text-md md:text-lg mt-2">Here's an overview of your learning journey.</p>
         </div>
-        <Button asChild variant="outline">
-          <Link href="/student/profile"><UserCircle className="mr-2 h-4 w-4" /> My Profile</Link>
-        </Button>
-      </div>
+      </section>
 
       {/* AI Language Tutor Quick Access Panel */}
       <section>

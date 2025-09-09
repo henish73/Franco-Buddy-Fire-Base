@@ -2,11 +2,31 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function GuidelinesPage() {
   return (
+    <>
+    {/* Hero Section */}
+      <section className="relative h-80">
+        <Image 
+          src="https://picsum.photos/1920/1080?random=10" 
+          alt="Community guidelines" 
+          className="object-cover w-full h-full"
+          fill
+          data-ai-hint="community people group"
+        />
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+          <div className="text-center text-white p-4">
+            <Users className="h-16 w-16 mx-auto mb-4" />
+            <h1 className="text-4xl md:text-6xl font-bold">Community Guidelines</h1>
+            <p className="text-lg md:text-xl mt-4 max-w-2xl">
+              Fostering a respectful and productive learning environment.
+            </p>
+          </div>
+        </div>
+      </section>
     <div className="container mx-auto px-4 py-16 md:py-24">
-      <SectionTitle title="Community Guidelines & Policies" subtitle="Fostering a respectful and productive learning environment." />
       <Card className="max-w-3xl mx-auto shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -85,5 +105,6 @@ export default function GuidelinesPage() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

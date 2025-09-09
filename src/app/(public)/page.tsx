@@ -10,8 +10,8 @@ import { coursesData } from './courses/mockCoursesData';
 
 const testimonials = [
   { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application in Toronto. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
-  { quote: "I needed a high TCF score for my work permit extension in Mississauga. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Mississauga, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional man portrait", rating: 5 },
-  { quote: "Living in Brampton, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Brampton, ON", image: "https://picsum.photos/100/100", dataAiHint: "female student portrait", rating: 4.8 },
+  { quote: "I needed a high TCF score for my work permit extension in Mississauga. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Mississauga, ON", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "Living in Brampton, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Brampton, ON", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 4.8 },
 ];
 
 const whyFrancoBuddyItems = [
@@ -27,40 +27,42 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-background via-primary/10 to-background text-foreground py-20 md:py-32">
+      <section className="relative h-[600px] flex items-center justify-center text-center">
         <Image 
-          src="https://picsum.photos/1200/800"
+          src="https://picsum.photos/1920/1080?random=4"
           alt="Students learning French for PR in a modern classroom in Toronto"
           fill
-          className="object-cover opacity-10"
+          className="object-cover"
           data-ai-hint="classroom study group"
+          priority
         />
-        <div className="container relative mx-auto px-4 text-center animate-fade-in-up">
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="container relative mx-auto px-4 text-white animate-fade-in-up">
           <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider shadow-lg">
             🏆 Your #1 Choice for TEF & TCF in the GTA
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-primary">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Ace TEF & TCF for Canadian PR | French Classes in Toronto, Brampton & Mississauga
           </h1>
           <p className="text-lg md:text-xl opacity-90 mb-10 max-w-3xl mx-auto">
             Unlock your Canadian dream with expert French language training. We specialize in TEF and TCF test preparation for immigration, helping professionals in Toronto, Brampton, and Mississauga achieve their PR goals.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow animate-pulse">
+            <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow animate-pulse rounded-full">
               <Link href="/book-demo">Book FREE Demo Class</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+            <Button asChild size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-black rounded-full">
               <Link href="/courses">Explore TEF/TCF Courses</Link>
             </Button>
-            <Button asChild size="lg" variant="default">
+            <Button asChild size="lg" variant="default" className="rounded-full">
               <Link href="/enrollment-form">Enroll Now</Link>
             </Button>
           </div>
            <div className="mt-12 flex justify-center items-center gap-8 opacity-90">
                 <div className="flex -space-x-4 rtl:space-x-reverse">
                     <Avatar><AvatarImage src="https://picsum.photos/40/40" alt="Student from Toronto" data-ai-hint="person avatar"/><AvatarFallback>S1</AvatarFallback></Avatar>
-                    <Avatar><AvatarImage src="https://picsum.photos/40/40" alt="Student from Brampton" data-ai-hint="person avatar"/><AvatarFallback>S2</AvatarFallback></Avatar>
-                    <Avatar><AvatarImage src="https://picsum.photos/40/40" alt="Student from Mississauga" data-ai-hint="person avatar"/><AvatarFallback>S3</AvatarFallback></Avatar>
+                    <Avatar><AvatarImage src="https://picsum.photos/41/41" alt="Student from Brampton" data-ai-hint="person avatar"/><AvatarFallback>S2</AvatarFallback></Avatar>
+                    <Avatar><AvatarImage src="https://picsum.photos/42/42" alt="Student from Mississauga" data-ai-hint="person avatar"/><AvatarFallback>S3</AvatarFallback></Avatar>
                 </div>
                 <div>
                     <p className="font-semibold">250+ Students in the GTA</p>
@@ -109,7 +111,7 @@ export default async function HomePage() {
                   <p className="text-sm text-muted-foreground">{course.shortDescription}</p>
                 </CardContent>
                 <CardFooter>
-                  <Button asChild variant="outline" className="w-full">
+                  <Button asChild variant="outline" className="w-full rounded-full">
                     <Link href={`/courses/${course.id}`}>View Plans</Link>
                   </Button>
                 </CardFooter>
@@ -176,13 +178,13 @@ export default async function HomePage() {
       <section className="py-16 md:py-24 bg-gradient-to-br from-background via-primary/10 to-background text-foreground">
         <div className="container mx-auto px-4 animate-fade-in-up">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 max-w-5xl mx-auto">
-            <Image src="https://picsum.photos/300/300" alt="Certified French Instructor for TEF TCF in Toronto" width={300} height={300} className="rounded-full shadow-lg border-4 border-secondary" data-ai-hint="instructor teacher portrait" />
+            <Image src="https://picsum.photos/300/300?random=5" alt="Certified French Instructor for TEF TCF in Toronto" width={300} height={300} className="rounded-full shadow-lg border-4 border-secondary" data-ai-hint="instructor teacher portrait" />
             <div className="text-center md:text-left">
               <h3 className="text-3xl font-semibold mb-4 text-primary">Your Partner for French Immigration Success</h3>
               <p className="mb-4 opacity-90">
                 At FRANCOBUDDY, we are your partners in achieving your Canadian dream. Our mission is to provide high-quality, personalized French instruction that empowers you to succeed in the TEF and TCF exams. If you're looking for French classes for PR in Toronto, Mississauga, or Brampton, you're in the right place.
               </p>
-              <Button asChild variant="secondary">
+              <Button asChild variant="secondary" className="rounded-full">
                 <Link href="/about">Learn More About Our Method <ChevronRight className="ml-2 h-4 w-4" /></Link>
               </Button>
             </div>
@@ -198,10 +200,10 @@ export default async function HomePage() {
           </h2>
           <p className="text-muted-foreground mb-2">Limited spots available for our TEF/TCF batches in the GTA!</p>
           <div className="flex flex-wrap justify-center gap-4 my-8">
-             <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow animate-pulse">
+             <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow animate-pulse rounded-full">
               <Link href="/book-demo">Book Your FREE Demo Now</Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
+            <Button asChild size="lg" variant="outline" className="rounded-full">
               <Link href="/courses">View All Course Plans</Link>
             </Button>
           </div>

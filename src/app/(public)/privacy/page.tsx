@@ -2,11 +2,31 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function PrivacyPage() {
   return (
+    <>
+    {/* Hero Section */}
+      <section className="relative h-80">
+        <Image 
+          src="https://picsum.photos/1920/1080?random=8" 
+          alt="Privacy and security" 
+          className="object-cover w-full h-full"
+          fill
+          data-ai-hint="security lock abstract"
+        />
+        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+          <div className="text-center text-white p-4">
+            <Shield className="h-16 w-16 mx-auto mb-4" />
+            <h1 className="text-4xl md:text-6xl font-bold">Privacy Policy</h1>
+            <p className="text-lg md:text-xl mt-4 max-w-2xl">
+              Your privacy is important to us.
+            </p>
+          </div>
+        </div>
+      </section>
     <div className="container mx-auto px-4 py-16 md:py-24">
-      <SectionTitle title="Privacy Policy" subtitle="Your privacy is important to us." />
       <Card className="max-w-3xl mx-auto shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -65,5 +85,6 @@ export default function PrivacyPage() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }

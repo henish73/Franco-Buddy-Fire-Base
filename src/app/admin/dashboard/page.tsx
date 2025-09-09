@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import StatCard from '@/components/shared/StatCard';
 import { Users, Inbox, BookOpen, BarChart3, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 
 // Placeholder data - In a real app, this would be fetched from Firestore
 const adminStats = {
@@ -21,7 +22,21 @@ const quickLinks = [
 export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-primary">Admin Dashboard</h1>
+      {/* Hero Section */}
+      <section className="relative h-48 rounded-2xl overflow-hidden flex items-center justify-center text-center">
+        <Image 
+          src="https://picsum.photos/1200/300?random=12"
+          alt="Admin Dashboard Banner"
+          fill
+          className="object-cover"
+          data-ai-hint="abstract geometric pattern"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="container relative mx-auto px-4 text-white">
+          <h1 className="text-3xl md:text-4xl font-bold">Admin Dashboard</h1>
+        </div>
+      </section>
       
       {/* Key Metrics Section */}
       <section>
@@ -48,7 +63,7 @@ export default function AdminDashboardPage() {
                 <p className="text-xs text-muted-foreground">Quickly access and manage {link.label.toLowerCase()}.</p>
               </CardContent>
               <CardFooter>
-                <Button asChild variant="outline" size="sm" className="w-full">
+                <Button asChild variant="outline" size="sm" className="w-full rounded-full">
                   <Link href={link.href}>Go to {link.label} <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
               </CardFooter>
