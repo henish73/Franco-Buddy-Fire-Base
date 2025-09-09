@@ -134,13 +134,18 @@ export default function Navbar() {
                     </Link>
                 </NavigationMenuItem>
 
+                <NavigationMenuItem>
+                    <Link href="/login" legacyBehavior passHref>
+                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                            <LogIn className="mr-2 h-4 w-4"/> Login
+                        </NavigationMenuLink>
+                    </Link>
+                </NavigationMenuItem>
+
             </NavigationMenuList>
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-           <Button asChild variant="ghost" size="sm" className="hidden lg:inline-flex">
-            <Link href="/login"><LogIn className="mr-2 h-4 w-4"/> Login</Link>
-          </Button>
           <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
             <Link href="/enrollment-form">Enroll Now</Link>
           </Button>
@@ -205,4 +210,3 @@ const ListItem = React.forwardRef<
   )
 })
 ListItem.displayName = "ListItem"
-
