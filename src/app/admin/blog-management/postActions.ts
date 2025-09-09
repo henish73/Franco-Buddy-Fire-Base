@@ -7,6 +7,9 @@ import { db } from "./db"; // Import the persistent in-memory DB
 import { type BlogPost, type BlogCategory, type BlogTag } from "@/app/(public)/blog/mockBlogPosts";
 import { getCategoriesAction, getTagsAction } from "./taxonomyActions";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
 // --- Zod Schema for Post Actions (CRUD) ---
 const blogPostActionSchema = z.object({
   id: z.string().optional(),
@@ -15,7 +18,13 @@ const blogPostActionSchema = z.object({
   date: z.string().refine(val => !isNaN(Date.parse(val)), { message: "Invalid date format" }),
   author: z.string().min(3, "Author name is required"),
   excerpt: z.string().min(10, "Excerpt is required (min 10 chars)"),
-  imageUrl: z.string().url({ message: "Please enter a valid image URL" }).optional().or(z.literal('')),
+  imageUrl: z
+    .any()
+    .refine((file) => !file || file.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine(
+      (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ).optional(),
   imageAiHint: z.string().max(50, "AI hint too long (max 50 chars)").optional(),
   content: z.string().min(20, "Content is required (min 20 chars)"),
   categories: z.preprocess(val => typeof val === 'string' ? val.split(',').map(s => s.trim()).filter(Boolean) : [], z.array(z.string())),
@@ -45,6 +54,13 @@ export type BlogPostFormState = {
   isSuccess: boolean;
   data?: BlogPost | BlogPost[] | null;
 };
+
+// Helper to convert file to Base64 Data URI
+async function fileToDataUri(file: File): Promise<string> {
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    return `data:${file.type};base64,${buffer.toString('base64')}`;
+}
 
 
 // --- Server Actions ---
@@ -139,6 +155,11 @@ export async function addBlogPostAction(
   formData: FormData
 ): Promise<BlogPostFormState> {
   const rawFormData = Object.fromEntries(formData.entries());
+  // Handle empty file input
+  if (rawFormData.imageUrl instanceof File && rawFormData.imageUrl.size === 0) {
+      delete rawFormData.imageUrl;
+  }
+  
   const validatedFields = blogPostActionSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
@@ -158,11 +179,17 @@ export async function addBlogPostAction(
   }
 
   try {
-    const newPostData = validatedFields.data;
+    const { imageUrl: imageFile, ...newPostData } = validatedFields.data;
+    let imageUrlDataUri: string | undefined = undefined;
+
+    if (imageFile instanceof File && imageFile.size > 0) {
+        imageUrlDataUri = await fileToDataUri(imageFile);
+    }
+    
     const newPost: BlogPost = {
       ...newPostData,
       id: `post-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-      imageUrl: newPostData.imageUrl || undefined,
+      imageUrl: imageUrlDataUri,
       imageAiHint: newPostData.imageAiHint || undefined,
       comments: [],
       createdAt: new Date().toISOString(),
@@ -186,6 +213,9 @@ export async function updateBlogPostAction(
   formData: FormData
 ): Promise<BlogPostFormState> {
   const rawFormData = Object.fromEntries(formData.entries());
+  if (rawFormData.imageUrl instanceof File && rawFormData.imageUrl.size === 0) {
+      delete rawFormData.imageUrl;
+  }
   const validatedFields = blogPostActionSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
@@ -216,12 +246,18 @@ export async function updateBlogPostAction(
   }
 
   try {
-    const updatedPostData = validatedFields.data;
+    const { imageUrl: imageFile, ...updatedPostData } = validatedFields.data;
     const originalPost = db.posts[postIndex];
+    let imageUrlDataUri: string | undefined = originalPost.imageUrl; // Keep old image by default
+
+    if (imageFile instanceof File && imageFile.size > 0) {
+        imageUrlDataUri = await fileToDataUri(imageFile); // New image was uploaded
+    }
+    
     const updatedPost: BlogPost = {
       ...originalPost,
       ...updatedPostData,
-      imageUrl: updatedPostData.imageUrl || undefined,
+      imageUrl: imageUrlDataUri,
       imageAiHint: updatedPostData.imageAiHint || undefined,
       updatedAt: new Date().toISOString(),
     };
@@ -230,6 +266,7 @@ export async function updateBlogPostAction(
 
     revalidatePath("/admin/blog-management");
     revalidatePath("/blog", "layout");
+    revalidatePath(`/blog/${updatedPost.slug}`);
     
     return { message: "Blog post updated successfully!", isSuccess: true, data: updatedPost };
   } catch (error) {

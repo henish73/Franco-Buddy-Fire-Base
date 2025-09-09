@@ -1,7 +1,7 @@
 // src/app/admin/blog-management/page.tsx
 "use client";
 
-import { useState, useEffect, useTransition, FormEvent, useActionState } from 'react';
+import { useState, useEffect, useTransition, FormEvent } from 'react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -42,6 +42,9 @@ import {
 } from './taxonomyActions';
 
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
 // Zod schema for blog post form validation (matches schema in postActions.ts)
 const blogPostClientSchema = z.object({
   id: z.string().optional(),
@@ -50,7 +53,14 @@ const blogPostClientSchema = z.object({
   date: z.string().refine(val => !isNaN(Date.parse(val)), { message: "Invalid date format" }),
   author: z.string().min(3, "Author name is required"),
   excerpt: z.string().min(10, "Excerpt is required (min 10 chars)"),
-  imageUrl: z.string().url({ message: "Please enter a valid image URL" }).optional().or(z.literal('')),
+  imageUrl: z
+    .any()
+    .optional()
+    .refine((file) => !file || file.size === 0 || file.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine(
+      (file) => !file || file.size === 0 || ACCEPTED_IMAGE_TYPES.includes(file.type),
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
+    ),
   imageAiHint: z.string().optional(),
   content: z.string().min(20, "Content is required (min 20 chars)"),
   categories: z.string().transform(val => val.split(',').map(s => s.trim()).filter(Boolean)), // Stored as array in DB, string in form
@@ -87,11 +97,10 @@ export default function AdminBlogManagementPage() {
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   
-  const postForm = useForm<BlogPostFormData>({
+  const postForm = useForm<z.infer<typeof blogPostClientSchema>>({
     resolver: zodResolver(blogPostClientSchema),
-    defaultValues: { featured: false, categories: [], tags: [] }
+    defaultValues: { featured: false, categories: "", tags: "" }
   });
-  const [postFormServerState, postFormAction] = useActionState(editingPost ? updateBlogPostAction : addBlogPostAction, initialPostFormState);
 
   // --- Categories State & Forms ---
   const [categories, setCategories] = useState<BlogCategory[]>([]);
@@ -101,7 +110,6 @@ export default function AdminBlogManagementPage() {
   const categoryForm = useForm<CategoryFormData>({
     resolver: zodResolver(categoryClientSchema),
   });
-  const [categoryFormServerState, categoryFormAction] = useActionState(editingCategory ? updateCategoryAction : addCategoryAction, initialTaxonomyFormState);
 
   // --- Tags State & Forms ---
   const [tags, setTags] = useState<BlogTag[]>([]);
@@ -111,7 +119,6 @@ export default function AdminBlogManagementPage() {
   const tagForm = useForm<TagFormData>({
     resolver: zodResolver(tagClientSchema),
   });
-  const [tagFormServerState, tagFormAction] = useActionState(editingTag ? updateTagAction : addTagAction, initialTaxonomyFormState);
   
 
   // --- Data Fetching Effects ---
@@ -159,8 +166,8 @@ export default function AdminBlogManagementPage() {
   const openAddPostDialog = () => {
     postForm.reset({ 
       title: "", slug: "", date: new Date().toISOString().split('T')[0], 
-      author: "Admin", excerpt: "", imageUrl: "", imageAiHint: "",
-      content: "", categories: [], tags: [], featured: false,
+      author: "Admin", excerpt: "", imageUrl: undefined, imageAiHint: "",
+      content: "", categories: "", tags: "", featured: false,
     });
     setEditingPost(null);
     setIsPostDialogOpen(true);
@@ -170,34 +177,38 @@ export default function AdminBlogManagementPage() {
     setEditingPost(post);
     postForm.reset({
       ...post,
+      imageUrl: undefined, // Don't try to pre-fill a file input
       categories: Array.isArray(post.categories) ? post.categories.join(', ') : '', // Ensure it's a string for the form
       tags: Array.isArray(post.tags) ? post.tags.join(', ') : '', // Ensure it's a string for the form
     });
     setIsPostDialogOpen(true);
   };
 
-  const handlePostFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    if (editingPost && editingPost.id) {
-        formData.append('id', editingPost.id); // Add ID for updates
-    }
+  const handlePostFormSubmit: SubmitHandler<z.infer<typeof blogPostClientSchema>> = async (data) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+        if (key === 'imageUrl' && value instanceof FileList && value.length > 0) {
+            formData.append(key, value[0]);
+        } else if (value !== undefined && value !== null && key !== 'imageUrl') {
+            formData.append(key, String(value));
+        }
+    });
 
-    postForm.handleSubmit(async (data) => {
-        startTransition(async () => {
-            const actionToCall = editingPost ? updateBlogPostAction : addBlogPostAction;
-            const result = await actionToCall(initialPostFormState, formData);
-            if (result.isSuccess) {
-                toast({ title: "Success", description: result.message });
-                setIsPostDialogOpen(false);
-                fetchPosts(); // Refetch posts
-            } else {
-                toast({ title: "Error", description: result.message || "Failed to save post.", variant: "destructive" });
-                // Optionally set server errors to form context if needed
-                // result.errors?.title && postForm.setError("title", { message: result.errors.title[0]}); // etc.
-            }
-        });
-    })(event); // Trigger react-hook-form validation before submitting
+    if (editingPost?.id) {
+        formData.append('id', editingPost.id);
+    }
+    
+    startTransition(async () => {
+        const actionToCall = editingPost ? updateBlogPostAction : addBlogPostAction;
+        const result = await actionToCall(initialPostFormState, formData);
+        if (result.isSuccess) {
+            toast({ title: "Success", description: result.message });
+            setIsPostDialogOpen(false);
+            fetchPosts();
+        } else {
+            toast({ title: "Error", description: result.message || "Failed to save post.", variant: "destructive" });
+        }
+    });
   };
   
   const handleDeletePost = (postId: string) => {
@@ -337,7 +348,7 @@ export default function AdminBlogManagementPage() {
                   {editingPost ? "Update the details of this blog post." : "Enter the details for the new blog post."}
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handlePostFormSubmit} id="blogPostForm" className="grid gap-4 py-4 flex-grow overflow-y-auto pr-2">
+              <form onSubmit={postForm.handleSubmit(handlePostFormSubmit)} id="blogPostForm" className="grid gap-4 py-4 flex-grow overflow-y-auto pr-2">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="title" className="text-right">Title</Label>
                   <Input id="title" {...postForm.register("title")} className="col-span-3" />
@@ -368,10 +379,10 @@ export default function AdminBlogManagementPage() {
                   <Textarea id="content" {...postForm.register("content")} className="col-span-3" rows={8} />
                   {postForm.formState.errors.content && <p className="col-span-4 text-sm text-destructive text-right">{postForm.formState.errors.content.message}</p>}
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="imageUrl" className="text-right">Image URL</Label>
-                  <Input id="imageUrl" {...postForm.register("imageUrl")} className="col-span-3" placeholder="https://placehold.co/800x400.png"/>
-                  {postForm.formState.errors.imageUrl && <p className="col-span-4 text-sm text-destructive text-right">{postForm.formState.errors.imageUrl.message}</p>}
+                 <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="imageUrl" className="text-right">Featured Image</Label>
+                  <Input id="imageUrl" type="file" {...postForm.register("imageUrl")} className="col-span-3 file:text-foreground" />
+                  {postForm.formState.errors.imageUrl && <p className="col-span-4 text-sm text-destructive text-right">{postForm.formState.errors.imageUrl.message as string}</p>}
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="imageAiHint" className="text-right">Image AI Hint</Label>
@@ -407,9 +418,6 @@ export default function AdminBlogManagementPage() {
                     />
                     {postForm.formState.errors.featured && <p className="col-span-4 text-sm text-destructive text-right">{postForm.formState.errors.featured.message}</p>}
                 </div>
-                 {postFormServerState.message && !postFormServerState.isSuccess && (
-                    <p className="col-span-4 text-sm text-destructive text-center">{postFormServerState.message}</p>
-                 )}
               </form>
               <DialogFooter className="mt-auto pt-4 border-t">
                 <Button type="button" variant="outline" onClick={() => setIsPostDialogOpen(false)} disabled={isPending}>Cancel</Button>
@@ -492,9 +500,6 @@ export default function AdminBlogManagementPage() {
                   <Label htmlFor="categoryDescription">Description (Optional)</Label>
                   <Textarea id="categoryDescription" {...categoryForm.register("description")} rows={3} />
                 </div>
-                {categoryFormServerState.message && !categoryFormServerState.isSuccess && (
-                    <p className="text-sm text-destructive text-center">{categoryFormServerState.message}</p>
-                 )}
               </form>
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsCategoryDialogOpen(false)} disabled={isPending}>Cancel</Button>
@@ -568,9 +573,6 @@ export default function AdminBlogManagementPage() {
                   <Input id="tagSlug" {...tagForm.register("slug")} placeholder="e.g., tef-canada" />
                   {tagForm.formState.errors.slug && <p className="text-sm text-destructive">{tagForm.formState.errors.slug.message}</p>}
                 </div>
-                {tagFormServerState.message && !tagFormServerState.isSuccess && (
-                    <p className="text-sm text-destructive text-center">{tagFormServerState.message}</p>
-                 )}
               </form>
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsTagDialogOpen(false)} disabled={isPending}>Cancel</Button>
