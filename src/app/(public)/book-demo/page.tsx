@@ -5,6 +5,7 @@ import { CalendarCheck, Sparkles, HelpCircle, Star, ShieldCheck, Users, UserChec
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Card } from '@/components/ui/card';
 
 
 const faqItems = [
@@ -109,4 +110,3 @@ export default function BookDemoPage() {
     </>
   );
 }
-
