@@ -15,6 +15,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC', // Specify UTC to prevent hydration mismatch
   });
 
   return (
