@@ -14,16 +14,17 @@ export const SpeakingAssessmentInputSchema = z.object({
 export type SpeakingAssessmentInput = z.infer<typeof SpeakingAssessmentInputSchema>;
 
 export const SpeakingAssessmentOutputSchema = z.object({
-  transcription: z.string().describe('The transcribed text from the student\'s audio (simulated if actual STT is not used).'),
+  transcription: z.string().describe('The transcribed text from the student\'s audio.'),
   feedback: z.object({
-    fluency: z.string().describe('Detailed feedback on the student\'s fluency, noting smoothness, hesitations, and pace as inferable from the transcription.'),
-    pronunciation: z.string().describe('General feedback on pronunciation based on the words used in the transcription, highlighting common challenges for learners. Does not assess actual spoken pronunciation.'),
+    fluency: z.string().describe('Detailed feedback on the student\'s fluency, noting smoothness, hesitations, and pace from the audio.'),
+    pronunciation: z.string().describe('Feedback on pronunciation, intonation, and rhythm, based on listening to the audio. Provide specific examples of mispronounced words and corrections.'),
     grammar: z.string().describe('Feedback on grammatical accuracy, including examples of errors and corrections if any are identified in the transcription.'),
     vocabulary: z.string().describe('Evaluation of vocabulary range, appropriateness, and precision in relation to the prompt and TEF context.'),
     coherence: z.string().describe('Assessment of how well ideas are organized and logically connected in the transcribed response.'),
     taskAchievement: z.string().describe('Feedback on how well the student\'s response addressed all parts of the original speaking prompt.'),
+    tefSectionContext: z.string().describe("Feedback on how well the response meets the specific requirements of the TEF section (e.g., tone, register, function).")
   }),
-  score: z.number().min(0).max(100).describe('An overall score (0-100) based on the analysis of the transcribed text, considering fluency, grammar, vocabulary, coherence, and task achievement. Pronunciation feedback provided is general advice and does not directly contribute to this numerical score.'),
-  suggestionsForImprovement: z.array(z.string()).describe('Specific, actionable suggestions for improving speaking skills based on the analysis of the transcription.'),
+  score: z.number().min(0).max(100).describe('An overall score (0-100) based on fluency, pronunciation, grammar, vocabulary, coherence, and task achievement.'),
+  suggestionsForImprovement: z.array(z.string()).describe('Specific, actionable suggestions for improving speaking skills based on the analysis of the audio and transcription.'),
 });
 export type SpeakingAssessmentOutput = z.infer<typeof SpeakingAssessmentOutputSchema>;

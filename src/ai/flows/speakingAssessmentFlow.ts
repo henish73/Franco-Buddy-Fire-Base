@@ -44,15 +44,16 @@ const speakingAssessmentInternalPrompt = ai.definePrompt({
 
     Your tasks are:
     1.  **Transcribe the Audio**: Listen to the student's spoken audio response and provide an accurate transcription. This transcription should be placed in the "transcription" field of your JSON output.
-    2.  **Evaluate the Transcription**: Based *ONLY* on the transcription you generated and the original prompt, evaluate the student's French speaking performance according to the following criteria. Populate the "feedback", "score", and "suggestionsForImprovement" fields in your JSON output.
-        *   **Fluency Feedback**: Assess the flow and smoothness from the transcribed text. Note any textual evidence of hesitations (e.g., "euh", repeated short words if they seem like fillers), awkward pauses (if inferable from sentence structure), and overall pace based on sentence length and complexity in the transcription.
-        *   **Pronunciation Feedback**: Based *only* on the transcribed words, provide general advice on common pronunciation challenges French learners face with the specific vocabulary used. For example, if "beaucoup" is present, you might mention the 'eau' sound. Do not attempt to infer actual mispronunciations from the text. This feedback is for guidance and does not directly contribute to the Overall Score.
+    2.  **Evaluate the Spoken Audio & Transcription**: Based on the original prompt, the generated transcription, AND by listening to the audio, evaluate the student's French speaking performance according to the following criteria. Populate the "feedback", "score", and "suggestionsForImprovement" fields in your JSON output.
+        *   **Fluency Feedback**: Assess the flow and smoothness of the speech from the audio. Note any hesitations, awkward pauses, and overall pace.
+        *   **Pronunciation Feedback**: Based *directly on the audio*, provide feedback on the student's pronunciation, intonation, and rhythm. Mention specific words that were mispronounced and provide corrections.
         *   **Grammar Feedback**: Identify any grammatical errors in the transcribed sentences. Provide specific examples of errors and suggest corrections. Comment on the correct use of tenses, agreements, and sentence structures visible in the transcription.
         *   **Vocabulary Feedback**: Evaluate the range, appropriateness, and precision of vocabulary used in the transcription in relation to the prompt. Note any misuse of words or suggest more suitable alternatives.
         *   **Coherence Feedback**: Judge how well the ideas in the transcription are organized and if they logically address all parts of the original prompt.
         *   **Task Achievement Feedback**: Assess how well the student's transcribed response addressed all parts of the original speaking prompt.
-        *   **Overall Score**: Provide an overall score from 0 to 100. This score should be determined by evaluating fluency, grammar, vocabulary, coherence, and task achievement based *solely on the transcribed text*. Do not let the text-based pronunciation feedback directly influence this numerical score.
-        *   **Suggestions for Improvement**: Offer 2-3 specific, actionable suggestions for improving speaking skills based on your analysis of the transcription. These should be concrete steps the student can take.
+        *   **TEF Section Context Feedback**: Provide feedback on how well the student's response fits the expectations of the specific TEF section (e.g., formal tone for Section A, persuasive language for Section B).
+        *   **Overall Score**: Provide an overall score from 0 to 100. This score should be determined by evaluating fluency, pronunciation, grammar, vocabulary, coherence, and task achievement.
+        *   **Suggestions for Improvement**: Offer 2-3 specific, actionable suggestions for improving speaking skills based on your analysis. These should be concrete steps the student can take.
 
     Ensure your entire output strictly adheres to the JSON schema provided for 'transcription', 'feedback', 'score', and 'suggestionsForImprovement'.
   `,

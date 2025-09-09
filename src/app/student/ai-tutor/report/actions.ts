@@ -3,7 +3,7 @@
 
 import type { SpeakingAssessmentOutput } from "@/ai/flows/speakingAssessmentSchemas";
 import type { WritingAssessmentOutput } from "@/ai/flows/writingAssessmentSchemas";
-import type { ReadingAssessmentOutput } from "@/ai/flows/readingAssessmentSchemas";
+import type { ReadingQuizResult } from "@/app/student/ai-tutor/reading/actions";
 import type { ListeningAssessmentOutput } from "@/ai/flows/listeningAssessmentSchemas";
 
 export type HistoricalAssessment = {
@@ -14,7 +14,7 @@ export type HistoricalAssessment = {
   timestamp: string;
   score: number;
   // Details specific to each assessment type
-  details: Partial<SpeakingAssessmentOutput | WritingAssessmentOutput | ReadingAssessmentOutput | ListeningAssessmentOutput>;
+  details: Partial<SpeakingAssessmentOutput | WritingAssessmentOutput | ListeningAssessmentOutput | ReadingQuizResult>;
 };
 
 // Simulate fetching a student's assessment history
@@ -34,7 +34,7 @@ export async function getAssessmentHistoryAction(): Promise<HistoricalAssessment
       score: 75,
       details: {
         transcription: "J'ai parlé de ma routine...",
-        feedback: { fluency: "Good", pronunciation: "Okay", grammar: "Few errors", vocabulary: "Adequate", coherence: "Clear", tefSectionContext: "Section A" },
+        feedback: { fluency: "Good", pronunciation: "Okay", grammar: "Few errors", vocabulary: "Adequate", coherence: "Clear", taskAchievement: "Good", tefSectionContext: "Formal tone was appropriate." },
         suggestionsForImprovement: ["Work on 'r' sound.", "Review verb tenses."],
       } as SpeakingAssessmentOutput,
     },
@@ -47,7 +47,7 @@ export async function getAssessmentHistoryAction(): Promise<HistoricalAssessment
       score: 68,
       details: {
         transcription: "Mes passe-temps sont...",
-        feedback: { fluency: "Hesitant", pronunciation: "Needs work", grammar: "Several errors", vocabulary: "Limited", coherence: "Good", tefSectionContext: "Section B" },
+        feedback: { fluency: "Hesitant", pronunciation: "Needs work", grammar: "Several errors", vocabulary: "Limited", coherence: "Good", taskAchievement: "Good", tefSectionContext: "Good attempt for a general conversation topic." },
         suggestionsForImprovement: ["Practice speaking more slowly.", "Expand vocabulary related to hobbies."],
       } as SpeakingAssessmentOutput,
     },
@@ -60,7 +60,7 @@ export async function getAssessmentHistoryAction(): Promise<HistoricalAssessment
       timestamp: new Date(Date.now() - 86400000 * 1).toISOString(), // 1 day ago
       score: 82,
       details: {
-        feedback: { grammar: "Excellent", vocabulary: "Rich", structure: "Well-organized", coherence: "Very good", taskAchievement: "Fully addressed" },
+        feedback: { grammar: "Excellent", vocabulary: "Rich", structure: "Well-organized", coherence: "Very good", taskAchievement: "Fully addressed", toneAndRegister: "Appropriately formal." },
         suggestionsForImprovement: ["Consider using more varied sentence openers."],
       } as WritingAssessmentOutput,
     },
@@ -71,11 +71,15 @@ export async function getAssessmentHistoryAction(): Promise<HistoricalAssessment
       assessmentType: "Reading",
       promptTopicOrId: "Le Télétravail",
       timestamp: new Date(Date.now() - 86400000 * 3).toISOString(), // 3 days ago
-      score: 70,
+      score: 100, // Quiz based
       details: {
-        feedback: { understanding: "Good grasp of main ideas", clarity: "Response was clear", languageUse: "Adequate", relevanceToPassage: "Relevant" },
-        suggestionsForImprovement: ["Pay closer attention to specific details in the passage."],
-      } as ReadingAssessmentOutput,
+          passageId: "rp_passage_1",
+          passageTopic: "Le Télétravail",
+          score: 100,
+          totalQuestions: 2,
+          correctlyAnswered: 2,
+          results: []
+      } as ReadingQuizResult,
     },
     // Listening
     {
