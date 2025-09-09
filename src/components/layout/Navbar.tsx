@@ -144,7 +144,7 @@ export default function Navbar() {
           <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
             <Link href="/enrollment-form">Enroll Now</Link>
           </Button>
-          <Button asChild variant="default" size="sm" className="animate-pulse bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
+          <Button asChild variant="default" size="sm" className="bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
             <Link href="/book-demo">Book Free Demo</Link>
           </Button>
           <Sheet>
