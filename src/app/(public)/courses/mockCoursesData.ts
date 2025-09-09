@@ -1,6 +1,6 @@
 // src/app/(public)/courses/mockCoursesData.ts
 import { type Course } from '@/components/shared/CourseCard';
-import { Users, Award, Video, FileText, Brain, ClipboardCheck, Target, MessageSquare, MessageCircle } from 'lucide-react';
+import { Users, Award, Video, FileText, Brain, ClipboardCheck, Target, MessageSquare, MessageCircle, Clock } from 'lucide-react';
 
 export const coursesData: Course[] = [
   { 
