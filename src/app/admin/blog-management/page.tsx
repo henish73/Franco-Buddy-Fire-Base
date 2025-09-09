@@ -1,7 +1,7 @@
 // src/app/admin/blog-management/page.tsx
 "use client";
 
-import { useState, useEffect, useTransition, FormEvent } from 'react';
+import { useState, useEffect, useTransition, FormEvent, useActionState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MoreHorizontal, PlusCircle, Edit3, Trash2, Tags, FolderTree, RefreshCw } from "lucide-react";
-import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { mockBlogPosts, type BlogPost, type BlogCategory, type BlogTag } from '@/app/(public)/blog/mockBlogPosts'; // Import types
@@ -184,17 +184,10 @@ export default function AdminBlogManagementPage() {
     setIsPostDialogOpen(true);
   };
 
-  const handlePostFormSubmit: SubmitHandler<z.infer<typeof blogPostClientSchema>> = async (data) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-        if (key === 'imageUrl' && value instanceof FileList && value.length > 0) {
-            formData.append(key, value[0]);
-        } else if (value !== undefined && value !== null && key !== 'imageUrl') {
-            formData.append(key, String(value));
-        }
-    });
-
-    if (editingPost?.id) {
+  const handlePostFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    if (editingPost && editingPost.id) {
         formData.append('id', editingPost.id);
     }
     
@@ -348,7 +341,7 @@ export default function AdminBlogManagementPage() {
                   {editingPost ? "Update the details of this blog post." : "Enter the details for the new blog post."}
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={postForm.handleSubmit(handlePostFormSubmit)} id="blogPostForm" className="grid gap-4 py-4 flex-grow overflow-y-auto pr-2">
+              <form onSubmit={handlePostFormSubmit} id="blogPostForm" className="grid gap-4 py-4 flex-grow overflow-y-auto pr-2">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="title" className="text-right">Title</Label>
                   <Input id="title" {...postForm.register("title")} className="col-span-3" />
@@ -408,7 +401,7 @@ export default function AdminBlogManagementPage() {
                             <div className="col-span-3 flex items-center">
                                 <Checkbox
                                     id="featured" 
-                                    checked={field.value || false} 
+                                    checked={field.value || false}
                                     onCheckedChange={field.onChange}
                                     className="h-4 w-4 mr-2"
                                 />
