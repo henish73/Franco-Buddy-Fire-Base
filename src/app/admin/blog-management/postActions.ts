@@ -7,7 +7,7 @@ import { db } from "./db"; // Import the persistent in-memory DB
 import { type BlogPost, type BlogCategory, type BlogTag } from "@/app/(public)/blog/mockBlogPosts";
 import { getCategoriesAction, getTagsAction } from "./taxonomyActions";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 // --- Zod Schema for Post Actions (CRUD) ---
@@ -20,9 +20,9 @@ const blogPostActionSchema = z.object({
   excerpt: z.string().min(10, "Excerpt is required (min 10 chars)"),
   imageUrl: z
     .any()
-    .refine((file) => !file || file.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    .refine((files) => !files || files.length === 0 || files[0]?.size <= MAX_FILE_SIZE, `Max image size is 10MB.`)
     .refine(
-      (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type),
+      (files) => !files || files.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files[0]?.type),
       "Only .jpg, .jpeg, .png and .webp formats are supported."
     ).optional(),
   imageAiHint: z.string().max(50, "AI hint too long (max 50 chars)").optional(),
@@ -155,9 +155,15 @@ export async function addBlogPostAction(
   formData: FormData
 ): Promise<BlogPostFormState> {
   const rawFormData = Object.fromEntries(formData.entries());
-  // Handle empty file input
-  if (rawFormData.imageUrl instanceof File && rawFormData.imageUrl.size === 0) {
-      delete rawFormData.imageUrl;
+  
+  const imageFile = rawFormData.imageUrl instanceof File ? rawFormData.imageUrl : undefined;
+  
+  // Create a mutable copy for validation
+  const dataToValidate = { ...rawFormData };
+  if (imageFile) {
+    dataToValidate.imageUrl = [imageFile]; // Wrap in array for schema
+  } else {
+    delete dataToValidate.imageUrl;
   }
   
   const validatedFields = blogPostActionSchema.safeParse(rawFormData);
@@ -179,10 +185,10 @@ export async function addBlogPostAction(
   }
 
   try {
-    const { imageUrl: imageFile, ...newPostData } = validatedFields.data;
+    const { imageUrl, ...newPostData } = validatedFields.data;
     let imageUrlDataUri: string | undefined = undefined;
 
-    if (imageFile instanceof File && imageFile.size > 0) {
+    if (imageFile && imageFile.size > 0) {
         imageUrlDataUri = await fileToDataUri(imageFile);
     }
     
@@ -213,9 +219,15 @@ export async function updateBlogPostAction(
   formData: FormData
 ): Promise<BlogPostFormState> {
   const rawFormData = Object.fromEntries(formData.entries());
-  if (rawFormData.imageUrl instanceof File && rawFormData.imageUrl.size === 0) {
-      delete rawFormData.imageUrl;
+  const imageFile = rawFormData.imageUrl instanceof File ? rawFormData.imageUrl : undefined;
+  
+  const dataToValidate = { ...rawFormData };
+  if (imageFile) {
+    dataToValidate.imageUrl = [imageFile]; // Wrap in array for schema
+  } else {
+    delete dataToValidate.imageUrl;
   }
+  
   const validatedFields = blogPostActionSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
@@ -246,11 +258,11 @@ export async function updateBlogPostAction(
   }
 
   try {
-    const { imageUrl: imageFile, ...updatedPostData } = validatedFields.data;
+    const { imageUrl, ...updatedPostData } = validatedFields.data;
     const originalPost = db.posts[postIndex];
     let imageUrlDataUri: string | undefined = originalPost.imageUrl; // Keep old image by default
 
-    if (imageFile instanceof File && imageFile.size > 0) {
+    if (imageFile && imageFile.size > 0) {
         imageUrlDataUri = await fileToDataUri(imageFile); // New image was uploaded
     }
     
