@@ -1,159 +1,144 @@
 // src/app/admin/students/page.tsx
-"use client"; // For using react-hook-form and dialogs
+"use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MoreHorizontal, UserPlus, Edit, Trash2, Eye } from "lucide-react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { MoreHorizontal, UserPlus, Edit, Trash2, RefreshCw } from "lucide-react";
+import { useForm, type SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useToast } from "@/hooks/use-toast";
+import { getStudentsAction, addStudentAction, updateStudentAction, deleteStudentAction, type Student, type StudentFormData, studentFormSchema, type StudentFormState } from './actions';
 
-// Mock student data type
-type Student = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  enrolledCourse: string; // Manual text field for now
-  status: "Active" | "Inactive";
-};
-
-// Mock initial students data
-const initialStudents: Student[] = [
-  { id: "std001", firstName: "Fatima", lastName: "Zahra", email: "fatima@example.com", phone: "555-0011", enrolledCourse: "TEF Pro - CLB 7+", status: "Active" },
-  { id: "std002", firstName: "David", lastName: "Lee", email: "david@example.com", phone: "555-0022", enrolledCourse: "TEF Foundation", status: "Inactive" },
-];
-
-// Zod schema for form validation
-const studentSchema = z.object({
-  id: z.string().optional(), // For editing existing student
-  firstName: z.string().min(2, "First name is required"),
-  lastName: z.string().min(2, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Valid phone number required"),
-  password: z.string().min(6, "Password must be at least 6 characters").optional().or(z.literal('')), // Optional for edit, required for new
-  enrolledCourse: z.string().min(1, "Enrolled course is required"),
-  status: z.enum(["Active", "Inactive"]),
-});
-type StudentFormData = z.infer<typeof studentSchema>;
+const initialFormState: StudentFormState = { message: "", isSuccess: false, errors: {} };
 
 export default function AdminStudentsPage() {
-  const [students, setStudents] = useState<Student[]>(initialStudents);
+  const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
+  const [students, setStudents] = useState<Student[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
 
-  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<StudentFormData>({
-    resolver: zodResolver(studentSchema),
+  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<StudentFormData>({
+    resolver: zodResolver(studentFormSchema),
   });
 
+  const fetchStudents = () => {
+    startTransition(async () => {
+      const result = await getStudentsAction();
+      if (result.isSuccess && Array.isArray(result.data)) {
+        setStudents(result.data);
+      } else {
+        toast({ title: "Error", description: result.message, variant: "destructive" });
+      }
+    });
+  };
+  
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
   const openAddDialog = () => {
-    reset({ password: "", status: "Active" }); // Default values for new student
+    reset({ password: "", status: "Active" });
     setEditingStudent(null);
     setIsDialogOpen(true);
   };
 
   const openEditDialog = (student: Student) => {
     setEditingStudent(student);
-    reset({ ...student, password: "" }); // Don't prefill password for edit
+    reset({ ...student, password: "" }); // Password is not edited here
     setIsDialogOpen(true);
   };
 
   const onSubmit: SubmitHandler<StudentFormData> = (data) => {
-    if (editingStudent) {
-      // Update student
-      setStudents(students.map(s => s.id === editingStudent.id ? { ...editingStudent, ...data } : s));
-      // In real app: call server action to update student in Firestore
-      console.log("Updating student:", { ...editingStudent, ...data });
-    } else {
-      // Add new student
-      const newStudent = { ...data, id: `std${Date.now()}` }; // Generate mock ID
-      setStudents([...students, newStudent]);
-      // In real app: call server action to add student (including password hashing)
-      console.log("Adding new student:", newStudent);
-    }
-    setIsDialogOpen(false);
-    reset();
+    startTransition(async () => {
+      const actionToCall = editingStudent ? updateStudentAction : addStudentAction;
+      const formData = new FormData();
+       Object.entries(data).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+              formData.append(key, String(value));
+          }
+      });
+      if (editingStudent) formData.append('id', editingStudent.id);
+
+      const result = await actionToCall(initialFormState, formData);
+
+      if (result.isSuccess) {
+        toast({ title: "Success", description: result.message });
+        setIsDialogOpen(false);
+        fetchStudents();
+      } else {
+        toast({ title: "Error", description: result.message, variant: "destructive" });
+      }
+    });
   };
   
-  const handleDeactivate = (studentId: string) => {
-    // In real app, this would call a server action
-    setStudents(students.map(s => s.id === studentId ? {...s, status: s.status === "Active" ? "Inactive" : "Active"} : s));
-    console.log(`Toggling status for student ${studentId}`);
+  const handleDelete = (studentId: string) => {
+    startTransition(async () => {
+        const result = await deleteStudentAction(studentId);
+        if(result.isSuccess) {
+            toast({ title: "Success", description: result.message });
+            fetchStudents();
+        } else {
+            toast({ title: "Error", description: result.message, variant: "destructive" });
+        }
+    });
   };
-
 
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-primary">Student Management</h1>
-        <Button onClick={openAddDialog}><UserPlus className="mr-2 h-4 w-4" /> Add New Student</Button>
+        <div>
+          <Button onClick={fetchStudents} variant="outline" size="icon" className="mr-2" aria-label="Refresh Students" disabled={isPending}>
+            <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+          </Button>
+          <Button onClick={openAddDialog} disabled={isPending}><UserPlus className="mr-2 h-4 w-4" /> Add New Student</Button>
+        </div>
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[525px]">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{editingStudent ? "Edit Student" : "Add New Student"}</DialogTitle>
-            <DialogDescription>
-              {editingStudent ? "Update the student's details." : "Enter the details for the new student."}
-            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="firstName" className="text-right">First Name</Label>
-              <Input id="firstName" {...register("firstName")} className="col-span-3" />
-              {errors.firstName && <p className="col-span-4 text-sm text-destructive text-right">{errors.firstName.message}</p>}
+            <div className="grid grid-cols-2 gap-4">
+              <div><Label htmlFor="firstName">First Name</Label><Input id="firstName" {...register("firstName")} />{errors.firstName && <p className="text-sm text-destructive">{errors.firstName.message}</p>}</div>
+              <div><Label htmlFor="lastName">Last Name</Label><Input id="lastName" {...register("lastName")} />{errors.lastName && <p className="text-sm text-destructive">{errors.lastName.message}</p>}</div>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="lastName" className="text-right">Last Name</Label>
-              <Input id="lastName" {...register("lastName")} className="col-span-3" />
-              {errors.lastName && <p className="col-span-4 text-sm text-destructive text-right">{errors.lastName.message}</p>}
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">Email</Label>
-              <Input id="email" type="email" {...register("email")} className="col-span-3" />
-              {errors.email && <p className="col-span-4 text-sm text-destructive text-right">{errors.email.message}</p>}
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phone" className="text-right">Phone</Label>
-              <Input id="phone" {...register("phone")} className="col-span-3" />
-              {errors.phone && <p className="col-span-4 text-sm text-destructive text-right">{errors.phone.message}</p>}
-            </div>
+            <div><Label htmlFor="email">Email</Label><Input id="email" type="email" {...register("email")} />{errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}</div>
+            <div><Label htmlFor="phone">Phone</Label><Input id="phone" {...register("phone")} />{errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}</div>
             {!editingStudent && (
-                <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="password" className="text-right">Password</Label>
-                    <Input id="password" type="password" {...register("password")} className="col-span-3" placeholder="Min. 6 characters" />
-                    {errors.password && <p className="col-span-4 text-sm text-destructive text-right">{errors.password.message}</p>}
-                </div>
+                <div><Label htmlFor="password">Password</Label><Input id="password" type="password" {...register("password")} />{errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}</div>
             )}
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="enrolledCourse" className="text-right">Enrolled Course</Label>
-              <Input id="enrolledCourse" {...register("enrolledCourse")} className="col-span-3" placeholder="e.g., TEF Pro - CLB 7+"/>
-              {errors.enrolledCourse && <p className="col-span-4 text-sm text-destructive text-right">{errors.enrolledCourse.message}</p>}
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="status" className="text-right">Status</Label>
-              <Select onValueChange={(value) => setValue("status", value as "Active" | "Inactive")} defaultValue={editingStudent?.status || "Active"}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Active">Active</SelectItem>
-                  <SelectItem value="Inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.status && <p className="col-span-4 text-sm text-destructive text-right">{errors.status.message}</p>}
+            <div><Label htmlFor="enrolledCourse">Enrolled Course</Label><Input id="enrolledCourse" {...register("enrolledCourse")} />{errors.enrolledCourse && <p className="text-sm text-destructive">{errors.enrolledCourse.message}</p>}</div>
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <Controller
+                control={control}
+                name="status"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger><SelectValue/></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="Inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+               {errors.status && <p className="text-sm text-destructive">{errors.status.message}</p>}
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-              <Button type="submit">{editingStudent ? "Save Changes" : "Add Student"}</Button>
+              <Button type="submit" disabled={isPending}>{editingStudent ? "Save Changes" : "Add Student"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -165,7 +150,6 @@ export default function AdminStudentsPage() {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead className="hidden md:table-cell">Email</TableHead>
-              <TableHead className="hidden lg:table-cell">Phone</TableHead>
               <TableHead>Enrolled Course</TableHead>
               <TableHead>Status</TableHead>
               <TableHead><span className="sr-only">Actions</span></TableHead>
@@ -176,25 +160,20 @@ export default function AdminStudentsPage() {
               <TableRow key={student.id}>
                 <TableCell className="font-medium">{student.firstName} {student.lastName}</TableCell>
                 <TableCell className="hidden md:table-cell">{student.email}</TableCell>
-                <TableCell className="hidden lg:table-cell">{student.phone}</TableCell>
                 <TableCell>{student.enrolledCourse}</TableCell>
                 <TableCell>
-                  <Badge variant={student.status === "Active" ? "default" : "destructive"}>{student.status}</Badge>
+                  <Badge variant={student.status === "Active" ? "default" : "outline"}>{student.status}</Badge>
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button aria-haspopup="true" size="icon" variant="ghost">
                         <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => openEditDialog(student)}><Edit className="mr-2 h-4 w-4" /> Edit</DropdownMenuItem>
-                      {/* <DropdownMenuItem> <Eye className="mr-2 h-4 w-4" /> View Profile</DropdownMenuItem> */}
-                      <DropdownMenuItem onClick={() => handleDeactivate(student.id)}>
-                        <Trash2 className="mr-2 h-4 w-4" /> {student.status === "Active" ? "Deactivate" : "Activate"}
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDelete(student.id)} className="text-destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -203,7 +182,7 @@ export default function AdminStudentsPage() {
           </TableBody>
         </Table>
       </div>
-      {students.length === 0 && <p className="text-center text-muted-foreground py-8">No students found.</p>}
+      {students.length === 0 && !isPending && <p className="text-center text-muted-foreground py-8">No students found.</p>}
     </div>
   );
 }

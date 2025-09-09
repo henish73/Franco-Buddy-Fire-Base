@@ -1,12 +1,18 @@
+// src/app/(public)/courses/page.tsx
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import SectionTitle from '@/components/shared/SectionTitle';
-import CourseCard from '@/components/shared/CourseCard';
+import CourseCard, { type Course } from '@/components/shared/CourseCard';
 import { HelpCircle, Star, Users, Award } from 'lucide-react';
-import { coursesData } from './mockCoursesData'; 
+import { getCoursesAction } from '@/app/admin/courses/actions';
 import Image from 'next/image';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  const result = await getCoursesAction();
+  const coursesData = (result.isSuccess && Array.isArray(result.data)) ? result.data.filter(c => c.status === 'Active') as Course[] : [];
+  
   return (
     <>
       {/* Hero Section */}
@@ -32,7 +38,16 @@ export default function CoursesPage() {
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4">
           <SectionTitle title="Our Course Offerings" subtitle="Expertly crafted programs for every level."/>
-          {coursesData.length > 0 ? (
+          {!result.isSuccess && (
+             <Alert variant="destructive" className="max-w-2xl mx-auto">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error Loading Courses</AlertTitle>
+              <AlertDescription>
+                {result.message || "We couldn't load the courses right now. Please try again later."}
+              </AlertDescription>
+            </Alert>
+          )}
+          {result.isSuccess && coursesData.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 animate-fade-in">
               {coursesData.map((course, index) => (
                 <div key={course.id} style={{ animationDelay: `${index * 100}ms` }} className="animate-fade-in-up">
@@ -41,7 +56,7 @@ export default function CoursesPage() {
               ))}
             </div>
           ) : (
-            <p className="text-center text-muted-foreground">No courses available at the moment. Please check back soon!</p>
+             result.isSuccess && <p className="text-center text-muted-foreground">No active courses available at the moment. Please check back soon!</p>
           )}
         </div>
       </section>

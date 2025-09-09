@@ -1,40 +1,24 @@
 // src/app/admin/enrollments/page.tsx
+"use client";
+
+import { useState, useEffect, useTransition } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Edit2, CheckCircle, XCircle, Eye } from "lucide-react";
+import { MoreHorizontal, CheckCircle, XCircle, Eye, RefreshCw, Clock } from "lucide-react";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
+import { getEnrollmentsAction, updateEnrollmentStatusAction, type Enrollment } from './actions';
 
-// Placeholder data type for enrollments
-type Enrollment = {
-  id: string;
-  studentName: string;
-  studentEmail: string;
-  courseName: string;
-  courseId: string;
-  enrollmentDate: string;
-  paymentStatus: "Paid" | "Pending" | "Failed" | "Refunded";
-  enrollmentStatus: "Active" | "Cancelled" | "Completed";
-};
-
-// Mock initial enrollments data
-const mockEnrollments: Enrollment[] = [
-  { id: "enr001", studentName: "John Doe", studentEmail: "john@example.com", courseName: "TEF Pro - CLB 7+", courseId: "tef-pro-clb7", enrollmentDate: new Date(Date.now() - 86400000 * 2).toISOString(), paymentStatus: "Paid", enrollmentStatus: "Active" },
-  { id: "enr002", studentName: "Jane Smith", studentEmail: "jane@example.com", courseName: "TEF Foundation", courseId: "tef-foundation", enrollmentDate: new Date(Date.now() - 86400000 * 5).toISOString(), paymentStatus: "Pending", enrollmentStatus: "Active" },
-  { id: "enr003", studentName: "Mike Brown", studentEmail: "mike@example.com", courseName: "TEF Pro - CLB 7+", courseId: "tef-pro-clb7", enrollmentDate: new Date(Date.now() - 86400000 * 1).toISOString(), paymentStatus: "Failed", enrollmentStatus: "Cancelled" },
-];
-
-// Helper to format date
 const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
 
-// Helper for status badge variant
 const getPaymentStatusVariant = (status: Enrollment["paymentStatus"]): "default" | "secondary" | "destructive" | "outline" => {
   switch (status) {
-    case 'Paid': return 'default'; // Green or primary
-    case 'Pending': return 'secondary'; // Yellow or secondary
+    case 'Paid': return 'default';
+    case 'Pending': return 'secondary';
     case 'Failed': return 'destructive';
-    case 'Refunded': return 'outline'; // Blue or outline
+    case 'Refunded': return 'outline';
     default: return 'outline';
   }
 };
@@ -48,24 +32,46 @@ const getEnrollmentStatusVariant = (status: Enrollment["enrollmentStatus"]): "de
   }
 };
 
-
 export default function AdminEnrollmentsPage() {
-  // In a real app, fetch enrollments from Firestore
-  const enrollments = mockEnrollments;
+  const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
 
-  const handleUpdatePaymentStatus = (enrollmentId: string, newStatus: Enrollment["paymentStatus"]) => {
-    // Server action to update Firestore
-    console.log(`Updating payment status for ${enrollmentId} to ${newStatus}`);
+  const fetchEnrollments = async () => {
+    startTransition(async () => {
+      const result = await getEnrollmentsAction();
+      if (result.isSuccess && Array.isArray(result.data)) {
+        setEnrollments(result.data);
+      } else {
+        toast({ title: "Error", description: result.message, variant: "destructive" });
+      }
+    });
   };
 
-  const handleCancelEnrollment = (enrollmentId: string) => {
-    // Server action to update Firestore
-    console.log(`Cancelling enrollment ${enrollmentId}`);
+  useEffect(() => {
+    fetchEnrollments();
+  }, []);
+
+  const handleUpdateStatus = (enrollmentId: string, newStatus: Enrollment["enrollmentStatus"]) => {
+    startTransition(async () => {
+      const result = await updateEnrollmentStatusAction(enrollmentId, newStatus);
+      if (result.isSuccess) {
+        toast({ title: "Success", description: result.message });
+        fetchEnrollments(); // Refetch data
+      } else {
+        toast({ title: "Error", description: result.message, variant: "destructive" });
+      }
+    });
   };
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-primary">Enrollment Management</h1>
+       <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-primary">Enrollment Management</h1>
+         <Button onClick={fetchEnrollments} variant="outline" size="icon" aria-label="Refresh Enrollments" disabled={isPending}>
+            <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+          </Button>
+      </div>
       
       <div className="rounded-lg border shadow-sm">
         <Table>
@@ -83,15 +89,11 @@ export default function AdminEnrollmentsPage() {
             {enrollments.map((enrollment) => (
               <TableRow key={enrollment.id}>
                 <TableCell className="font-medium">
-                  <div>{enrollment.studentName}</div>
-                  <div className="text-xs text-muted-foreground">{enrollment.studentEmail}</div>
+                  <div>{enrollment.fullName}</div>
+                  <div className="text-xs text-muted-foreground">{enrollment.email}</div>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">
-                  <Link href={`/admin/courses?edit=${enrollment.courseId}`} className="hover:underline text-primary">
-                    {enrollment.courseName}
-                  </Link>
-                </TableCell>
-                <TableCell className="hidden lg:table-cell">{formatDate(enrollment.enrollmentDate)}</TableCell>
+                <TableCell className="hidden md:table-cell">{enrollment.courseName}</TableCell>
+                <TableCell className="hidden lg:table-cell">{formatDate(enrollment.date)}</TableCell>
                 <TableCell>
                   <Badge variant={getPaymentStatusVariant(enrollment.paymentStatus)}>{enrollment.paymentStatus}</Badge>
                 </TableCell>
@@ -101,31 +103,27 @@ export default function AdminEnrollmentsPage() {
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                      <Button aria-haspopup="true" size="icon" variant="ghost" disabled={isPending}>
                         <MoreHorizontal className="h-4 w-4" />
                         <span className="sr-only">Toggle menu</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>
-                        <Link href={`/admin/students?edit=${enrollment.studentEmail}`} className="flex items-center w-full">
+                      <DropdownMenuItem asChild>
+                        <Link href={`/admin/students?edit=${enrollment.studentId}`} className="flex items-center w-full">
                             <Eye className="mr-2 h-4 w-4" /> View Student
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuLabel>Payment Status</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => handleUpdatePaymentStatus(enrollment.id, "Paid")}>
-                        <CheckCircle className="mr-2 h-4 w-4 text-green-500" /> Mark as Paid
+                      <DropdownMenuLabel>Enrollment Status</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={() => handleUpdateStatus(enrollment.id, "Active")}>
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-500" /> Mark as Active
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleUpdatePaymentStatus(enrollment.id, "Pending")}>
-                        <MoreHorizontal className="mr-2 h-4 w-4 text-yellow-500" /> Mark as Pending
+                      <DropdownMenuItem onClick={() => handleUpdateStatus(enrollment.id, "Completed")}>
+                        <Clock className="mr-2 h-4 w-4 text-blue-500" /> Mark as Completed
                       </DropdownMenuItem>
-                       <DropdownMenuItem onClick={() => handleUpdatePaymentStatus(enrollment.id, "Failed")}>
-                        <XCircle className="mr-2 h-4 w-4 text-red-500" /> Mark as Failed
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => handleCancelEnrollment(enrollment.id)} className="text-destructive">
+                      <DropdownMenuItem onClick={() => handleUpdateStatus(enrollment.id, "Cancelled")} className="text-destructive">
                         <XCircle className="mr-2 h-4 w-4" /> Cancel Enrollment
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -136,7 +134,7 @@ export default function AdminEnrollmentsPage() {
           </TableBody>
         </Table>
       </div>
-       {enrollments.length === 0 && <p className="text-center text-muted-foreground py-8">No enrollments found.</p>}
+       {enrollments.length === 0 && !isPending && <p className="text-center text-muted-foreground py-8">No enrollments found.</p>}
     </div>
   );
 }

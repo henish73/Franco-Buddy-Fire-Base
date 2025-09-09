@@ -1,25 +1,27 @@
+// src/app/admin/dashboard/page.tsx
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import StatCard from '@/components/shared/StatCard';
 import { Users, Inbox, BookOpen, BarChart3, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { getLeadStatsAction } from '../leads/actions';
+import { getStudentCountAction } from '../students/actions';
+import { getCourseCountAction } from '../courses/actions';
 
-// Placeholder data - In a real app, this would be fetched from Firestore
-const adminStats = {
-  demoRequests: 12, // Placeholder
-  contactSubmissions: 5, // Placeholder
-  totalStudents: 25, // Placeholder
-  activeCourses: 3, // Placeholder
-};
+export default async function AdminDashboardPage() {
+  // Fetch real stats using server actions
+  const leadStats = await getLeadStatsAction();
+  const studentCount = await getStudentCountAction();
+  const courseCount = await getCourseCountAction();
 
-const quickLinks = [
-  { href: "/admin/leads", label: "Manage Leads", icon: Inbox },
-  { href: "/admin/students", label: "Manage Students", icon: Users },
-  { href: "/admin/courses", label: "Manage Courses", icon: BookOpen },
-];
+  const quickLinks = [
+    { href: "/admin/leads", label: "Manage Leads", icon: Inbox },
+    { href: "/admin/students", label: "Manage Students", icon: Users },
+    { href: "/admin/courses", label: "Manage Courses", icon: BookOpen },
+    { href: "/admin/blog-management", label: "Manage Blog", icon: BookOpen },
+  ];
 
-export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
@@ -42,17 +44,17 @@ export default function AdminDashboardPage() {
       <section>
         <h2 className="text-xl font-semibold text-foreground mb-4">Overview</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard title="New Demo Requests" value={adminStats.demoRequests} icon={Inbox} description="Awaiting action" />
-          <StatCard title="Contact Submissions" value={adminStats.contactSubmissions} icon={Inbox} description="Needs review" />
-          <StatCard title="Total Students" value={adminStats.totalStudents} icon={Users} description="Enrolled" />
-          <StatCard title="Active Courses" value={adminStats.activeCourses} icon={BookOpen} description="Currently offered" />
+          <StatCard title="New Demo Requests" value={leadStats.demoRequests} icon={Inbox} description="Awaiting action" />
+          <StatCard title="Contact Submissions" value={leadStats.contactSubmissions} icon={Inbox} description="Needs review" />
+          <StatCard title="Total Students" value={studentCount} icon={Users} description="Enrolled" />
+          <StatCard title="Active Courses" value={courseCount} icon={BookOpen} description="Currently offered" />
         </div>
       </section>
 
       {/* Quick Links Section */}
       <section>
         <h2 className="text-xl font-semibold text-foreground mb-4">Quick Links</h2>
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {quickLinks.map(link => (
             <Card key={link.href} className="shadow-md hover:shadow-lg transition-shadow">
               <CardHeader className="flex flex-row items-center justify-between pb-2">

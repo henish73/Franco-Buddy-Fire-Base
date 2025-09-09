@@ -1,3 +1,4 @@
+// src/app/(public)/courses/[id]/page.tsx
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -9,26 +10,19 @@ import {
     ClipboardCheck, Award, MessageSquare, MessageCircle, User as UserIcon, Star, ShieldCheck, Clock
 } from 'lucide-react';
 import type { Course, Module, Lesson } from '@/components/shared/CourseCard';
-import { coursesData as allCourses } from '../mockCoursesData'; 
+import { getCoursesAction } from '@/app/admin/courses/actions'; 
+import { notFound } from 'next/navigation';
 
-const coursesDataMap: { [key: string]: Course } = allCourses.reduce((acc, course) => {
-  acc[course.id] = course;
-  return acc;
-}, {} as { [key: string]: Course });
-
-
-export default function CourseDetailPage({ params }: { params: { id: string } }) {
-  const course = coursesDataMap[params.id];
+export default async function CourseDetailPage({ params }: { params: { id: string } }) {
+  const result = await getCoursesAction();
+  if (!result.isSuccess || !Array.isArray(result.data)) {
+    // Handle error case, maybe show a generic error page
+    return <div>Error loading courses.</div>;
+  }
+  const course = result.data.find(c => c.id === params.id);
 
   if (!course) {
-    return (
-      <div className="container mx-auto px-4 py-16 text-center">
-        <SectionTitle title="Course Not Found" subtitle="The course you are looking for does not exist or has been moved." />
-        <Button asChild>
-          <Link href="/courses">Back to Courses</Link>
-        </Button>
-      </div>
-    );
+    notFound();
   }
 
   return (
@@ -45,7 +39,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
             <span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> 3-5 Students Max</span>
           </div>
            <div className="mt-8">
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full">
                 <Link href={`/enrollment-form?course=${course.id}`}>Enroll Now</Link>
               </Button>
            </div>
@@ -175,10 +169,10 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                 )}
               </CardContent>
                <CardFooter className="flex-col items-stretch gap-3">
-                <Button asChild size="lg" className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90">
+                <Button asChild size="lg" className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-full">
                   <Link href={`/enrollment-form?course=${course.id}`}>Enroll Now</Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="w-full">
+                <Button asChild size="lg" variant="outline" className="w-full rounded-full">
                     <Link href="/book-demo">Book a Free Demo</Link>
                 </Button>
               </CardFooter>
