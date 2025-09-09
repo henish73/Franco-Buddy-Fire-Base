@@ -6,7 +6,7 @@ import EnrollmentForm from './EnrollmentForm';
 import { coursesData } from '@/app/(public)/courses/mockCoursesData';
 import { type Course } from '@/components/shared/CourseCard';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, CheckCircle, Star, Users, Award, Video, Lightbulb, UserCheck, BookOpen, Target, HelpCircle } from 'lucide-react';
+import { FileText, CheckCircle, Star, Users, Award, Video, Lightbulb, UserCheck, BookOpen, Target, HelpCircle, Check } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import SectionTitle from '@/components/shared/SectionTitle';
@@ -15,8 +15,8 @@ import { Button } from '@/components/ui/button';
 
 const testimonials = [
   { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application in Toronto. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
-  { quote: "I needed a high TCF score for my work permit extension in Mississauga. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Mississauga, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional man portrait", rating: 5 },
-  { quote: "Living in Brampton, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Brampton, ON", image: "https://picsum.photos/100/100", dataAiHint: "female student portrait", rating: 4.8 },
+  { quote: "I needed a high TCF score for my work permit extension in Mississauga. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Mississauga, ON", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "Living in Brampton, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Brampton, ON", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 4.8 },
 ];
 
 const whatYouGetItems = [
@@ -59,9 +59,8 @@ export default function EnrollmentPage() {
         <div className="container mx-auto px-4">
             <SectionTitle title="Why is French Your Key to Canadian PR?" subtitle="Unlock up to 74 additional CRS points and fast-track your immigration journey."/>
             <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
-                <div className="aspect-video bg-slate-800 rounded-lg flex items-center justify-center">
-                    <Video className="h-16 w-16 text-muted-foreground" />
-                    <p className="absolute text-background font-semibold">Video Coming Soon</p>
+                <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
+                    <Image src="https://picsum.photos/800/450" alt="Students in Canada celebrating PR" fill className="object-cover" data-ai-hint="canada landscape success"/>
                 </div>
                 <div>
                      <p className="text-lg text-foreground/80 mb-4">
@@ -83,7 +82,7 @@ export default function EnrollmentPage() {
             <SectionTitle title="Join Our Community of High-Achievers" subtitle="See what our successful students from across the GTA are saying."/>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                {testimonials.map((testimonial, index) => (
-                 <Card key={index} className="p-6 shadow-lg h-full flex flex-col bg-card">
+                 <Card key={index} className="p-6 shadow-lg h-full flex flex-col bg-card rounded-2xl">
                     <CardContent className="flex-grow p-0">
                         <p className="text-muted-foreground italic">&quot;{testimonial.quote}&quot;</p>
                     </CardContent>
@@ -103,15 +102,24 @@ export default function EnrollmentPage() {
                ))}
             </div>
 
-            <SectionTitle title="What You'll Get" subtitle="Everything you need to succeed in one comprehensive package."/>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                {whatYouGetItems.map((item, index) => (
-                    <Card key={index} className="p-6 shadow-lg bg-card text-center">
-                        <item.icon className="h-10 w-10 text-primary mx-auto mb-4" />
-                        <h3 className="text-lg font-semibold text-foreground mb-2">{item.title}</h3>
-                        <p className="text-sm text-muted-foreground">{item.description}</p>
-                    </Card>
-                ))}
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div className="relative aspect-square rounded-lg overflow-hidden shadow-xl">
+                     <Image src="https://picsum.photos/600/600" alt="French learning materials" fill className="object-cover" data-ai-hint="learning materials books"/>
+                </div>
+                <div>
+                     <SectionTitle title="What You'll Get" subtitle="Everything you need to succeed in one comprehensive package." className="text-left" />
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {whatYouGetItems.map((item, index) => (
+                            <div key={index} className="flex items-start gap-3">
+                                <item.icon className="h-8 w-8 text-primary shrink-0 mt-1" />
+                                <div>
+                                    <h3 className="text-lg font-semibold text-foreground mb-1">{item.title}</h3>
+                                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
       </section>
@@ -121,7 +129,7 @@ export default function EnrollmentPage() {
           <div className="container mx-auto px-4">
               <SectionTitle title="Choose Your Learning Path" subtitle="Select the plan that best fits your learning style and goals." />
               <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-                  <Card className="shadow-xl border-primary border-2">
+                  <Card className="shadow-xl border-primary border-2 rounded-2xl">
                       <CardHeader>
                           <CardTitle className="text-2xl text-primary">1:3 Small Group Learning</CardTitle>
                           <CardDescription>Collaborative learning with personalized attention.</CardDescription>
@@ -129,13 +137,16 @@ export default function EnrollmentPage() {
                       <CardContent className="space-y-3">
                           <p className="text-3xl font-bold text-foreground">$249 <span className="text-base font-normal text-muted-foreground">/month</span></p>
                           <ul className="space-y-2 text-sm text-muted-foreground">
-                              <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Cost-effective and motivational.</span></li>
-                              <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Learn from peers' questions and insights.</span></li>
-                              <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Max 3-5 students for quality interaction.</span></li>
+                              <li className="flex items-start gap-2"><Check className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Cost-effective and motivational.</span></li>
+                              <li className="flex items-start gap-2"><Check className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Learn from peers' questions and insights.</span></li>
+                              <li className="flex items-start gap-2"><Check className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Max 3-5 students for quality interaction.</span></li>
                           </ul>
                       </CardContent>
+                      <CardFooter>
+                         <Button asChild className="w-full rounded-full"><Link href="#enroll">Choose Group Plan</Link></Button>
+                      </CardFooter>
                   </Card>
-                  <Card className="shadow-xl">
+                  <Card className="shadow-xl rounded-2xl">
                       <CardHeader>
                           <CardTitle className="text-2xl text-primary">1:1 Personal Coaching</CardTitle>
                           <CardDescription>The fastest and most flexible path to fluency.</CardDescription>
@@ -143,11 +154,14 @@ export default function EnrollmentPage() {
                       <CardContent className="space-y-3">
                           <p className="text-3xl font-bold text-foreground">$399 <span className="text-base font-normal text-muted-foreground">/month</span></p>
                            <ul className="space-y-2 text-sm text-muted-foreground">
-                              <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>100% tailored to your specific needs.</span></li>
-                              <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Flexible scheduling to fit your life.</span></li>
-                              <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Intensive focus on your weak areas.</span></li>
+                              <li className="flex items-start gap-2"><Check className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>100% tailored to your specific needs.</span></li>
+                              <li className="flex items-start gap-2"><Check className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Flexible scheduling to fit your life.</span></li>
+                              <li className="flex items-start gap-2"><Check className="h-4 w-4 text-green-500 mt-1 shrink-0"/><span>Intensive focus on your weak areas.</span></li>
                           </ul>
                       </CardContent>
+                       <CardFooter>
+                         <Button asChild className="w-full rounded-full"><Link href="#enroll">Choose Personal Plan</Link></Button>
+                      </CardFooter>
                   </Card>
               </div>
           </div>
@@ -165,17 +179,17 @@ export default function EnrollmentPage() {
        {/* "Not Sure Which Course?" CTA */}
       <section className="py-16 md:py-20 bg-muted/30">
         <div className="container mx-auto px-4 text-center">
-          <div className="bg-card p-8 md:p-12 rounded-lg shadow-xl max-w-2xl mx-auto">
+          <div className="bg-card p-8 md:p-12 rounded-2xl shadow-xl max-w-2xl mx-auto">
             <HelpCircle className="h-12 w-12 text-primary mx-auto mb-6" />
             <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4">Not Sure or Have Questions?</h2>
             <p className="text-muted-foreground mb-8">
               Let our experts guide you. Book a free, no-obligation demo class to discuss your goals and get a personalized recommendation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg">
+              <Button asChild size="lg" className="rounded-full">
                 <Link href="/book-demo">Book Free Demo</Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
+              <Button asChild size="lg" variant="outline" className="rounded-full">
                 <Link href="/contact">Contact Us</Link>
               </Button>
             </div>
@@ -190,7 +204,7 @@ export default function EnrollmentPage() {
            <Accordion type="single" collapsible className="w-full">
               {faqItems.map((item, index) => (
                 <AccordionItem key={index} value={`item-${index}`} className="bg-card shadow-sm rounded-lg px-2 mb-4">
-                  <AccordionTrigger className="text-left hover:no-underline py-4 px-4 text-base font-medium text-secondary">
+                  <AccordionTrigger className="text-left hover:no-underline py-4 px-4 text-base font-medium text-secondary rounded-full">
                     {item.q}
                   </AccordionTrigger>
                   <AccordionContent className="py-4 px-4 text-muted-foreground">
@@ -200,7 +214,7 @@ export default function EnrollmentPage() {
               ))}
             </Accordion>
             <div className="text-center mt-8">
-                <Button asChild variant="outline">
+                <Button asChild variant="outline" className="rounded-full">
                     <Link href="/contact">Have More Questions? Contact Us</Link>
                 </Button>
             </div>

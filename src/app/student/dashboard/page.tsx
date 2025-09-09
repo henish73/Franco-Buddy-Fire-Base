@@ -2,20 +2,26 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { BookOpen, UserCircle, Bell, CheckSquare, Mic, MessageSquareText, Headphones, Sparkles, BarChart3, FileText } from 'lucide-react';
+import { BookOpen, UserCircle, Bell, CheckSquare, Mic, MessageSquareText, Headphones, Sparkles, BarChart3, FileText, Video } from 'lucide-react';
 import { getMostRecentAiTutorFeedbackAction, type RecentFeedbackSnippet } from './actions';
+import Image from 'next/image';
 
 // Placeholder data
 const studentName = "Aisha K."; // Replace with dynamic data later
 const enrolledCourses = [
   { id: "tef-pro-clb7", name: "TEF Pro - CLB 7+", progress: 65, nextClass: "Tomorrow, 6 PM: Speaking Practice" },
 ];
+const testimonials = [
+  { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application in Toronto. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
+  { quote: "I needed a high TCF score for my work permit extension in Mississauga. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Mississauga, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "Living in Brampton, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Brampton, ON", image: "https://picsum.photos/100/100", dataAiHint: "female student portrait", rating: 4.8 },
+];
 
 export default async function StudentDashboardPage() {
   const recentFeedback: RecentFeedbackSnippet | null = await getMostRecentAiTutorFeedbackAction();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-16"> {/* Increased spacing */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-primary">Welcome back, {studentName}!</h1>
@@ -28,49 +34,46 @@ export default async function StudentDashboardPage() {
 
       {/* AI Language Tutor Quick Access Panel */}
       <section>
-        <h2 className="text-xl font-semibold text-foreground mb-4">AI Language Tutor</h2>
-        <Card className="shadow-md">
+        <h2 className="text-2xl font-semibold text-foreground mb-4 text-center">AI Language Tutor</h2>
+        <Card className="shadow-lg bg-primary/5">
             <CardHeader>
-                <CardTitle className="text-primary">Practice & Get Feedback</CardTitle>
-                <CardDescription>Sharpen your French skills with our AI-powered tools.</CardDescription>
+                <CardTitle className="text-primary text-center">Practice & Get Feedback</CardTitle>
+                <CardDescription className="text-center">Sharpen your French skills with our AI-powered tools.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4">
+                <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4 rounded-full">
                     <Link href="/student/ai-tutor/speaking">
                         <Mic className="h-8 w-8 mb-2"/>
                         <span>Speaking</span>
                     </Link>
                 </Button>
-                 <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4">
+                 <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4 rounded-full">
                     <Link href="/student/ai-tutor/writing">
                         <MessageSquareText className="h-8 w-8 mb-2"/>
                         <span>Writing</span>
                     </Link>
                 </Button>
-                 <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4">
+                 <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4 rounded-full">
                     <Link href="/student/ai-tutor/reading">
                         <BookOpen className="h-8 w-8 mb-2"/>
                         <span>Reading</span>
                     </Link>
                 </Button>
-                 <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4">
+                 <Button asChild variant="default" size="lg" className="flex flex-col h-auto py-4 rounded-full">
                     <Link href="/student/ai-tutor/listening">
                         <Headphones className="h-8 w-8 mb-2"/>
                         <span>Listening</span>
                     </Link>
                 </Button>
             </CardContent>
-            <CardFooter>
-                 <p className="text-xs text-muted-foreground">Click an area to start practicing.</p>
-            </CardFooter>
         </Card>
       </section>
 
       {/* Recent AI Tutor Feedback Snippet */}
       {recentFeedback && (
         <section>
-          <h2 className="text-xl font-semibold text-foreground mb-4">My Recent AI Tutor Feedback</h2>
-          <Card className="shadow-md bg-accent/10">
+          <h2 className="text-2xl font-semibold text-foreground mb-4 text-center">My Recent AI Tutor Feedback</h2>
+          <Card className="shadow-md bg-accent/10 max-w-3xl mx-auto">
             <CardHeader>
               <div className="flex justify-between items-start">
                 <CardTitle className="text-lg text-primary/90">
@@ -99,7 +102,7 @@ export default async function StudentDashboardPage() {
               )}
             </CardContent>
             <CardFooter>
-              <Button asChild variant="link" className="p-0 h-auto">
+              <Button asChild variant="link" className="p-0 h-auto rounded-full">
                 <Link href="/student/ai-tutor/report">View Detailed AI Tutor Report</Link>
               </Button>
             </CardFooter>
@@ -110,15 +113,15 @@ export default async function StudentDashboardPage() {
 
       {/* Enrolled Courses Section */}
       <section>
-        <h2 className="text-xl font-semibold text-foreground mb-4">My Enrolled Courses</h2>
+        <h2 className="text-2xl font-semibold text-foreground mb-4 text-center">My Enrolled Courses</h2>
         {enrolledCourses.length > 0 ? (
           <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
             {enrolledCourses.map(course => (
-              <Card key={course.id} className="shadow-lg hover:shadow-xl transition-shadow">
+              <Card key={course.id} className="shadow-lg hover:shadow-xl transition-shadow rounded-2xl">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <CardTitle className="text-xl text-primary">{course.name}</CardTitle>
-                    <FileText className="h-6 w-6 text-accent" /> {/* Changed icon for variety */}
+                    <FileText className="h-6 w-6 text-accent" />
                   </div>
                   <CardDescription>Your progress and upcoming activities.</CardDescription>
                 </CardHeader>
@@ -135,17 +138,17 @@ export default async function StudentDashboardPage() {
                   <p className="text-sm"><strong className="text-foreground">Next class/activity:</strong> <span className="text-muted-foreground">{course.nextClass}</span></p>
                 </CardContent>
                 <CardFooter>
-                  <Button variant="default" className="w-full" disabled>Continue Learning (Coming Soon)</Button>
+                  <Button variant="default" className="w-full rounded-full" disabled>Continue Learning (Coming Soon)</Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
         ) : (
-          <Card className="text-center py-12">
+          <Card className="text-center py-12 rounded-2xl">
             <CardContent>
-              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" /> {/* Changed icon */}
+              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground mb-4">You are not currently enrolled in any courses.</p>
-              <Button asChild>
+              <Button asChild className="rounded-full">
                 <Link href="/courses">Explore Courses</Link>
               </Button>
             </CardContent>
@@ -153,11 +156,11 @@ export default async function StudentDashboardPage() {
         )}
       </section>
 
-      {/* Placeholder for Announcements or Next Steps */}
+      {/* Announcements or Next Steps Section */}
        <section>
-        <h2 className="text-xl font-semibold text-foreground mb-4">Announcements & Next Steps</h2>
+        <h2 className="text-2xl font-semibold text-foreground mb-4 text-center">Announcements & Next Steps</h2>
         <div className="grid md:grid-cols-2 gap-6">
-            <Card>
+            <Card className="rounded-2xl">
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-lg font-medium">Recent Announcements</CardTitle>
                     <Bell className="h-5 w-5 text-primary"/>
@@ -166,15 +169,15 @@ export default async function StudentDashboardPage() {
                     <p className="text-sm text-muted-foreground">No new announcements at this time. Stay tuned!</p>
                 </CardContent>
             </Card>
-            <Card>
+            <Card className="rounded-2xl">
                  <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-lg font-medium">Quick Actions</CardTitle>
                     <CheckSquare className="h-5 w-5 text-primary"/>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                     <Button variant="outline" className="w-full justify-start" disabled>View My Schedule (Coming Soon)</Button>
-                     <Button variant="outline" className="w-full justify-start" disabled>Access Learning Materials (Coming Soon)</Button>
-                     <Button asChild variant="outline" className="w-full justify-start">
+                     <Button variant="outline" className="w-full justify-start rounded-full" disabled>View My Schedule (Coming Soon)</Button>
+                     <Button variant="outline" className="w-full justify-start rounded-full" disabled>Access Learning Materials (Coming Soon)</Button>
+                     <Button asChild variant="outline" className="w-full justify-start rounded-full">
                         <Link href="/faq">Visit FAQ</Link>
                     </Button>
                 </CardContent>
