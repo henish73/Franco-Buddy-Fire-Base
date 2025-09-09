@@ -2,11 +2,12 @@
 "use client";
 
 import Link from 'next/link';
-import { BookMarked, Menu, LogIn } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { Logo } from '@/components/icons/Logo';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -25,7 +26,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <BookMarked className="h-7 w-7 text-secondary" />
+          <Logo className="h-8 w-8 text-secondary" />
           <span className="font-bold text-xl text-secondary">FRANCOBUDDY</span>
         </Link>
 
@@ -45,7 +46,7 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button asChild variant="default" size="sm">
+          <Button asChild variant="default" size="sm" className="animate-pulse">
             <Link href="/book-demo">Book Free Demo</Link>
           </Button>
           <Sheet>
@@ -58,7 +59,7 @@ export default function Navbar() {
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
               <div className="flex flex-col p-6 gap-6">
                 <Link href="/" className="flex items-center gap-2 mb-4">
-                  <BookMarked className="h-7 w-7 text-secondary" />
+                  <Logo className="h-8 w-8 text-secondary" />
                   <span className="font-bold text-lg">FRANCOBUDDY</span>
                 </Link>
                 {navLinks.map((link) => (

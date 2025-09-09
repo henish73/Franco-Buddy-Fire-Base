@@ -26,8 +26,8 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20 md:py-32">
-        <div className="container mx-auto px-4 text-center">
+      <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32 animate-background-pan">
+        <div className="container mx-auto px-4 text-center animate-fade-in-up">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">About FRANCOBUDDY</h1>
           <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
             Your dedicated partner in online French education, specializing in TEF Canada success.
@@ -41,7 +41,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission & Vision Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 animate-fade-in">
         <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
                 <div className="text-center md:text-left">
@@ -61,12 +61,12 @@ export default function AboutPage() {
       </section>
 
       {/* Our Approach Section */}
-      <section className="py-16 md:py-24 bg-muted/30">
+      <section className="py-16 md:py-24 bg-muted/30 animate-fade-in-up">
         <div className="container mx-auto px-4">
           <SectionTitle title="Our Approach" subtitle="A learning methodology built for results." />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {ourApproachItems.map((item, index) => (
-              <div key={index} className="p-6 rounded-lg text-center bg-card shadow-sm">
+              <div key={index} className="p-6 rounded-lg text-center bg-card shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <item.icon className="h-10 w-10 text-primary mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-secondary mb-2">{item.title}</h3>
                 <p className="text-muted-foreground text-sm">{item.description}</p>
@@ -77,7 +77,7 @@ export default function AboutPage() {
       </section>
       
       {/* Our Values Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 animate-fade-in">
         <div className="container mx-auto px-4">
            <SectionTitle title="Our Core Values" />
            <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-8">
@@ -92,7 +92,7 @@ export default function AboutPage() {
       </section>
 
       {/* Why Choose Us Section (Summarized) */}
-      <section className="py-16 md:py-24 bg-primary text-primary-foreground">
+      <section className="py-16 md:py-24 bg-primary text-primary-foreground animate-fade-in-up">
         <div className="container mx-auto px-4">
           <SectionTitle title="Why Choose Us?" subtitle="The distinct advantages that set us apart." titleClassName="text-background" subtitleClassName="opacity-80" />
           <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 max-w-4xl mx-auto text-lg">
@@ -125,7 +125,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Commitment Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 animate-fade-in">
         <div className="container mx-auto px-4 text-center max-w-3xl">
           <SectionTitle title="Our Commitment to You" />
           <p className="text-lg text-foreground/80 mb-8">
@@ -143,12 +143,12 @@ export default function AboutPage() {
 
       {/* CTA Section */}
       <section className="py-20 bg-primary/10">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-4 text-center animate-fade-in-up">
           <h2 className="text-3xl font-bold text-primary mb-6">Ready to Excel in Your TEF Canada Exam?</h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
             Join FRANCOBUDDY and take the definitive step towards achieving your Canadian aspirations.
           </p>
-          <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+          <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 animate-pulse">
             <Link href="/book-demo">Book Your Free Demo!</Link>
           </Button>
         </div>

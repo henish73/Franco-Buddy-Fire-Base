@@ -9,8 +9,8 @@ export default function CoursesPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32">
-        <div className="container mx-auto px-4 text-center">
+      <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32 animate-background-pan">
+        <div className="container mx-auto px-4 text-center animate-fade-in-up">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Master French for Your Future</h1>
           <p className="text-lg md:text-xl opacity-80 max-w-3xl mx-auto">
             Choose the perfect TEF Canada preparation course designed to meet your specific CLB goals and learning preferences.
@@ -36,9 +36,11 @@ export default function CoursesPage() {
         <div className="container mx-auto px-4">
           <SectionTitle title="Our Course Offerings" subtitle="Expertly crafted programs for every level."/>
           {coursesData.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {coursesData.map((course) => (
-                <CourseCard key={course.id} course={course} />
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 animate-fade-in">
+              {coursesData.map((course, index) => (
+                <div key={course.id} style={{ animationDelay: `${index * 100}ms` }} className="animate-fade-in-up">
+                  <CourseCard course={course} />
+                </div>
               ))}
             </div>
           ) : (
@@ -50,14 +52,14 @@ export default function CoursesPage() {
       {/* "Not Sure Which Course?" CTA */}
       <section className="py-16 md:py-20">
         <div className="container mx-auto px-4 text-center">
-          <div className="bg-card p-8 md:p-12 rounded-lg shadow-xl max-w-2xl mx-auto">
+          <div className="bg-card p-8 md:p-12 rounded-lg shadow-xl max-w-2xl mx-auto animate-fade-in-up">
             <HelpCircle className="h-12 w-12 text-primary mx-auto mb-6" />
             <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4">Not Sure Which Course is Right for You?</h2>
             <p className="text-muted-foreground mb-8">
               Let our experts guide you. Book a free demo class to discuss your goals and get a personalized recommendation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
+              <Button asChild size="lg" className="bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110 animate-pulse">
                 <Link href="/book-demo">Book Free Demo</Link>
               </Button>
               <Button asChild size="lg" variant="outline">

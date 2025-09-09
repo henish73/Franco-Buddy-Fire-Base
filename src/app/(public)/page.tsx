@@ -33,8 +33,8 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32">
-        <div className="container mx-auto px-4 text-center">
+      <section className="bg-gradient-to-br from-primary to-blue-800 text-primary-foreground py-20 md:py-32 animate-background-pan">
+        <div className="container mx-auto px-4 text-center animate-fade-in-up">
           <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider shadow-lg">
             🏆 TEF Canada Success Guaranteed
           </Badge>
@@ -45,7 +45,7 @@ export default async function HomePage() {
             Expert French language training for immigration success, career advancement, and personal growth. Join 250+ successful students in Toronto & GTA.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
+            <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110 animate-pulse">
               <Link href="/book-demo">Book FREE Demo Class</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
@@ -75,7 +75,7 @@ export default async function HomePage() {
       {/* Trust Badges Banner */}
       <section className="bg-muted/50 py-8">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center animate-fade-in">
             <div className="flex items-center justify-center gap-3">
               <Award className="h-8 w-8 text-primary"/>
               <span className="font-semibold text-lg">Certified Instructors</span>
@@ -98,7 +98,7 @@ export default async function HomePage() {
           <SectionTitle title="Our Courses" subtitle="Programs designed for every stage of your French learning journey, from absolute beginner to advanced fluency and test preparation." />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {courses.map((course) => (
-              <Card key={course.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-card">
+              <Card key={course.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-card animate-fade-in-up">
                 <Image src={course.image} alt={course.title} width={600} height={400} className="w-full h-48 object-cover" data-ai-hint={course.dataAiHint} />
                 <CardHeader>
                   <CardTitle className="text-xl text-secondary">{course.title}</CardTitle>
@@ -122,7 +122,7 @@ export default async function HomePage() {
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4">
           <SectionTitle title="Why Choose FRANCOBUDDY?" subtitle="We provide an unparalleled learning experience that goes beyond traditional language classes." />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up">
             {whyFrancoBuddyItems.map((item, index) => (
               <Card key={index} className="shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-card">
                 <CardHeader>
@@ -144,7 +144,7 @@ export default async function HomePage() {
       <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <SectionTitle title="Success Stories" subtitle="Hear from students who transformed their lives with FRANCOBUDDY." />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
             {testimonials.map((testimonial, index) => (
               <Card key={index} className="shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col p-6 bg-card">
                  <div className="flex items-center mb-4">
@@ -173,7 +173,7 @@ export default async function HomePage() {
 
       {/* About Snippet Section */}
       <section className="py-16 md:py-24 bg-gradient-to-br from-primary to-blue-800 text-primary-foreground">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 animate-fade-in-up">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 max-w-5xl mx-auto">
             <Image src="https://picsum.photos/300/300" alt="Certified French Instructor" width={300} height={300} className="rounded-full shadow-lg border-4 border-secondary" data-ai-hint="instructor teacher portrait" />
             <div className="text-center md:text-left">
@@ -191,13 +191,13 @@ export default async function HomePage() {
 
       {/* Final CTA Section */}
       <section className="py-20 md:py-32 bg-background">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-4 text-center animate-fade-in-up">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Ready to Start Your French Journey?
           </h2>
           <p className="text-muted-foreground mb-2">Limited spots available for this month!</p>
           <div className="flex flex-wrap justify-center gap-4 my-8">
-             <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110">
+             <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110 animate-pulse">
               <Link href="/book-demo">Book Your FREE Demo Now</Link>
             </Button>
             <Button asChild size="lg" variant="outline">

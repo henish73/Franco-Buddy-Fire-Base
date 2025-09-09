@@ -1,7 +1,8 @@
 // src/components/layout/Footer.tsx
 import Link from 'next/link';
-import { BookMarked, Mail, Phone } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import { WhatsappIcon } from '@/components/icons/WhatsappIcon';
+import { Logo } from '@/components/icons/Logo';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,7 +13,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <BookMarked className="h-8 w-8 text-secondary" />
+              <Logo className="h-8 w-8 text-secondary" />
               <span className="font-bold text-xl">FRANCOBUDDY</span>
             </Link>
             <p className="text-sm opacity-80">

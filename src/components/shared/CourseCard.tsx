@@ -82,14 +82,15 @@ export default function CourseCard({ course }: CourseCardProps) {
   }
 
   return (
-    <Card className="flex flex-col overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 h-full hover:-translate-y-1">
+    <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300 h-full hover:-translate-y-2 group">
       {course.imageUrl && (
-        <div className="relative w-full h-56">
+        <div className="relative w-full h-56 overflow-hidden">
           <Image 
             src={course.imageUrl} 
             alt={course.title} 
             fill 
-            style={{ objectFit: 'cover' }}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-110 transition-transform duration-500 ease-in-out"
             data-ai-hint={course.imageAiHint || "education learning"}
           />
         </div>
@@ -97,17 +98,18 @@ export default function CourseCard({ course }: CourseCardProps) {
       <CardHeader>
         <div className="flex justify-between items-center mb-2">
             <CardTitle className="text-xl text-secondary">{course.title}</CardTitle>
-            <div className="text-xs uppercase font-bold text-primary bg-primary/10 px-2 py-1 rounded-full">{course.title.split(' ')[0]}</div>
+            <div className="text-xs uppercase font-bold text-primary bg-primary/10 px-2 py-1 rounded-full">{course.targetCLB}</div>
         </div>
         <CardDescription className="h-12 overflow-hidden text-ellipsis">{course.shortDescription}</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow space-y-2">
         <p><strong className="text-foreground">Duration:</strong> <span className="text-muted-foreground">{course.duration}</span></p>
+        <p><strong className="text-foreground">Format:</strong> <span className="text-muted-foreground">{course.format}</span></p>
       </CardContent>
       <CardFooter>
-        <Button asChild className="w-full" variant="outline">
+        <Button asChild className="w-full bg-gradient-to-r from-primary to-blue-600 text-primary-foreground hover:from-primary/90 hover:to-blue-500">
           <Link href={`/courses/${course.id}`}>
-            Learn More <ChevronRight className="ml-2 h-4 w-4" />
+            Learn More <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </Button>
       </CardFooter>
