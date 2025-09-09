@@ -1,8 +1,11 @@
+
 import SectionTitle from '@/components/shared/SectionTitle';
 import DemoBookingForm from './DemoBookingForm';
-import { CalendarCheck, Sparkles, HelpCircle, Star } from 'lucide-react';
+import { CalendarCheck, Sparkles, HelpCircle, Star, ShieldCheck, Users, UserCheck, BookOpen, Target } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
 
 const faqItems = [
     {
@@ -106,3 +109,4 @@ export default function BookDemoPage() {
     </>
   );
 }
+
