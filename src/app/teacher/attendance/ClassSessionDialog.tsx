@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { type ClassSession, type Attendee, classSessionSchema, type ClassSessionFormData, addClassSessionAction, updateClassSessionAction } from './actions';
+import { type ClassSession, type Attendee, classSessionSchema, type ClassSessionFormData } from './schema';
+import { addClassSessionAction, updateClassSessionAction } from './actions';
 import { format } from 'date-fns';
 
 // Mock student list for the dropdown
