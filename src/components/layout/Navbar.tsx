@@ -3,9 +3,9 @@
 
 import * as React from "react"
 import Link from 'next/link';
-import { Menu, ChevronDown, LogIn } from 'lucide-react';
+import { Menu, ChevronDown, LogIn, BookOpen, DollarSign, Lightbulb, Info, Smile, HelpCircle, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -19,49 +19,41 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/icons/Logo';
 
-const aboutComponents: { title: string; href: string; description: string }[] = [
+const aboutComponents: { title: string; href: string; icon: React.ElementType }[] = [
   {
-    title: "About Us",
+    title: "Our Story",
     href: "/about",
-    description:
-      "Learn about our mission, vision, and the team dedicated to your success.",
+    icon: Info,
   },
   {
-    title: "Testimonials",
+    title: "Success Stories",
     href: "/testimonials",
-    description:
-      "Read success stories from students who achieved their goals with us.",
+    icon: Smile,
   },
   {
     title: "FAQ",
     href: "/faq",
-    description:
-      "Find answers to common questions about our courses, TEF, and enrollment.",
+    icon: HelpCircle,
   },
-]
+];
 
-const levelsComponents: { title: string; href: string; description: string }[] = [
+const coursesComponents: { title: string; href: string; icon: React.ElementType }[] = [
     {
-        title: "Beginner (A1/A2)",
-        href: "/courses/a1-a2-beginner",
-        description: "Start from scratch and build a strong foundation in French."
-    },
-    {
-        title: "Intermediate (B1/B2)",
-        href: "/courses/b1-b2-intermediate",
-        description: "Improve fluency and prepare for the TEF Canada CLB 5-7 range."
-    },
-    {
-        title: "Advanced (C1/C2)",
-        href: "/courses/c1-c2-advanced",
-        description: "Perfect your skills and aim for top scores (CLB 8+)."
-    },
-     {
         title: "All Courses",
         href: "/courses",
-        description: "View all our TEF Canada preparation courses."
+        icon: BookOpen
     },
-]
+    {
+        title: "Pricing Plans",
+        href: "/pricing",
+        icon: DollarSign
+    },
+    {
+        title: "AI Course Suggester",
+        href: "/ai-course-suggester",
+        icon: Bot
+    },
+];
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -85,33 +77,49 @@ export default function Navbar() {
                 </NavigationMenuItem>
                 
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger>About</NavigationMenuTrigger>
+                    <NavigationMenuTrigger>About Us</NavigationMenuTrigger>
                     <NavigationMenuContent>
                         <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                        {aboutComponents.map((component) => (
+                          <li className="row-span-3">
+                            <NavigationMenuLink asChild>
+                              <a
+                                className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                                href="/about"
+                              >
+                                <Info className="h-6 w-6" />
+                                <div className="mb-2 mt-4 text-lg font-medium">
+                                  FRANCOBUDDY
+                                </div>
+                                <p className="text-sm leading-tight text-muted-foreground">
+                                  Learn about our mission, vision, and the team dedicated to your success.
+                                </p>
+                              </a>
+                            </NavigationMenuLink>
+                          </li>
+                          {aboutComponents.map((component) => (
                             <ListItem
-                                key={component.title}
-                                title={component.title}
-                                href={component.href}
+                              key={component.title}
+                              title={component.title}
+                              href={component.href}
                             >
-                                {component.description}
+                              <component.icon className="h-4 w-4 mr-2 inline-block" />
                             </ListItem>
-                        ))}
+                          ))}
                         </ul>
                     </NavigationMenuContent>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger>Levels</NavigationMenuTrigger>
+                    <NavigationMenuTrigger>Courses & Pricing</NavigationMenuTrigger>
                     <NavigationMenuContent>
                          <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                        {levelsComponents.map((component) => (
+                         {coursesComponents.map((component) => (
                             <ListItem
                                 key={component.title}
                                 title={component.title}
                                 href={component.href}
                             >
-                                {component.description}
+                               <component.icon className="h-4 w-4 mr-2 inline-block" />
                             </ListItem>
                         ))}
                         </ul>
@@ -136,23 +144,19 @@ export default function Navbar() {
 
                 <NavigationMenuItem>
                     <Link href="/login" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-secondary text-secondary-foreground hover:bg-secondary/90")}>
                             <LogIn className="mr-2 h-4 w-4"/> Login
                         </NavigationMenuLink>
                     </Link>
                 </NavigationMenuItem>
-
             </NavigationMenuList>
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-          <Button asChild size="sm" className="hidden lg:inline-flex bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110 transition-all">
+          <Button asChild size="sm" className="hidden lg:inline-flex bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110 transition-all rounded-full">
             <Link href="/book-demo">Book Free Demo</Link>
           </Button>
-           <Button asChild variant="outline" size="sm" className="hidden lg:inline-flex">
-            <Link href="/enrollment-form">Enroll Now</Link>
-          </Button>
-
+        
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="md:hidden">
@@ -161,25 +165,37 @@ export default function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
-              <div className="flex flex-col p-6 gap-6">
+              <div className="flex flex-col p-6 gap-4">
                 <Link href="/" className="flex items-center gap-2 mb-4">
                   <Logo className="h-8 w-8" />
                   <span className="font-bold text-lg">FRANCOBUDDY</span>
                 </Link>
-                <Link href="/" className="text-lg">Home</Link>
-                <Link href="/about" className="text-lg">About</Link>
-                <Link href="/courses" className="text-lg">Levels</Link>
-                <Link href="/pricing" className="text-lg">Pricing</Link>
-                <Link href="/testimonials" className="text-lg">Testimonials</Link>
-                <Link href="/blog" className="text-lg">Blog</Link>
-                <Link href="/contact" className="text-lg">Contact Us</Link>
-                 <Link href="/login" className="text-lg pt-4 border-t">Login</Link>
-                <Button asChild variant="default" className="mt-4">
-                  <Link href="/book-demo">Book Free Demo</Link>
-                </Button>
-                 <Button asChild variant="outline" className="mt-2">
-                  <Link href="/enrollment-form">Enroll Now</Link>
-                </Button>
+                
+                <SheetClose asChild><Link href="/" className="text-lg py-2">Home</Link></SheetClose>
+                <SheetClose asChild><Link href="/about" className="text-lg py-2">About Us</Link></SheetClose>
+                <SheetClose asChild><Link href="/courses" className="text-lg py-2">Courses</Link></SheetClose>
+                <SheetClose asChild><Link href="/pricing" className="text-lg py-2">Pricing</Link></SheetClose>
+                <SheetClose asChild><Link href="/testimonials" className="text-lg py-2">Testimonials</Link></SheetClose>
+                <SheetClose asChild><Link href="/blog" className="text-lg py-2">Blog</Link></SheetClose>
+                <SheetClose asChild><Link href="/contact" className="text-lg py-2">Contact Us</Link></SheetClose>
+
+                <div className="border-t pt-4 mt-4 space-y-4">
+                    <SheetClose asChild>
+                        <Link href="/login" className="text-lg flex items-center w-full">
+                           <LogIn className="mr-2 h-5 w-5"/> Login
+                        </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                        <Button asChild variant="default" className="w-full">
+                            <Link href="/book-demo">Book Free Demo</Link>
+                        </Button>
+                    </SheetClose>
+                     <SheetClose asChild>
+                        <Button asChild variant="outline" className="w-full">
+                            <Link href="/enrollment-form">Enroll Now</Link>
+                        </Button>
+                    </SheetClose>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
@@ -204,10 +220,7 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
+          <div className="text-sm font-medium leading-none flex items-center">{children}{title}</div>
         </a>
       </NavigationMenuLink>
     </li>
