@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { type ClassSession, type Attendee, classSessionSchema, type ClassSessionFormData } from './schema';
 import { addClassSessionAction, updateClassSessionAction } from './actions';
 import { format } from 'date-fns';
+import { Card } from '@/components/ui/card';
 
 // Mock student list for the dropdown
 const mockStudents: Omit<Attendee, 'present'>[] = [
