@@ -55,17 +55,16 @@ const blogPostClientSchema = z.object({
   excerpt: z.string().min(10, "Excerpt is required (min 10 chars)"),
   imageUrl: z
     .any()
-    .optional()
     .refine((files) => !files || files.length === 0 || files[0]?.size <= MAX_FILE_SIZE, `Max image size is 10MB.`)
     .refine(
       (files) => !files || files.length === 0 || ACCEPTED_IMAGE_TYPES.includes(files[0]?.type),
       "Only .jpg, .jpeg, .png and .webp formats are supported."
-    ),
-  imageAiHint: z.string().optional(),
+    ).optional(),
+  imageAiHint: z.string().max(50, "AI hint too long (max 50 chars)").optional(),
   content: z.string().min(20, "Content is required (min 20 chars)"),
-  categories: z.string().transform(val => val.split(',').map(s => s.trim()).filter(Boolean)), // Stored as array in DB, string in form
-  tags: z.string().transform(val => val.split(',').map(s => s.trim()).filter(Boolean)), // Stored as array in DB, string in form
-  featured: z.boolean().optional(),
+  categories: z.preprocess(val => typeof val === 'string' ? val.split(',').map(s => s.trim()).filter(Boolean) : [], z.array(z.string())),
+  tags: z.preprocess(val => typeof val === 'string' ? val.split(',').map(s => s.trim()).filter(Boolean) : [], z.array(z.string())),
+  featured: z.preprocess(val => val === 'on' || val === true, z.boolean().optional().default(false)),
 });
 
 
@@ -99,7 +98,7 @@ export default function AdminBlogManagementPage() {
   
   const postForm = useForm<z.infer<typeof blogPostClientSchema>>({
     resolver: zodResolver(blogPostClientSchema),
-    defaultValues: { featured: false, categories: "", tags: "" }
+    defaultValues: { featured: false, categories: [], tags: [] }
   });
 
   // --- Categories State & Forms ---
@@ -167,7 +166,7 @@ export default function AdminBlogManagementPage() {
     postForm.reset({ 
       title: "", slug: "", date: new Date().toISOString().split('T')[0], 
       author: "Admin", excerpt: "", imageUrl: undefined, imageAiHint: "",
-      content: "", categories: "", tags: "", featured: false,
+      content: "", categories: [], tags: [], featured: false,
     });
     setEditingPost(null);
     setIsPostDialogOpen(true);
@@ -178,8 +177,8 @@ export default function AdminBlogManagementPage() {
     postForm.reset({
       ...post,
       imageUrl: undefined, // Don't try to pre-fill a file input
-      categories: Array.isArray(post.categories) ? post.categories.join(', ') : '', // Ensure it's a string for the form
-      tags: Array.isArray(post.tags) ? post.tags.join(', ') : '', // Ensure it's a string for the form
+      categories: Array.isArray(post.categories) ? post.categories : [], // Ensure it's a string for the form
+      tags: Array.isArray(post.tags) ? post.tags : [], // Ensure it's a string for the form
     });
     setIsPostDialogOpen(true);
   };
@@ -187,6 +186,10 @@ export default function AdminBlogManagementPage() {
   const handlePostFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
+    // Convert array fields back to comma-separated strings for FormData
+    formData.set('categories', postForm.getValues('categories').join(','));
+    formData.set('tags', postForm.getValues('tags').join(','));
+
     if (editingPost && editingPost.id) {
         formData.append('id', editingPost.id);
     }
@@ -384,12 +387,36 @@ export default function AdminBlogManagementPage() {
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="categories_post" className="text-right">Categories</Label>
-                  <Input id="categories_post" {...postForm.register("categories")} className="col-span-3" placeholder="Comma-separated, e.g., TEF Speaking, Exam Tips" />
+                  <Controller
+                    control={postForm.control}
+                    name="categories"
+                    render={({ field }) => (
+                      <Input
+                        id="categories_post"
+                        value={Array.isArray(field.value) ? field.value.join(', ') : ''}
+                        onChange={(e) => field.onChange(e.target.value.split(',').map(s => s.trim()))}
+                        className="col-span-3"
+                        placeholder="Comma-separated, e.g., TEF Speaking, Exam Tips"
+                      />
+                    )}
+                  />
                   {postForm.formState.errors.categories && <p className="col-span-4 text-sm text-destructive text-right">{postForm.formState.errors.categories.message}</p>}
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="tags_post" className="text-right">Tags</Label>
-                  <Input id="tags_post" {...postForm.register("tags")} className="col-span-3" placeholder="Comma-separated, e.g., TEF, French, Canada" />
+                  <Controller
+                    control={postForm.control}
+                    name="tags"
+                    render={({ field }) => (
+                        <Input
+                            id="tags_post"
+                            value={Array.isArray(field.value) ? field.value.join(', ') : ''}
+                            onChange={(e) => field.onChange(e.target.value.split(',').map(s => s.trim()))}
+                            className="col-span-3"
+                            placeholder="Comma-separated, e.g., TEF, French, Canada"
+                        />
+                    )}
+                  />
                   {postForm.formState.errors.tags && <p className="col-span-4 text-sm text-destructive text-right">{postForm.formState.errors.tags.message}</p>}
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
