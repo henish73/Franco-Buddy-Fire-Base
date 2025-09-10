@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, UserCircle, BookOpen, LogOut, BookMarked, Menu, Home, MessageSquareHeart } from 'lucide-react'; // Added MessageSquareHeart
+import { LayoutDashboard, UserCircle, BookOpen, LogOut, BookMarked, Menu, Home, MessageSquareHeart, GraduationCap } from 'lucide-react'; // Added GraduationCap
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -20,10 +20,10 @@ import { Logo } from '../icons/Logo';
 
 const studentNavLinks = [
   { href: '/student/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/student/ai-tutor', label: 'AI Tutor', icon: MessageSquareHeart }, // New AI Tutor link
+  { href: '/student/ai-tutor', label: 'AI Tutor', icon: MessageSquareHeart },
   { href: '/student/profile', label: 'My Profile', icon: UserCircle },
+  { href: '/teacher/dashboard', label: 'Teacher Portal', icon: GraduationCap }, // Added teacher portal link
   { href: '/', label: 'Back to Main Content', icon: Home },
-  // Add more links like "My Courses", "Resources" when available
 ];
 
 export default function StudentNavbar() {

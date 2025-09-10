@@ -6,6 +6,7 @@ import { z } from 'zod';
 // Define fixed passwords for roles (highly insecure, for demo only)
 const ADMIN_PASSWORD = "admin123";
 const STUDENT_PASSWORD = "student123";
+const TEACHER_PASSWORD = "teacher123"; // Added teacher password
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
@@ -72,7 +73,15 @@ export async function handleLogin(
       isSuccess: true,
       redirectUrl: "/student/dashboard",
     };
-  } else {
+  } else if (password === TEACHER_PASSWORD) {
+    // Simulate teacher login
+    return {
+      message: "Teacher login successful. Redirecting...",
+      isSuccess: true,
+      redirectUrl: "/teacher/dashboard",
+    };
+  }
+  else {
     return {
       ...initialState,
       message: "Invalid email or password.",
