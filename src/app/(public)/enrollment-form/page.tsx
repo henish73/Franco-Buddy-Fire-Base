@@ -14,8 +14,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from '@/components/ui/button';
 
 const testimonials = [
-  { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
-  { quote: "I needed a high TCF score for my work permit extension. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Vancouver, BC", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Canada", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
+  { quote: "I needed a high TCF score for my work permit extension. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Canada", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
   { quote: "Living in Alberta, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Calgary, AB", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 4.8 },
 ];
 
@@ -223,7 +223,7 @@ export default function EnrollmentPage() {
            <Accordion type="single" collapsible className="w-full">
               {faqItems.map((item, index) => (
                 <AccordionItem key={index} value={`item-${index}`} className="bg-card shadow-sm rounded-lg px-2 mb-4">
-                  <AccordionTrigger className="text-left hover:no-underline py-4 px-4 text-base font-medium text-secondary rounded-full">
+                  <AccordionTrigger className="text-left hover:no-underline py-4 px-4 text-base font-medium text-secondary">
                     {item.q}
                   </AccordionTrigger>
                   <AccordionContent className="py-4 px-4 text-muted-foreground">

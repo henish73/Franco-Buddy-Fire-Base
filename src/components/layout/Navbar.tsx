@@ -40,26 +40,26 @@ const aboutComponents: { title: string; href: string; description: string }[] = 
   },
 ]
 
-const coursesComponents: { title: string; href: string; description: string }[] = [
+const levelsComponents: { title: string; href: string; description: string }[] = [
     {
-        title: "All Courses",
-        href: "/courses",
-        description: "Explore our full range of TEF Canada preparation courses for all levels."
+        title: "Beginner (A1/A2)",
+        href: "/courses/a1-a2-beginner",
+        description: "Start from scratch and build a strong foundation in French."
     },
     {
-        title: "Pricing",
-        href: "/pricing",
-        description: "View our transparent and flexible pricing for group and 1-on-1 classes."
+        title: "Intermediate (B1/B2)",
+        href: "/courses/b1-b2-intermediate",
+        description: "Improve fluency and prepare for the TEF Canada CLB 5-7 range."
     },
     {
-        title: "AI Course Suggester",
-        href: "/ai-course-suggester",
-        description: "Let our AI assistant recommend the perfect course for your profile and goals."
+        title: "Advanced (C1/C2)",
+        href: "/courses/c1-c2-advanced",
+        description: "Perfect your skills and aim for top scores (CLB 8+)."
     },
      {
-        title: "Enroll Now",
-        href: "/enrollment-form",
-        description: "Ready to start? Complete your enrollment and secure your spot today."
+        title: "All Courses",
+        href: "/courses",
+        description: "View all our TEF Canada preparation courses."
     },
 ]
 
@@ -102,10 +102,10 @@ export default function Navbar() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger>Courses</NavigationMenuTrigger>
+                    <NavigationMenuTrigger>Levels</NavigationMenuTrigger>
                     <NavigationMenuContent>
                          <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                        {coursesComponents.map((component) => (
+                        {levelsComponents.map((component) => (
                             <ListItem
                                 key={component.title}
                                 title={component.title}
@@ -168,7 +168,7 @@ export default function Navbar() {
                 </Link>
                 <Link href="/" className="text-lg">Home</Link>
                 <Link href="/about" className="text-lg">About</Link>
-                <Link href="/courses" className="text-lg">Courses</Link>
+                <Link href="/courses" className="text-lg">Levels</Link>
                 <Link href="/pricing" className="text-lg">Pricing</Link>
                 <Link href="/testimonials" className="text-lg">Testimonials</Link>
                 <Link href="/blog" className="text-lg">Blog</Link>

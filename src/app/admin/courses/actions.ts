@@ -5,15 +5,11 @@ import { revalidatePath } from 'next/cache';
 import type { Course } from '@/components/shared/CourseCard';
 import { courseFormSchema, type CourseFormData, moduleSchema, whatsIncludedSchema } from './schema';
 import { z } from 'zod';
+import { coursesData } from '@/app/(public)/courses/mockCoursesData';
 
 // --- Simulated Database for Courses ---
 // In a real app, this would be Firestore. For this demo, it's an in-memory array.
-let simulatedCoursesDb: Course[] = [
-    // Pre-populating with some basic data for demonstration
-    { id: "tef-pro-clb7", title: "TEF Pro - CLB 7+", shortDescription: "Achieve CLB 7+ for Express Entry.", targetCLB: "7+", format: "Group / 1-on-1", duration: "12 Weeks", status: "Active", price1on1: 399, price1on3: 249 },
-    { id: "beginner-a1", title: "Beginner French A1", shortDescription: "Start your French journey from scratch.", targetCLB: "1-3", format: "Group", duration: "8 Weeks", status: "Active", price1on3: 199 },
-    { id: "advanced-c1", title: "Advanced C1 Mastery", shortDescription: "Perfect your French for professional use.", targetCLB: "8+", format: "1-on-1", duration: "10 Weeks", status: "Draft", price1on1: 499 },
-];
+let simulatedCoursesDb: Course[] = coursesData;
 
 export type CourseFormState = {
   message: string;

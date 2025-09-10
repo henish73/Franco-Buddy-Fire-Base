@@ -13,6 +13,8 @@ import type { Course, Module, Lesson } from '@/components/shared/CourseCard';
 import { getCoursesAction } from '@/app/admin/courses/actions'; 
 import { notFound } from 'next/navigation';
 
+const iconMap = { Users, Award, Video, FileText, Brain, ClipboardCheck, Target, MessageSquare, MessageCircle, Clock };
+
 export default async function CourseDetailPage({ params }: { params: { id: string } }) {
   const result = await getCoursesAction();
   if (!result.isSuccess || !Array.isArray(result.data)) {
@@ -66,12 +68,15 @@ export default async function CourseDetailPage({ params }: { params: { id: strin
                   <Check className="h-6 w-6" /> What&apos;s Included?
                 </h2>
                 <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-4">
-                  {course.whatsIncluded.map((item, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <item.icon className="h-6 w-6 text-green-500 mt-1 shrink-0" />
-                      <span className="text-foreground/80">{item.text}</span>
-                    </li>
-                  ))}
+                  {course.whatsIncluded.map((item, index) => {
+                    const Icon = iconMap[item.icon as keyof typeof iconMap] || FileText;
+                    return (
+                        <li key={index} className="flex items-start gap-3">
+                        <Icon className="h-6 w-6 text-green-500 mt-1 shrink-0" />
+                        <span className="text-foreground/80">{item.text}</span>
+                        </li>
+                    );
+                  })}
                 </ul>
               </section>
             )}
