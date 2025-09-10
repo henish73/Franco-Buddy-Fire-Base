@@ -10,18 +10,18 @@ import { getCoursesAction } from '@/app/admin/courses/actions';
 import type { Course } from '@/components/shared/CourseCard';
 
 const testimonials = [
-  { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application in Toronto. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
-  { quote: "I needed a high TCF score for my work permit extension in Mississauga. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Mississauga, ON", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
-  { quote: "Living in Brampton, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Brampton, ON", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 4.8 },
+  { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
+  { quote: "I needed a high TCF score for my work permit extension. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Vancouver, BC", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "Living in Alberta, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Calgary, AB", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 4.8 },
 ];
 
 const whyFrancoBuddyItems = [
   { icon: Heart, title: "Caring Instructors for TEF/TCF", description: "Our certified C1/C2 instructors are experts in TEF and TCF preparation, dedicated to your Canadian immigration success." },
-  { icon: Users, title: "A Supportive Community", description: "Join learners from Toronto, Brampton, and Mississauga who motivate each other on their French for PR journey." },
-  { icon: Clock, title: "Flexible French Classes", description: "Online and in-person classes with flexible schedules to fit your busy life while you prepare for the TEF or TCF exam." },
+  { icon: Users, title: "A Supportive Community", description: "Join learners from across Canada who motivate each other on their French for PR journey." },
+  { icon: Clock, title: "Flexible French Classes", description: "Online classes with flexible schedules to fit your busy life while you prepare for the TEF or TCF exam." },
   { icon: Target, title: "Personalized TEF Coaching", description: "With a maximum of 3-5 students per class, you get the individual attention needed to master the French language for immigration." },
   { icon: TrendingUp, title: "Proven Immigration Results", description: "Our curriculum is designed for TEF & TCF success, helping you achieve your language goals for Canadian PR faster." },
-  { icon: UserCheck, title: "Expert TEF/TCF Guidance", description: "We specialize in TEF & TCF Canada tests, providing the most effective preparation strategies for residents of the GTA." },
+  { icon: UserCheck, title: "Expert TEF/TCF Guidance", description: "We specialize in TEF & TCF Canada tests, providing the most effective preparation strategies for applicants nationwide." },
 ];
 
 export default async function HomePage() {
@@ -34,7 +34,7 @@ export default async function HomePage() {
       <section className="relative h-[600px] flex items-center justify-center text-center">
         <Image 
           src="https://picsum.photos/1920/1080?random=4"
-          alt="Students learning French for PR in a modern classroom in Toronto"
+          alt="Students learning French for PR in a modern classroom"
           fill
           className="object-cover"
           data-ai-hint="classroom study group"
@@ -43,13 +43,13 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-black/60" />
         <div className="container relative mx-auto px-4 text-white animate-fade-in-up">
           <Badge variant="secondary" className="mb-4 text-sm font-semibold tracking-wider shadow-lg">
-            🏆 Your #1 Choice for TEF & TCF in the GTA
+            🏆 Your #1 Choice for TEF & TCF in Canada
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Ace TEF & TCF for Canadian PR | French Classes in Toronto, Brampton & Mississauga
+            Ace TEF & TCF for Canadian PR | French Classes Across Canada
           </h1>
           <p className="text-lg md:text-xl opacity-90 mb-10 max-w-3xl mx-auto">
-            Unlock your Canadian dream with expert French language training. We specialize in TEF and TCF test preparation for immigration, helping professionals in Toronto, Brampton, and Mississauga achieve their PR goals.
+            Unlock your Canadian dream with expert French language training. We specialize in TEF and TCF test preparation for immigration, helping professionals across Canada achieve their PR goals.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow animate-pulse rounded-full">
@@ -64,12 +64,12 @@ export default async function HomePage() {
           </div>
            <div className="mt-12 flex justify-center items-center gap-8 opacity-90">
                 <div className="flex -space-x-4 rtl:space-x-reverse">
-                    <Avatar><AvatarImage src="https://picsum.photos/40/40" alt="Student from Toronto" data-ai-hint="person avatar"/><AvatarFallback>S1</AvatarFallback></Avatar>
-                    <Avatar><AvatarImage src="https://picsum.photos/41/41" alt="Student from Brampton" data-ai-hint="person avatar"/><AvatarFallback>S2</AvatarFallback></Avatar>
-                    <Avatar><AvatarImage src="https://picsum.photos/42/42" alt="Student from Mississauga" data-ai-hint="person avatar"/><AvatarFallback>S3</AvatarFallback></Avatar>
+                    <Avatar><AvatarImage src="https://picsum.photos/40/40" alt="Student from Canada" data-ai-hint="person avatar"/><AvatarFallback>S1</AvatarFallback></Avatar>
+                    <Avatar><AvatarImage src="https://picsum.photos/41/41" alt="Student from Canada" data-ai-hint="person avatar"/><AvatarFallback>S2</AvatarFallback></Avatar>
+                    <Avatar><AvatarImage src="https://picsum.photos/42/42" alt="Student from Canada" data-ai-hint="person avatar"/><AvatarFallback>S3</AvatarFallback></Avatar>
                 </div>
                 <div>
-                    <p className="font-semibold">250+ Students in the GTA</p>
+                    <p className="font-semibold">500+ Students Across Canada</p>
                     <div className="flex items-center gap-1">
                         <Star className="h-4 w-4 text-yellow-400 fill-yellow-400"/>
                         <span className="font-semibold">4.8/5</span> Rating for French Immigration Success
@@ -89,7 +89,7 @@ export default async function HomePage() {
             </div>
             <div className="flex items-center justify-center gap-3">
               <Users className="h-8 w-8 text-primary"/>
-              <span className="font-semibold text-lg">250+ GTA Students</span>
+              <span className="font-semibold text-lg">500+ Students Nationally</span>
             </div>
             <div className="flex items-center justify-center gap-3">
               <ShieldCheck className="h-8 w-8 text-primary"/>
@@ -102,7 +102,7 @@ export default async function HomePage() {
       {/* Course Preview Section */}
       <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
-          <SectionTitle title="TEF & TCF Courses for Canadian Immigration" subtitle="Our programs are specifically designed for your success in exams required for PR, serving Brampton, Mississauga, and Toronto." />
+          <SectionTitle title="TEF & TCF Courses for Canadian Immigration" subtitle="Our programs are specifically designed for your success in exams required for PR, available all across Canada." />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {coursesData.slice(0, 4).map((course) => (
               <Card key={course.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-card animate-fade-in-up">
@@ -128,7 +128,7 @@ export default async function HomePage() {
       {/* Why Choose Us Section */}
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4">
-          <SectionTitle title="Why Choose FRANCOBUDDY for TEF in the GTA?" subtitle="We provide an unparalleled learning experience for students in Toronto, Brampton, and Mississauga aiming for PR." />
+          <SectionTitle title="Why Choose FRANCOBUDDY for TEF in Canada?" subtitle="We provide an unparalleled learning experience for students nationwide aiming for PR." />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in-up">
             {whyFrancoBuddyItems.map((item, index) => (
               <Card key={index} className="shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-card">
@@ -150,7 +150,7 @@ export default async function HomePage() {
       {/* Success Stories Section */}
       <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
-          <SectionTitle title="Real Immigration Success Stories" subtitle="Hear from students from Toronto, Mississauga, and Brampton who transformed their lives with our TEF/TCF coaching." />
+          <SectionTitle title="Real Immigration Success Stories" subtitle="Hear from students from across Canada who transformed their lives with our TEF/TCF coaching." />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-fade-in">
             {testimonials.map((testimonial, index) => (
               <Card key={index} className="shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col p-6 bg-card">
@@ -182,11 +182,11 @@ export default async function HomePage() {
       <section className="py-16 md:py-24 bg-gradient-to-br from-background via-primary/10 to-background text-foreground">
         <div className="container mx-auto px-4 animate-fade-in-up">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12 max-w-5xl mx-auto">
-            <Image src="https://picsum.photos/300/300?random=5" alt="Certified French Instructor for TEF TCF in Toronto" width={300} height={300} className="rounded-full shadow-lg border-4 border-secondary" data-ai-hint="instructor teacher portrait" />
+            <Image src="https://picsum.photos/300/300?random=5" alt="Certified French Instructor for TEF TCF in Canada" width={300} height={300} className="rounded-full shadow-lg border-4 border-secondary" data-ai-hint="instructor teacher portrait" />
             <div className="text-center md:text-left">
               <h3 className="text-3xl font-semibold mb-4 text-primary">Your Partner for French Immigration Success</h3>
               <p className="mb-4 opacity-90">
-                At FRANCOBUDDY, we are your partners in achieving your Canadian dream. Our mission is to provide high-quality, personalized French instruction that empowers you to succeed in the TEF and TCF exams. If you're looking for French classes for PR in Toronto, Mississauga, or Brampton, you're in the right place.
+                At FRANCOBUDDY, we are your partners in achieving your Canadian dream. Our mission is to provide high-quality, personalized French instruction that empowers you to succeed in the TEF and TCF exams. If you're looking for French classes for PR in Canada, you're in the right place.
               </p>
               <Button asChild variant="secondary" className="rounded-full">
                 <Link href="/about">Learn More About Our Method <ChevronRight className="ml-2 h-4 w-4" /></Link>
@@ -202,7 +202,7 @@ export default async function HomePage() {
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Ready to Start Your French for PR Journey?
           </h2>
-          <p className="text-muted-foreground mb-2">Limited spots available for our TEF/TCF batches in the GTA!</p>
+          <p className="text-muted-foreground mb-2">Limited spots available for our nationwide TEF/TCF batches!</p>
           <div className="flex flex-wrap justify-center gap-4 my-8">
              <Button asChild size="lg" className="shadow-lg hover:shadow-primary/50 transition-shadow animate-pulse rounded-full">
               <Link href="/book-demo">Book Your FREE Demo Now</Link>

@@ -49,8 +49,8 @@ export default function ContactPage() {
                     <MapPin className="h-6 w-6 text-primary mt-1 shrink-0" />
                     <div>
                       <h4 className="font-semibold text-foreground">Location</h4>
-                      <p className="text-muted-foreground">Toronto & GTA, Ontario, Canada</p>
-                      <p className="text-xs text-muted-foreground">(Online & In-person classes available)</p>
+                      <p className="text-muted-foreground">Canada</p>
+                      <p className="text-xs text-muted-foreground">(Online classes available nationwide)</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-4">
