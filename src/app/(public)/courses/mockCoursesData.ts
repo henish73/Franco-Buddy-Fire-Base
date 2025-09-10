@@ -5,8 +5,8 @@ import { Users, Award, Video, FileText, Brain, ClipboardCheck, Target, MessageSq
 export const coursesData: Course[] = [
   { 
     id: "a1-a2-beginner", 
-    title: "A1-A2 Beginner", 
-    shortDescription: "Start your French journey. Build a strong foundation from scratch.", 
+    title: "Beginner (A1/A2)", 
+    shortDescription: "Just starting out? Learn the basics of French grammar, vocabulary, and pronunciation. Ideal for those with little to no prior knowledge.", 
     targetCLB: "1-4", 
     format: "Group / 1-on-1",
     duration: "14 Weeks",
@@ -14,7 +14,7 @@ export const coursesData: Course[] = [
     imageAiHint: "classroom study group",
     price1on1: 399,
     price1on3: 249,
-    detailedDescription: "Our A1-A2 Beginner course is meticulously designed for those with little to no French knowledge. We focus on building a strong grammatical base, essential vocabulary, and an introduction to practical conversation. This course prepares you to confidently handle everyday situations in French.",
+    detailedDescription: "Just starting out? Learn the basics of French grammar, vocabulary, and pronunciation. Ideal for those with little to no prior knowledge. This course prepares you to confidently handle everyday situations in French.",
     whatsIncluded: [
       { text: "Live Interactive Classes", icon: Users },
       { text: "Certified Instructors", icon: Award },
@@ -51,8 +51,8 @@ export const coursesData: Course[] = [
   },
   { 
     id: "b1-b2-intermediate", 
-    title: "B1-B2 Intermediate", 
-    shortDescription: "Enhance your fluency and prepare for the TEF Canada exam.", 
+    title: "Intermediate (B1/B2)", 
+    shortDescription: "Ready to take your skills to the next level? Improve your fluency, expand your vocabulary, and master complex grammar concepts.", 
     targetCLB: "5-7", 
     format: "Group / 1-on-1",
     duration: "24 Weeks",
@@ -60,7 +60,7 @@ export const coursesData: Course[] = [
     imageAiHint: "professional discussion group",
     price1on1: 399,
     price1on3: 249,
-    detailedDescription: "The B1-B2 Intermediate course is engineered for learners aiming for high scores essential for Express Entry. This program dives deep into advanced strategies for each TEF Canada module, with extensive practice, mock tests, and personalized feedback to ensure you are fully prepared to achieve CLB 5-7.",
+    detailedDescription: "Ready to take your skills to the next level? Improve your fluency, expand your vocabulary, and master complex grammar concepts. This program dives deep into advanced strategies for each TEF Canada module, with extensive practice, mock tests, and personalized feedback to ensure you are fully prepared to achieve CLB 5-7.",
     whatsIncluded: [
       { text: "Advanced Live Interactive Classes", icon: Users },
       { text: "Expert TEF Instructors (CLB 9+)", icon: Award },
@@ -116,15 +116,15 @@ export const coursesData: Course[] = [
   },
    { 
     id: "c1-c2-advanced", 
-    title: "C1-C2 Advanced", 
-    shortDescription: "Perfect your French to a near-native level for professional and academic success.", 
+    title: "Advanced (C1/C2)", 
+    shortDescription: "Perfect your French and achieve near-native fluency. Fine-tune your accent, master idiomatic expressions, and tackle advanced topics with confidence.", 
     targetCLB: "8+", 
     format: "1-on-1 Coaching",
     duration: "20 Weeks",
     imageUrl: "https://placehold.co/600x400.png",
     imageAiHint: "expert award ceremony",
     price1on1: 399,
-    detailedDescription: "The C1-C2 Advanced course is for advanced French speakers targeting the highest CLB levels to maximize their CRS points or for professional fluency. This highly personalized 1-on-1 coaching focuses on perfecting nuances, advanced vocabulary, and flawless execution.",
+    detailedDescription: "Perfect your French and achieve near-native fluency. Fine-tune your accent, master idiomatic expressions, and tackle advanced topics with confidence. This highly personalized 1-on-1 coaching focuses on perfecting nuances, advanced vocabulary, and flawless execution.",
      whatsIncluded: [
         { text: "Elite 1:1 Coaching Sessions", icon: Users },
         { text: "Personalized Study Plan", icon: ClipboardCheck },
@@ -152,49 +152,6 @@ export const coursesData: Course[] = [
             lessons: [
                 { id: 'l4', title: 'Lexique (Vocabulary) Enhancement', keyTopics: ['Identifying and using idiomatic expressions', 'Understanding nuanced vocabulary (paraphrasing)'] },
                 { id: 'l5', title: 'Structure des phrases complexes', keyTopics: ['Mastering complex sentence structures for writing and speaking exams'] },
-            ]
-        }
-    ]
-  },
-  { 
-    id: "tef-canada-prep", 
-    title: "TEF Canada Test Prep", 
-    shortDescription: "Specialized, intensive preparation to ace the TEF exam.", 
-    targetCLB: "7+", 
-    format: "Group / 1-on-1",
-    duration: "8 Weeks",
-    imageUrl: "https://placehold.co/600x400.png",
-    imageAiHint: "exam study focus",
-    price1on1: 399,
-    price1on3: 249,
-    detailedDescription: "This is a laser-focused boot camp designed to maximize your TEF Canada score in a short amount of time. We cover all sections of the exam with proven strategies, time-management techniques, and intensive mock test sessions.",
-     whatsIncluded: [
-        { text: "Intensive Strategy Sessions", icon: Target },
-        { text: "Full-Length Mock Exams", icon: ClipboardCheck },
-        { text: "Personalized Feedback", icon: Award },
-        { text: "Time Management Techniques", icon: Clock },
-        { text: "Access to AI Tutor", icon: Brain },
-    ],
-    modules: [
-        {
-            id: 'prep_m1',
-            order: 1,
-            title: 'Module 1: Intensive Mock Testing & Review',
-            description: 'Simulating exam conditions to build stamina and strategy.',
-            lessons: [
-                { id: 'l1', title: 'Full-Length Mock Test 1', keyTopics: ['Timed practice for all four sections', 'Personalized error analysis'] },
-                { id: 'l2', title: 'Speaking Section Deep Dive', keyTopics: ['Analyzing high-scoring responses for Section A & B', 'Live practice with feedback'] },
-                { id: 'l3', title: 'Writing Section Correction', keyTopics: ['Detailed correction of mock test writing tasks', 'Strategies for improving structure and vocabulary'] },
-            ]
-        },
-        {
-            id: 'prep_m2',
-            order: 2,
-            title: 'Module 2: Advanced Strategies & Time Management',
-            description: 'Perfecting techniques to gain every possible point.',
-            lessons: [
-                { id: 'l4', title: 'Reading & Listening Speed Drills', keyTopics: ['Techniques for quickly identifying answers', 'Handling difficult question types'] },
-                { id: 'l5', title: 'Final Full-Length Mock Test 2', keyTopics: ['Final simulation before the real exam', 'Review of progress and final tips'] },
             ]
         }
     ]
