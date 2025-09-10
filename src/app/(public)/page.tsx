@@ -6,7 +6,8 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CheckCircle, Users, Clock, Award, UserCheck, BookOpen, Star, TrendingUp, Target, ChevronRight, ShieldCheck, Heart, GitCommit, User, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { coursesData } from './courses/mockCoursesData';
+import { getCoursesAction } from '@/app/admin/courses/actions';
+import type { Course } from '@/components/shared/CourseCard';
 
 const testimonials = [
   { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application in Toronto. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
@@ -24,6 +25,9 @@ const whyFrancoBuddyItems = [
 ];
 
 export default async function HomePage() {
+  const coursesResult = await getCoursesAction();
+  const coursesData = (coursesResult.isSuccess && Array.isArray(coursesResult.data)) ? coursesResult.data.filter(c => c.status === 'Active') as Course[] : [];
+  
   return (
     <>
       {/* Hero Section */}
@@ -100,7 +104,7 @@ export default async function HomePage() {
         <div className="container mx-auto px-4">
           <SectionTitle title="TEF & TCF Courses for Canadian Immigration" subtitle="Our programs are specifically designed for your success in exams required for PR, serving Brampton, Mississauga, and Toronto." />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {coursesData.map((course) => (
+            {coursesData.slice(0, 4).map((course) => (
               <Card key={course.id} className="overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-card animate-fade-in-up">
                 <Image src={course.imageUrl || 'https://placehold.co/600x400.png'} alt={`${course.title} - French classes for PR`} width={600} height={400} className="w-full h-48 object-cover" data-ai-hint={course.imageAiHint} />
                 <CardHeader>
