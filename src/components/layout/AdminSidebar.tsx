@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList, Home, FileText, MessageSquareHeart // Added MessageSquareHeart
+  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList, Home, FileText, MessageSquareHeart, GraduationCap
 } from 'lucide-react';
 import {
   Sidebar,
@@ -29,7 +29,7 @@ const adminNavItems = [
   { href: '/admin/courses', label: 'Course Management', icon: BookOpen },
   { href: '/admin/enrollments', label: 'Enrollments', icon: ClipboardList },
   { href: '/admin/blog-management', label: 'Blog Management', icon: FileText },
-  { href: '/admin/ai-content', label: 'AI Tutor Content', icon: MessageSquareHeart }, // New Link for AI Content
+  { href: '/admin/ai-content', label: 'AI Tutor Content', icon: MessageSquareHeart },
   { href: '/admin/settings', label: 'Site Settings', icon: Settings },
 ];
 
@@ -63,6 +63,18 @@ export default function AdminSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+           <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith("/teacher")}
+                tooltip="Teacher Portal"
+              >
+                <Link href="/teacher/dashboard">
+                  <GraduationCap />
+                  <span>Teacher Portal</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
            <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
