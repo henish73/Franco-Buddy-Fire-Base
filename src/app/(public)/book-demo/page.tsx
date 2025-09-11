@@ -65,7 +65,11 @@ export default function BookDemoPage() {
 
       {/* Main Form Section */}
       <section id="book-demo-form" className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 flex flex-col items-center gap-8">
+            <SectionTitle 
+                title="Secure Your Free Spot Now" 
+                subtitle="Select a date and time that works for you, and we'll confirm your personalized 30-minute demo class." 
+            />
            <DemoBookingForm />
         </div>
       </section>
