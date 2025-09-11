@@ -58,6 +58,12 @@ function generateCalendarLinks(details: DemoBookingDetails, googleMeetLink: stri
 }
 
 export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Promise<void> {
+    // CRITICAL DIAGNOSTIC STEP: Check if environment variables are loaded.
+    if (!SMTP_USER || !SMTP_PASSWORD) {
+        console.error("!!! SMTP CREDENTIALS (USER, PASSWORD) ARE MISSING IN THE ENVIRONMENT !!!");
+        throw new Error("Email server environment variables are not configured. Cannot send email.");
+    }
+
     const { name, email, selectedDate, selectedTime } = details;
     const googleMeetLink = `https://meet.google.com/lookup/${Math.random().toString(36).substring(2, 12)}`;
     const { googleLink, icsLink } = generateCalendarLinks(details, googleMeetLink);
@@ -91,13 +97,7 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
             <p>Best regards,<br>The FrancoBuddy Team</p>
         </div>
     `;
-
-    if (!SMTP_USER || !SMTP_PASSWORD) {
-        console.error("!!! SMTP CREDENTIALS (USER, PASSWORD) MISSING IN .env FILE !!!");
-        throw new Error("Email server environment variables are not configured. Cannot send email.");
-    }
     
-    // Using Nodemailer's 'gmail' service preset for simplicity and reliability
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
