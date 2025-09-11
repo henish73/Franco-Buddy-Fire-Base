@@ -1,11 +1,18 @@
 
 import SectionTitle from '@/components/shared/SectionTitle';
 import DemoBookingForm from './DemoBookingForm';
-import { CalendarCheck, Sparkles, HelpCircle, Star, ShieldCheck, Users, UserCheck, BookOpen, Target } from 'lucide-react';
+import { CalendarCheck, Sparkles, HelpCircle, Star, ShieldCheck, Users, UserCheck, BookOpen, Target, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import Image from 'next/image';
+
+const testimonials = [
+  { quote: "The free demo was so insightful! The instructor pinpointed my exact weaknesses in just 30 minutes and gave me a clear plan. It was the best decision I made for my TEF prep.", author: "Priya Sharma", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
+  { quote: "I was hesitant at first, but the demo class showed me how different FRANCOBUDDY is. The focus on immigration goals from day one is incredible. I signed up immediately.", author: "Rahul Patel", location: "Vancouver, BC", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "Booking the demo was the easiest and most valuable step. It gave me the confidence that I was choosing the right place to invest in my future in Canada.", author: "Kavya Reddy", location: "Calgary, AB", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 5 },
+];
 
 
 const faqItems = [
@@ -22,8 +29,8 @@ const faqItems = [
         a: "Just a stable internet connection, a device with a microphone and camera (like a laptop or tablet), and a quiet place where you can focus for 30 minutes."
     },
     {
-        q: "Can I reschedule my demo class?",
-        a: "Yes, you can reschedule your demo class up to 24 hours in advance. Please contact us via email or WhatsApp to make changes."
+        q: "What happens after I submit the form?",
+        a: "Our team will contact you via WhatsApp or email within a few hours to schedule your free demo class at a time that is convenient for you."
     }
 ]
 
@@ -34,63 +41,76 @@ export default function BookDemoPage() {
       <section className="bg-gradient-to-br from-secondary/10 to-primary/10 py-20 md:py-28">
         <div className="container mx-auto px-4 text-center">
           <CalendarCheck className="h-16 w-16 text-secondary mx-auto mb-6" />
-          <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-4">Book Your FREE Demo Class</h1>
-          <div className="mt-4 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-foreground/80">
-            <span className="flex items-center gap-1"><ShieldCheck className="h-5 w-5 text-green-500"/> 96% Success Rate</span>
-            <span className="flex items-center gap-1"><Users className="h-5 w-5 text-green-500"/> 500+ Happy Students</span>
+          <h1 className="text-4xl md:text-5xl font-bold text-secondary mb-4">Book Your FREE TEF Demo Class</h1>
+          <p className="text-lg md:text-xl text-foreground/80 max-w-3xl mx-auto">
+            Take the first and most important step towards acing your TEF Canada exam. Discover your current level, get a personalized study plan, and meet our expert instructors.
+          </p>
+           <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-foreground/80">
+            <span className="flex items-center gap-1"><ShieldCheck className="h-5 w-5 text-green-500"/> No Obligation, 100% Free</span>
+            <span className="flex items-center gap-1"><Users className="h-5 w-5 text-green-500"/> 500+ Students Helped</span>
             <span className="flex items-center gap-1"><Star className="h-5 w-5 text-yellow-400 fill-yellow-400"/> 4.9/5 Average Rating</span>
           </div>
         </div>
       </section>
 
-      {/* 3-Step Booking Process */}
-      <section className="py-16 md:py-24">
+      {/* Main Form Section */}
+      <section id="book-demo-form" className="py-16 md:py-24">
         <div className="container mx-auto px-4">
-            <SectionTitle title="Your 3-Step Path to Success" subtitle="Booking your free demo is quick and easy."/>
-            <div className="grid md:grid-cols-3 gap-8 text-center max-w-4xl mx-auto">
-                <div className="p-6">
-                    <div className="relative mb-4">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary/20 text-primary font-bold h-16 w-16 rounded-full flex items-center justify-center text-2xl">1</div>
-                    </div>
-                    <h3 className="text-xl font-semibold mt-20 text-secondary">Select Date</h3>
-                    <p className="text-muted-foreground mt-2">Choose a convenient Saturday or Sunday from the calendar.</p>
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+                 <div>
+                    <SectionTitle title="Secure Your Free Spot Now" subtitle="Fill out this quick form, and our team will contact you shortly to schedule your personalized 30-minute demo class." className='text-left' />
+                    <ul className="space-y-3">
+                        <li className="flex items-start gap-3"><CheckCircle className="h-5 w-5 text-green-500 mt-1 shrink-0"/><span>**Personalized Assessment:** Understand your exact strengths and weaknesses.</span></li>
+                        <li className="flex items-start gap-3"><CheckCircle className="h-5 w-5 text-green-500 mt-1 shrink-0"/><span>**Custom Study Plan:** Get a clear roadmap to your target CLB score.</span></li>
+                        <li className="flex items-start gap-3"><CheckCircle className="h-5 w-5 text-green-500 mt-1 shrink-0"/><span>**Meet an Expert:** Experience our teaching style with a certified TEF instructor.</span></li>
+                    </ul>
                 </div>
-                 <div className="p-6">
-                    <div className="relative mb-4">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary/20 text-primary font-bold h-16 w-16 rounded-full flex items-center justify-center text-2xl">2</div>
-                    </div>
-                    <h3 className="text-xl font-semibold mt-20 text-secondary">Choose Time</h3>
-                    <p className="text-muted-foreground mt-2">Pick one of the available time slots that fits your schedule.</p>
-                </div>
-                 <div className="p-6">
-                    <div className="relative mb-4">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary/20 text-primary font-bold h-16 w-16 rounded-full flex items-center justify-center text-2xl">3</div>
-                    </div>
-                    <h3 className="text-xl font-semibold mt-20 text-secondary">Confirm Details</h3>
-                    <p className="text-muted-foreground mt-2">Fill in your details and tell us about your goals. That's it!</p>
-                </div>
-            </div>
-            <div className="mt-12 flex justify-center">
                 <DemoBookingForm />
             </div>
         </div>
       </section>
+      
+       {/* Testimonials Section */}
+      <section className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <SectionTitle title="Students Who Started with a Demo" subtitle="See what our successful students say about their initial demo experience." />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="shadow-xl flex flex-col p-6 bg-card">
+                 <div className="flex items-center mb-4">
+                    <Image src={testimonial.image} alt={testimonial.author} width={60} height={60} className="rounded-full mr-4" data-ai-hint={testimonial.dataAiHint} />
+                    <div>
+                        <h4 className="font-semibold text-primary">{testimonial.author}</h4>
+                        <p className="text-sm text-muted-foreground">{testimonial.location}</p>
+                    </div>
+                </div>
+                <CardContent className="flex-grow p-0">
+                  <p className="text-muted-foreground italic">&quot;{testimonial.quote}&quot;</p>
+                   <div className="flex items-center mt-4">
+                        {[...Array(5)].map((_, i) => <Star key={i} className={`h-5 w-5 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />)}
+                   </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
-      <section className="py-16 md:py-24 bg-muted/30">
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <SectionTitle title="What to Expect from Your Demo" subtitle="This is more than just a trial; it's the first step in your personalized learning plan."/>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            <Card className="text-center p-6"><Sparkles className="h-8 w-8 mx-auto text-primary mb-3"/><h4 className="font-semibold text-secondary">Personalized Level Assessment</h4></Card>
-            <Card className="text-center p-6"><UserCheck className="h-8 w-8 mx-auto text-primary mb-3"/><h4 className="font-semibold text-secondary">Meet Our Expert Instructors</h4></Card>
-            <Card className="text-center p-6"><BookOpen className="h-8 w-8 mx-auto text-primary mb-3"/><h4 className="font-semibold text-secondary">Understand Our Teaching Style</h4></Card>
-            <Card className="text-center p-6"><Target className="h-8 w-8 mx-auto text-primary mb-3"/><h4 className="font-semibold text-secondary">Get a Custom Learning Plan</h4></Card>
+            <Card className="text-center p-6 shadow-md"><Sparkles className="h-8 w-8 mx-auto text-primary mb-3"/><h4 className="font-semibold text-secondary">Personalized Level Assessment</h4></Card>
+            <Card className="text-center p-6 shadow-md"><UserCheck className="h-8 w-8 mx-auto text-primary mb-3"/><h4 className="font-semibold text-secondary">Meet Our Expert Instructors</h4></Card>
+            <Card className="text-center p-6 shadow-md"><BookOpen className="h-8 w-8 mx-auto text-primary mb-3"/><h4 className="font-semibold text-secondary">Understand Our Teaching Style</h4></Card>
+            <Card className="text-center p-6 shadow-md"><Target className="h-8 w-8 mx-auto text-primary mb-3"/><h4 className="font-semibold text-secondary">Get a Custom Learning Plan</h4></Card>
           </div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4 max-w-3xl">
           <SectionTitle title="Frequently Asked Questions"/>
            <Accordion type="single" collapsible className="w-full">
@@ -105,6 +125,17 @@ export default function BookDemoPage() {
                 </AccordionItem>
               ))}
             </Accordion>
+        </div>
+      </section>
+
+       <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl font-bold text-primary mb-6">Ready to take the next step?</h2>
+            <div className="flex justify-center">
+                <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse rounded-full">
+                    <Link href="/enrollment-form">Enroll in a Course Now</Link>
+                </Button>
+            </div>
         </div>
       </section>
     </>
