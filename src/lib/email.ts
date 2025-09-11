@@ -29,8 +29,7 @@ const transporter = nodemailer.createTransport({
 
 /**
  * Sends a demo confirmation email to the student.
- * This is a placeholder and will log to the console.
- * To send real emails, you need to configure the transporter above.
+ * To send real emails, you need to configure the transporter above and set environment variables.
  */
 export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Promise<void> {
     const { name, email, selectedDate, selectedTime } = details;
@@ -59,8 +58,16 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
         <p>The FrancoBuddy Team</p>
     `;
 
-    // --- To send a real email, uncomment the code below and configure your SMTP transporter ---
-    /*
+    // If SMTP variables are the default ones, log to console instead of trying to send.
+    if (SMTP_HOST === 'smtp.example.com' || !process.env.SMTP_HOST) {
+        console.log("--- SIMULATED EMAIL (SMTP not configured) ---");
+        console.log(`To: ${email}`);
+        console.log(`Subject: Your FrancoBuddy Demo Class is Confirmed!`);
+        console.log(`Body (HTML would be sent):\n${emailHtml.replace(/<[^>]*>/g, '\n').replace(/\n\s*\n/g, '\n')}`);
+        console.log("-----------------------------------------");
+        return;
+    }
+
     try {
         const info = await transporter.sendMail({
             from: FROM_EMAIL,
@@ -71,15 +78,7 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
         console.log('Message sent: %s', info.messageId);
     } catch (error) {
         console.error("Failed to send email:", error);
-        // Depending on your app's needs, you might want to throw this error
-        // so the calling function knows the email failed to send.
+        // We will not re-throw the error to prevent the user-facing action from failing.
+        // The lead is already created. Logging the error is sufficient for now.
     }
-    */
-    
-    // For now, we will just log the content to the console for simulation purposes.
-    console.log("--- SIMULATED EMAIL ---");
-    console.log(`To: ${email}`);
-    console.log(`Subject: Your FrancoBuddy Demo Class is Confirmed!`);
-    console.log(`Body (HTML would be sent):\n${emailHtml.replace(/<[^>]*>/g, '\n').replace(/\n\s*\n/g, '\n')}`);
-    console.log("-----------------------");
 }
