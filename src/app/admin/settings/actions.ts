@@ -23,7 +23,7 @@ export type SiteSettingsFormState = {
 const timeSlotSchema = z.object({
   id: z.string().optional(),
   date: z.string().refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
-  timeSlotText: z.string().regex(/^\d{2}:\d{2} [AP]M - \d{2}:\d{2} [AP]M$/, "Time must be in 'HH:MM AM/PM - HH:MM AM/PM' format."),
+  timeSlotText: z.string().regex(/^\d{1,2}:\d{2}\s[AP]M$/, "Time must be in 'HH:MM AM/PM' format."),
 });
 
 export type TimeSlotFormState = {
@@ -44,8 +44,8 @@ let simulatedSiteSettingsDb = {
 };
 
 let simulatedTimeSlotsDb: { id: string; dateTime: string; timeSlotText: string }[] = [
-  { id: 'ts1', dateTime: new Date().toISOString(), timeSlotText: '10:00 AM - 11:00 AM' },
-  { id: 'ts2', dateTime: new Date().toISOString(), timeSlotText: '11:00 AM - 12:00 PM' },
+  { id: 'ts1', dateTime: new Date().toISOString(), timeSlotText: '10:00 AM' },
+  { id: 'ts2', dateTime: new Date().toISOString(), timeSlotText: '11:00 AM' },
 ];
 
 

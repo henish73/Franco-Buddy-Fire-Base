@@ -116,7 +116,7 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
                     <Input
                     id="timeSlotText"
                     name="timeSlotText"
-                    placeholder="e.g., 01:00 PM - 02:00 PM"
+                    placeholder="e.g., 01:00 PM"
                     required
                     />
                     <SubmitButton />
