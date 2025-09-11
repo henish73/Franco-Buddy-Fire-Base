@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { addDemoRequestAction } from '@/app/admin/leads/actions';
+import { sendDemoConfirmationEmail } from '@/lib/email';
 
 const demoBookingSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -58,6 +59,9 @@ export async function submitDemoBookingForm(
     });
 
     if (result.isSuccess) {
+       // Send confirmation email
+       await sendDemoConfirmationEmail(validatedFields.data);
+
        return {
         message: "Thank you! Your demo has been scheduled. We'll send you a confirmation email with the meeting link shortly.",
         isSuccess: true,
