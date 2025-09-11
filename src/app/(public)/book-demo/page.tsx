@@ -10,9 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import Image from 'next/image';
 
 const testimonials = [
-  { quote: "The free demo was so insightful! The instructor pinpointed my exact weaknesses in just 30 minutes and gave me a clear plan. It was the best decision I made for my TEF prep.", author: "Priya Sharma", location: "Canada", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
-  { quote: "I was hesitant at first, but the demo class showed me how different FRANCOBUDDY is. The focus on immigration goals from day one is incredible. I signed up immediately.", author: "Rahul Patel", location: "Canada", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
-  { quote: "Booking the demo was the easiest and most valuable step. It gave me the confidence that I was choosing the right place to invest in my future in Canada.", author: "Kavya Reddy", location: "Canada", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 5 },
+  { quote: "The free demo was so insightful! The instructor pinpointed my exact weaknesses in just 30 minutes and gave me a clear plan. It was the best decision I made for my TEF prep.", author: "Priya Sharma", location: "Canada", image: "https://picsum.photos/seed/t1/100/100", dataAiHint: "professional woman portrait", rating: 5 },
+  { quote: "I was hesitant at first, but the demo class showed me how different FRANCOBUDDY is. The focus on immigration goals from day one is incredible. I signed up immediately.", author: "Rahul Patel", location: "Canada", image: "https://picsum.photos/seed/t2/100/100", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "Booking the demo was the easiest and most valuable step. It gave me the confidence that I was choosing the right place to invest in my future in Canada.", author: "Kavya Reddy", location: "Canada", image: "https://picsum.photos/seed/t3/100/100", dataAiHint: "female student portrait", rating: 5 },
 ];
 
 
@@ -66,17 +66,7 @@ export default function BookDemoPage() {
       {/* Main Form Section */}
       <section id="book-demo-form" className="py-16 md:py-24">
         <div className="container mx-auto px-4">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-                 <div>
-                    <SectionTitle title="Secure Your Free Spot Now" subtitle="Fill out this quick form, and our team will contact you shortly to schedule your personalized 30-minute demo class." className='text-left' />
-                    <ul className="space-y-3">
-                        <li className="flex items-start gap-3"><CheckCircle className="h-5 w-5 text-green-500 mt-1 shrink-0"/><span>**Personalized Assessment:** Understand your exact strengths and weaknesses.</span></li>
-                        <li className="flex items-start gap-3"><CheckCircle className="h-5 w-5 text-green-500 mt-1 shrink-0"/><span>**Custom Study Plan:** Get a clear roadmap to your target CLB score.</span></li>
-                        <li className="flex items-start gap-3"><CheckCircle className="h-5 w-5 text-green-500 mt-1 shrink-0"/><span>**Meet an Expert:** Experience our teaching style with a certified TEF instructor.</span></li>
-                    </ul>
-                </div>
-                <DemoBookingForm />
-            </div>
+           <DemoBookingForm />
         </div>
       </section>
       

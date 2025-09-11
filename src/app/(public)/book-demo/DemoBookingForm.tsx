@@ -14,6 +14,7 @@ import { CheckCircle, AlertCircle, CalendarCheck, Clock, User, Mail, Phone, Targ
 import { submitDemoBookingForm, type DemoBookingFormState } from "./actions";
 import { Calendar } from "@/components/ui/calendar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import SectionTitle from "@/components/shared/SectionTitle";
 
 const initialState: DemoBookingFormState = {
   message: "",
@@ -38,7 +39,7 @@ export default function DemoBookingForm() {
 
   if (state.isSuccess) {
     return (
-        <Card className="w-full max-w-md shadow-xl bg-gradient-to-br from-primary/10 to-accent/10">
+        <Card className="w-full max-w-md mx-auto shadow-xl bg-gradient-to-br from-primary/10 to-accent/10">
             <CardContent className="p-8 text-center">
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-primary mb-2">Thank You!</h3>
@@ -49,83 +50,97 @@ export default function DemoBookingForm() {
   }
 
   return (
-    <Card className="w-full max-w-lg shadow-xl">
-      <CardContent className="p-6 md:p-8">
-        <form action={formAction} className="space-y-6">
-            <input type="hidden" name="selectedDate" value={date ? date.toISOString().split('T')[0] : ""} />
-            <input type="hidden" name="selectedTime" value={selectedTime} />
-            
-            <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                    <Label htmlFor="name" className="flex items-center gap-2 mb-2"><User /> Full Name</Label>
-                    <Input id="name" name="name" placeholder="Your Name" required />
-                    {state.errors?.name && <p className="text-sm text-destructive mt-1">{state.errors.name.join(', ')}</p>}
+     <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="text-left">
+            <SectionTitle 
+                title="Secure Your Free Spot Now" 
+                subtitle="Fill out this quick form, and our team will contact you shortly to schedule your personalized 30-minute demo class." 
+                className='text-left' 
+            />
+            <ul className="space-y-4 text-lg text-foreground/80 mt-8">
+                <li className="flex items-start gap-3">
+                    <CheckCircle className="h-6 w-6 text-green-500 mt-1 shrink-0"/>
+                    <span><strong>Personalized Assessment:</strong> Understand your exact strengths and weaknesses.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                    <CheckCircle className="h-6 w-6 text-green-500 mt-1 shrink-0"/>
+                    <span><strong>Custom Study Plan:</strong> Get a clear roadmap to your target CLB score.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                    <CheckCircle className="h-6 w-6 text-green-500 mt-1 shrink-0"/>
+                    <span><strong>Meet an Expert:</strong> Experience our teaching style with a certified TEF instructor.</span>
+                </li>
+            </ul>
+        </div>
+        
+        <Card className="w-full max-w-2xl shadow-xl">
+          <CardContent className="p-6 md:p-8">
+            <form action={formAction} className="space-y-6">
+                <input type="hidden" name="selectedDate" value={date ? date.toISOString().split('T')[0] : ""} />
+                <input type="hidden" name="selectedTime" value={selectedTime} />
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <Label htmlFor="name" className="flex items-center gap-2 mb-2"><User /> Full Name</Label>
+                        <Input id="name" name="name" placeholder="Your Name" required />
+                        {state.errors?.name && <p className="text-sm text-destructive mt-1">{state.errors.name.join(', ')}</p>}
+                    </div>
+                    <div>
+                        <Label htmlFor="email" className="flex items-center gap-2 mb-2"><Mail /> Email Address</Label>
+                        <Input id="email" name="email" type="email" placeholder="your.email@example.com" required />
+                        {state.errors?.email && <p className="text-sm text-destructive mt-1">{state.errors.email.join(', ')}</p>}
+                    </div>
+                    <div className="md:col-span-2">
+                        <Label htmlFor="phone" className="flex items-center gap-2 mb-2"><Phone /> Phone Number</Label>
+                        <Input id="phone" name="phone" type="tel" placeholder="+1 (123) 456-7890" required/>
+                        {state.errors?.phone && <p className="text-sm text-destructive mt-1">{state.errors.phone.join(', ')}</p>}
+                    </div>
                 </div>
-                <div>
-                    <Label htmlFor="email" className="flex items-center gap-2 mb-2"><Mail /> Email Address</Label>
-                    <Input id="email" name="email" type="email" placeholder="your.email@example.com" required />
-                    {state.errors?.email && <p className="text-sm text-destructive mt-1">{state.errors.email.join(', ')}</p>}
-                </div>
-                <div className="md:col-span-2">
-                    <Label htmlFor="phone" className="flex items-center gap-2 mb-2"><Phone /> Phone Number</Label>
-                    <Input id="phone" name="phone" type="tel" placeholder="+1 (123) 456-7890" required/>
-                    {state.errors?.phone && <p className="text-sm text-destructive mt-1">{state.errors.phone.join(', ')}</p>}
-                </div>
-            </div>
-             <div>
-                <Label htmlFor="goals" className="flex items-center gap-2 mb-2"><Target /> Your Goals</Label>
-                <Textarea id="goals" name="goals" placeholder="e.g., TEF for Express Entry, Improve speaking confidence..." rows={3} required />
-                {state.errors?.goals && <p className="text-sm text-destructive mt-1">{state.errors.goals.join(', ')}</p>}
-            </div>
-             <div>
-                <Label htmlFor="frenchLevel" className="flex items-center gap-2 mb-2">Your Current French Level</Label>
-                <Input id="frenchLevel" name="frenchLevel" placeholder="e.g., Beginner, A2, etc." required/>
-                {state.errors?.frenchLevel && <p className="text-sm text-destructive mt-1">{state.errors.frenchLevel.join(', ')}</p>}
-            </div>
 
-            <div className="grid md:grid-cols-2 gap-6 border-t pt-6">
-                <div className="space-y-2">
-                     <Label className="flex items-center gap-2 mb-2"><CalendarCheck /> Select a Date</Label>
-                     <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        className="rounded-md border bg-card"
-                        disabled={(day) => day < new Date(new Date().setDate(new Date().getDate() - 1))}
-                    />
-                    {state.errors?.selectedDate && <p className="text-sm text-destructive mt-1">{state.errors.selectedDate.join(', ')}</p>}
+                <div className="grid md:grid-cols-2 gap-6 items-start border-t pt-6">
+                    <div className="space-y-2">
+                         <Label className="flex items-center gap-2 mb-2"><CalendarCheck /> Select a Date</Label>
+                         <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            className="rounded-md border bg-card"
+                            disabled={(day) => day < new Date(new Date().setDate(new Date().getDate() - 1))}
+                        />
+                        {state.errors?.selectedDate && <p className="text-sm text-destructive mt-1">{state.errors.selectedDate.join(', ')}</p>}
+                    </div>
+                     <div className="space-y-2">
+                        <Label className="flex items-center gap-2 mb-2"><Clock /> Select a Time (EST)</Label>
+                         <RadioGroup 
+                            name="time-selection-visual"
+                            value={selectedTime}
+                            onValueChange={setSelectedTime}
+                            className="space-y-2"
+                        >
+                          {timeSlots.map(slot => (
+                            <div key={slot} className="flex items-center p-2 rounded-md hover:bg-muted transition-colors">
+                              <RadioGroupItem value={slot} id={slot} />
+                              <Label htmlFor={slot} className="pl-3 font-normal cursor-pointer flex-grow">{slot}</Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                        {state.errors?.selectedTime && <p className="text-sm text-destructive mt-1">{state.errors.selectedTime.join(', ')}</p>}
+                    </div>
                 </div>
-                 <div className="space-y-2">
-                    <Label className="flex items-center gap-2 mb-2"><Clock /> Select a Time (EST)</Label>
-                     <RadioGroup 
-                        name="time-selection-visual"
-                        value={selectedTime}
-                        onValueChange={setSelectedTime}
-                        className="space-y-2"
-                    >
-                      {timeSlots.map(slot => (
-                        <div key={slot} className="flex items-center">
-                          <RadioGroupItem value={slot} id={slot} />
-                          <Label htmlFor={slot} className="pl-2 font-normal cursor-pointer">{slot}</Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                    {state.errors?.selectedTime && <p className="text-sm text-destructive mt-1">{state.errors.selectedTime.join(', ')}</p>}
-                </div>
-            </div>
 
-            <div className="pt-4">
-                <SubmitButton />
-                {state.message && !state.isSuccess && (
-                    <Alert variant="destructive" className="mt-4">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Error!</AlertTitle>
-                    <AlertDescription>{state.message}</AlertDescription>
-                    </Alert>
-                )}
-            </div>
-        </form>
-      </CardContent>
-    </Card>
+                <div className="pt-4">
+                    <SubmitButton />
+                    {state.message && !state.isSuccess && (
+                        <Alert variant="destructive" className="mt-4">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertTitle>Error!</AlertTitle>
+                        <AlertDescription>{state.message}</AlertDescription>
+                        </Alert>
+                    )}
+                </div>
+            </form>
+          </CardContent>
+        </Card>
+    </div>
   );
 }
