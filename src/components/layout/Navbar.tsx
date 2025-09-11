@@ -3,7 +3,7 @@
 
 import * as React from "react"
 import Link from 'next/link';
-import { Menu, ChevronDown, LogIn, BookOpen, DollarSign, Lightbulb, Info, Smile, HelpCircle, Bot } from 'lucide-react';
+import { Menu, ChevronDown, LogIn, BookOpen, DollarSign, Lightbulb, Info, Smile, HelpCircle, Bot, User, UserCog, GraduationCap, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import {
@@ -52,6 +52,24 @@ const coursesComponents: { title: string; href: string; icon: React.ElementType 
         title: "AI Course Suggester",
         href: "/ai-course-suggester",
         icon: Bot
+    },
+];
+
+const portalComponents: { title: string; href: string; icon: React.ElementType }[] = [
+    {
+        title: "Student Portal",
+        href: "/student/dashboard",
+        icon: User
+    },
+    {
+        title: "Admin Portal",
+        href: "/admin/dashboard",
+        icon: UserCog
+    },
+    {
+        title: "Teacher Portal",
+        href: "/teacher/dashboard",
+        icon: GraduationCap
     },
 ];
 
@@ -143,17 +161,37 @@ export default function Navbar() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                    <Link href="/login" legacyBehavior passHref>
-                        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-secondary text-secondary-foreground hover:bg-secondary/90")}>
-                            <LogIn className="mr-2 h-4 w-4"/> Login
-                        </NavigationMenuLink>
-                    </Link>
+                    <NavigationMenuTrigger>Portals</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                        <ul className="grid w-[300px] gap-3 p-4">
+                        {portalComponents.map((component) => (
+                            <ListItem
+                                key={component.title}
+                                title={component.title}
+                                href={component.href}
+                            >
+                               <component.icon className="h-4 w-4 mr-2 inline-block" />
+                            </ListItem>
+                        ))}
+                         <ListItem
+                            title="Login"
+                            href="/login"
+                            className="bg-primary/10"
+                          >
+                             <ArrowRight className="h-4 w-4 mr-2 inline-block" />
+                          </ListItem>
+                        </ul>
+                    </NavigationMenuContent>
                 </NavigationMenuItem>
+
             </NavigationMenuList>
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
-          <Button asChild size="sm" className="hidden lg:inline-flex bg-gradient-to-br from-secondary to-red-700 text-secondary-foreground hover:brightness-110 transition-all rounded-full">
+          <Button asChild size="sm" className="hidden lg:inline-flex bg-secondary text-secondary-foreground hover:bg-secondary/90 rounded-full">
+            <Link href="/enrollment-form">Enroll Now</Link>
+          </Button>
+          <Button asChild size="sm" className="hidden lg:inline-flex rounded-full">
             <Link href="/book-demo">Book Free Demo</Link>
           </Button>
         
@@ -178,20 +216,16 @@ export default function Navbar() {
                 <SheetClose asChild><Link href="/testimonials" className="text-lg py-2">Testimonials</Link></SheetClose>
                 <SheetClose asChild><Link href="/blog" className="text-lg py-2">Blog</Link></SheetClose>
                 <SheetClose asChild><Link href="/contact" className="text-lg py-2">Contact Us</Link></SheetClose>
+                <SheetClose asChild><Link href="/login" className="text-lg py-2">Portals / Login</Link></SheetClose>
 
                 <div className="border-t pt-4 mt-4 space-y-4">
-                    <SheetClose asChild>
-                        <Link href="/login" className="text-lg flex items-center w-full">
-                           <LogIn className="mr-2 h-5 w-5"/> Login
-                        </Link>
-                    </SheetClose>
                     <SheetClose asChild>
                         <Button asChild variant="default" className="w-full">
                             <Link href="/book-demo">Book Free Demo</Link>
                         </Button>
                     </SheetClose>
                      <SheetClose asChild>
-                        <Button asChild variant="outline" className="w-full">
+                        <Button asChild variant="secondary" className="w-full">
                             <Link href="/enrollment-form">Enroll Now</Link>
                         </Button>
                     </SheetClose>
