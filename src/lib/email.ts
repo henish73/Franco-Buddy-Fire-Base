@@ -64,7 +64,7 @@ function generateCalendarLinks(details: DemoBookingDetails, googleMeetLink: stri
         `DESCRIPTION:${description.replace(/\n/g, '\\n')}`,
         `LOCATION:${googleMeetLink}`,
         "END:VEVENT",
-        "END:VCALENDAR"
+        "END:CALENDAR"
     ].join("\n");
     const icsLink = `data:text/calendar;charset=utf8,${encodeURIComponent(icsContent)}`;
 
@@ -107,23 +107,35 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
     `;
 
     if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASSWORD) {
-        console.log("--- SIMULATED EMAIL (SMTP not configured) ---");
+        console.log("!!! SMTP CREDENTIALS MISSING !!!");
+        console.log("Email not sent. Please configure your .env file.");
+        console.log("--- SIMULATED EMAIL ---");
         console.log(`To: ${email}`);
         console.log(`Subject: Your FrancoBuddy Demo Class is Confirmed!`);
         console.log(`Body (HTML would be sent):\n${emailHtml.replace(/<[^>]*>/g, '\n').replace(/\n\s*\n/g, '\n')}`);
-        console.log("-----------------------------------------");
+        console.log("-----------------------");
         return;
     }
 
     try {
+        console.log("Attempting to send email with the following SMTP config:");
+        console.log({
+            host: SMTP_HOST,
+            port: SMTP_PORT,
+            user: SMTP_USER,
+            pass: SMTP_PASSWORD ? '********' : 'NOT SET', // Mask password
+            from: FROM_EMAIL,
+        });
+
         const info = await transporter.sendMail({
             from: `FrancoBuddy <${FROM_EMAIL}>`,
             to: email,
             subject: 'Your FrancoBuddy Demo Class is Confirmed!',
             html: emailHtml,
         });
-        console.log('Message sent: %s', info.messageId);
+        console.log('Message sent successfully! Message ID: %s', info.messageId);
+        console.log('Full response from mail server:', info.response);
     } catch (error) {
-        console.error("Failed to send email:", error);
+        console.error("Failed to send email. Full error object:", error);
     }
 }
