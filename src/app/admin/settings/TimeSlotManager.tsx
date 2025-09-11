@@ -114,7 +114,7 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
       </CardContent>
       <CardFooter className="border-t pt-6">
         <form action={addFormAction} className="w-full space-y-4">
-            <input type="hidden" name="date" value={selectedDate?.toISOString()} />
+            <input type="hidden" name="date" value={selectedDate?.toISOString() || ''} />
             <div>
                 <Label htmlFor="timeSlotText">3. Add New Time Slot for {selectedDate ? format(selectedDate, 'PPP') : '...'}</Label>
                 <div className="flex gap-2 mt-1">
