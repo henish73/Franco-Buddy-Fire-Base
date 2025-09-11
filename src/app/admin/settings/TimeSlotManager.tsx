@@ -36,9 +36,14 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
   const { toast } = useToast();
   const [addState, addFormAction] = useActionState(addTimeSlotAction, initialFormState);
   const [isDeleting, startDeleteTransition] = useTransition();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   
   const [timeSlots, setTimeSlots] = useState(initialTimeSlots.map(slot => ({ ...slot, dateTime: new Date(slot.dateTime) })));
+
+  useEffect(() => {
+    // Set initial date on client to avoid hydration mismatch
+    setSelectedDate(new Date());
+  }, []);
 
   useEffect(() => {
     setTimeSlots(initialTimeSlots.map(slot => ({ ...slot, dateTime: new Date(slot.dateTime) })));
