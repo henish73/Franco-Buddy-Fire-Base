@@ -1,8 +1,6 @@
 // src/lib/email.ts
 import nodemailer from 'nodemailer';
 
-// No need to call config() here, Next.js handles .env loading.
-
 type DemoBookingDetails = {
     name: string;
     email: string;
@@ -15,16 +13,6 @@ const SMTP_PORT = Number(process.env.SMTP_PORT);
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
 const FROM_EMAIL = process.env.FROM_EMAIL || SMTP_USER;
-
-const transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: SMTP_PORT,
-    secure: SMTP_PORT === 465,
-    auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASSWORD,
-    },
-});
 
 function generateCalendarLinks(details: DemoBookingDetails, googleMeetLink: string) {
     const { selectedDate, selectedTime } = details;
@@ -107,23 +95,29 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
     `;
 
     if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASSWORD) {
-        console.log("!!! SMTP CREDENTIALS MISSING !!!");
-        console.log("Email not sent. Please configure your .env file.");
-        console.log("--- SIMULATED EMAIL ---");
-        console.log(`To: ${email}`);
-        console.log(`Subject: Your FrancoBuddy Demo Class is Confirmed!`);
-        console.log(`Body (HTML would be sent):\n${emailHtml.replace(/<[^>]*>/g, '\n').replace(/\n\s*\n/g, '\n')}`);
-        console.log("-----------------------");
-        return;
+        console.error("!!! SMTP CREDENTIALS MISSING IN .env FILE !!!");
+        throw new Error("Email server is not configured. Cannot send email.");
     }
+    
+    const transporter = nodemailer.createTransport({
+        host: SMTP_HOST,
+        port: SMTP_PORT,
+        secure: SMTP_PORT === 465,
+        auth: {
+            user: SMTP_USER,
+            pass: SMTP_PASSWORD,
+        },
+        logger: true, // Enable verbose logging
+        debug: true, // Enable debug output
+    });
 
     try {
         console.log("Attempting to send email with the following SMTP config:");
         console.log({
             host: SMTP_HOST,
             port: SMTP_PORT,
+            secure: SMTP_PORT === 465,
             user: SMTP_USER,
-            pass: SMTP_PASSWORD ? '********' : 'NOT SET', // Mask password
             from: FROM_EMAIL,
         });
 
@@ -136,6 +130,9 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
         console.log('Message sent successfully! Message ID: %s', info.messageId);
         console.log('Full response from mail server:', info.response);
     } catch (error) {
-        console.error("Failed to send email. Full error object:", error);
+        console.error("--- NODEMAILER DETAILED ERROR ---");
+        console.error(error);
+        console.error("--- END OF NODEMAILER ERROR ---");
+        throw new Error("Failed to send email. Check server logs for detailed error.");
     }
 }

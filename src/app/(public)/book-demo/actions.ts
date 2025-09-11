@@ -46,24 +46,31 @@ export async function submitDemoBookingForm(
     const result = await addDemoRequestAction(validatedFields.data);
 
     if (result.isSuccess) {
-       // Send confirmation email
-       await sendDemoConfirmationEmail(validatedFields.data);
-
-       return {
-        message: "Thank you! Your demo has been scheduled. We'll send you a confirmation email with the meeting link shortly.",
-        isSuccess: true,
-        errors: {},
-      };
+       try {
+        await sendDemoConfirmationEmail(validatedFields.data);
+        return {
+            message: "Thank you! Your demo has been scheduled. We'll send you a confirmation email with the meeting link shortly.",
+            isSuccess: true,
+            errors: {},
+        };
+       } catch (emailError) {
+         console.error("Email sending failed after lead creation:", emailError);
+         // The lead was created, but email failed. Let the user know.
+         return {
+            message: "Your demo was booked successfully, but we couldn't send the confirmation email. Please contact us directly.",
+            isSuccess: true, // It was partially successful
+         }
+       }
     } else {
       return {
-        message: result.message || "An unexpected error occurred while saving the lead.",
+        message: result.message || "An unexpected error occurred while saving your request.",
         isSuccess: false,
       }
     }
   } catch (error) {
     console.error("Error submitting demo booking form:", error);
     return {
-      message: "An unexpected error occurred. Please try again later.",
+      message: "A critical unexpected error occurred. Please try again later.",
       isSuccess: false,
     };
   }
