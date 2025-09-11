@@ -50,7 +50,7 @@ export async function addDemoRequestAction(data: Omit<DemoRequestLead, 'id' | 's
   try {
     const newLead: DemoRequestLead = {
       ...data,
-      id: `demo_${Date.now()}`,
+      id: `demo_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       submittedAt: new Date().toISOString(),
       status: data.status || 'New', // Use provided status or default to 'New'
     };
@@ -59,7 +59,9 @@ export async function addDemoRequestAction(data: Omit<DemoRequestLead, 'id' | 's
     revalidatePath('/admin/leads');
     return { message: "Thank you! Your demo request has been submitted.", isSuccess: true, data: newLead };
   } catch (e) {
-    return { message: "Failed to submit demo request.", isSuccess: false };
+    const error = e as Error;
+    console.error("Error adding demo lead:", error.message);
+    return { message: `Failed to submit demo request: ${error.message}`, isSuccess: false };
   }
 }
 
