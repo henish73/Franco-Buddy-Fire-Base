@@ -9,7 +9,7 @@ type DemoBookingDetails = {
 }
 
 const SMTP_HOST = process.env.SMTP_HOST;
-const SMTP_PORT = Number(process.env.SMTP_PORT);
+const SMTP_PORT = process.env.SMTP_PORT;
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
 const FROM_EMAIL = process.env.FROM_EMAIL || SMTP_USER;
@@ -96,13 +96,19 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
 
     if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASSWORD) {
         console.error("!!! SMTP CREDENTIALS MISSING IN .env FILE !!!");
-        throw new Error("Email server is not configured. Cannot send email.");
+        console.log({
+             SMTP_HOST: !!SMTP_HOST,
+             SMTP_PORT: !!SMTP_PORT,
+             SMTP_USER: !!SMTP_USER,
+             SMTP_PASSWORD: !!SMTP_PASSWORD,
+        });
+        throw new Error("Email server environment variables are not configured. Cannot send email.");
     }
     
     const transporter = nodemailer.createTransport({
         host: SMTP_HOST,
-        port: SMTP_PORT,
-        secure: SMTP_PORT === 465,
+        port: Number(SMTP_PORT),
+        secure: Number(SMTP_PORT) === 465,
         auth: {
             user: SMTP_USER,
             pass: SMTP_PASSWORD,
@@ -116,7 +122,7 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
         console.log({
             host: SMTP_HOST,
             port: SMTP_PORT,
-            secure: SMTP_PORT === 465,
+            secure: Number(SMTP_PORT) === 465,
             user: SMTP_USER,
             from: FROM_EMAIL,
         });
