@@ -96,49 +96,33 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
 
     if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASSWORD) {
         console.error("!!! SMTP CREDENTIALS MISSING IN .env FILE !!!");
-        console.log({
-             SMTP_HOST: !!SMTP_HOST,
-             SMTP_PORT: !!SMTP_PORT,
-             SMTP_USER: !!SMTP_USER,
-             SMTP_PASSWORD: !!SMTP_PASSWORD,
-        });
         throw new Error("Email server environment variables are not configured. Cannot send email.");
     }
     
     const transporter = nodemailer.createTransport({
         host: SMTP_HOST,
-        port: Number(SMTP_PORT),
-        secure: Number(SMTP_PORT) === 465,
+        port: 465,
+        secure: true, // Use true for port 465, false for other ports
         auth: {
             user: SMTP_USER,
             pass: SMTP_PASSWORD,
         },
-        logger: true, // Enable verbose logging
-        debug: true, // Enable debug output
     });
 
     try {
-        console.log("Attempting to send email with the following SMTP config:");
-        console.log({
-            host: SMTP_HOST,
-            port: SMTP_PORT,
-            secure: Number(SMTP_PORT) === 465,
-            user: SMTP_USER,
-            from: FROM_EMAIL,
-        });
-
+        console.log("Attempting to send email via Nodemailer...");
         const info = await transporter.sendMail({
             from: `FrancoBuddy <${FROM_EMAIL}>`,
-            to: email,
+            to: email, // The recipient's email address
             subject: 'Your FrancoBuddy Demo Class is Confirmed!',
             html: emailHtml,
         });
         console.log('Message sent successfully! Message ID: %s', info.messageId);
-        console.log('Full response from mail server:', info.response);
     } catch (error) {
         console.error("--- NODEMAILER DETAILED ERROR ---");
         console.error(error);
         console.error("--- END OF NODEMAILER ERROR ---");
+        // Re-throwing the error so the calling action knows it failed
         throw new Error("Failed to send email. Check server logs for detailed error.");
     }
 }
