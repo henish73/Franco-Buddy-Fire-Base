@@ -8,8 +8,6 @@ type DemoBookingDetails = {
     selectedTime: string;
 }
 
-const SMTP_HOST = process.env.SMTP_HOST;
-const SMTP_PORT = process.env.SMTP_PORT;
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
 const FROM_EMAIL = process.env.FROM_EMAIL || SMTP_USER;
@@ -94,15 +92,14 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
         </div>
     `;
 
-    if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASSWORD) {
-        console.error("!!! SMTP CREDENTIALS MISSING IN .env FILE !!!");
+    if (!SMTP_USER || !SMTP_PASSWORD) {
+        console.error("!!! SMTP CREDENTIALS (USER, PASSWORD) MISSING IN .env FILE !!!");
         throw new Error("Email server environment variables are not configured. Cannot send email.");
     }
     
+    // Using Nodemailer's 'gmail' service preset for simplicity and reliability
     const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: 465,
-        secure: true, // Use true for port 465, false for other ports
+        service: 'gmail',
         auth: {
             user: SMTP_USER,
             pass: SMTP_PASSWORD,
@@ -110,7 +107,7 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
     });
 
     try {
-        console.log("Attempting to send email via Nodemailer...");
+        console.log("Attempting to send email via Nodemailer using 'gmail' service...");
         const info = await transporter.sendMail({
             from: `FrancoBuddy <${FROM_EMAIL}>`,
             to: email, // The recipient's email address
@@ -119,7 +116,8 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
         });
         console.log('Message sent successfully! Message ID: %s', info.messageId);
     } catch (error) {
-        console.error("--- NODEMAILER DETAILED ERROR ---");
+        console.error("--- NODEMAILER GMAIL SERVICE ERROR ---");
+        console.error("User:", SMTP_USER);
         console.error(error);
         console.error("--- END OF NODEMAILER ERROR ---");
         // Re-throwing the error so the calling action knows it failed
