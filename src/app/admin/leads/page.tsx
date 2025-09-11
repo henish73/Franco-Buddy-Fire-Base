@@ -135,6 +135,7 @@ export default function AdminLeadsPage() {
                   <TableHead>Name</TableHead>
                   <TableHead className="hidden md:table-cell">Email</TableHead>
                   <TableHead className="hidden lg:table-cell">Inquiry Type</TableHead>
+                   <TableHead className="hidden lg:table-cell">Message</TableHead>
                   <TableHead className="hidden md:table-cell">Submitted</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead><span className="sr-only">Actions</span></TableHead>
@@ -146,6 +147,7 @@ export default function AdminLeadsPage() {
                     <TableCell className="font-medium">{lead.name}</TableCell>
                     <TableCell className="hidden md:table-cell">{lead.email}</TableCell>
                     <TableCell className="hidden lg:table-cell">{lead.inquiryType}</TableCell>
+                    <TableCell className="hidden lg:table-cell max-w-xs truncate">{lead.message}</TableCell>
                     <TableCell className="hidden md:table-cell">{formatDate(lead.submittedAt)}</TableCell>
                     <TableCell><Badge variant={getStatusVariant(lead.status)}>{lead.status}</Badge></TableCell>
                     <TableCell>

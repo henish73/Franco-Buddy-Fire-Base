@@ -57,7 +57,7 @@ export async function addDemoRequestAction(data: Omit<DemoRequestLead, 'id' | 's
     simulatedDemoLeadsDb.push(newLead);
     console.log("[Server Action] New demo lead added:", newLead);
     revalidatePath('/admin/leads');
-    return { message: "Thank you! Your demo request has been submitted.", isSuccess: true };
+    return { message: "Thank you! Your demo request has been submitted.", isSuccess: true, data: newLead };
   } catch (e) {
     return { message: "Failed to submit demo request.", isSuccess: false };
   }
@@ -105,7 +105,7 @@ export async function getLeadsAction(): Promise<LeadsFormState> {
 export async function getLeadStatsAction(): Promise<{ demoRequests: number, contactSubmissions: number }> {
     try {
         return {
-            demoRequests: simulatedDemoLeadsDb.filter(l => l.status === 'New').length,
+            demoRequests: simulatedDemoLeadsDb.filter(l => l.status === 'New' || l.status === 'Demo Scheduled').length,
             contactSubmissions: simulatedContactLeadsDb.filter(l => l.status === 'New').length,
         };
     } catch (error) {

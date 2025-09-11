@@ -45,7 +45,7 @@ export default async function AdminDashboardPage() {
         <h2 className="text-xl font-semibold text-foreground mb-4">Overview</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatCard title="New Demo Requests" value={leadStats.demoRequests} icon={Inbox} description="Awaiting action" />
-          <StatCard title="Contact Submissions" value={leadStats.contactSubmissions} icon={Inbox} description="Needs review" />
+          <StatCard title="New Contact Submissions" value={leadStats.contactSubmissions} icon={Inbox} description="Needs review" />
           <StatCard title="Total Students" value={studentCount} icon={Users} description="Enrolled" />
           <StatCard title="Active Courses" value={courseCount} icon={BookOpen} description="Currently offered" />
         </div>
