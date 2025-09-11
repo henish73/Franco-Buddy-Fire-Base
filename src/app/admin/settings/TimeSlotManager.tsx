@@ -87,7 +87,7 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
                       borderRadius: '100%'
                     }
                 }}
-            />
+              />
         </div>
         <div>
           <h3 className="font-medium mb-2">2. View & Manage Slots for {selectedDate ? format(selectedDate, 'PPP') : '...'}</h3>
