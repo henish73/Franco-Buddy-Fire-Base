@@ -31,15 +31,7 @@ export async function submitDemoBookingForm(
 ): Promise<DemoBookingFormState> {
   
   const rawFormData = Object.fromEntries(formData.entries());
-  // The 'goals' and 'frenchLevel' fields are no longer on the simplified form
-  const dataToValidate = {
-      name: rawFormData.name,
-      email: rawFormData.email,
-      phone: rawFormData.phone,
-      selectedDate: rawFormData.selectedDate,
-      selectedTime: rawFormData.selectedTime,
-  };
-  const validatedFields = demoBookingSchema.safeParse(dataToValidate);
+  const validatedFields = demoBookingSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
     return {
@@ -50,13 +42,8 @@ export async function submitDemoBookingForm(
   }
 
   try {
-    // Add the lead with a status of 'Demo Scheduled'
-    const result = await addDemoRequestAction({
-        ...validatedFields.data,
-        goals: 'N/A', // No longer collected on this form
-        frenchLevel: 'N/A', // No longer collected on this form
-        status: 'Demo Scheduled' // Set status directly
-    });
+    // This now passes only the validated data. Defaults are handled in the receiving action.
+    const result = await addDemoRequestAction(validatedFields.data);
 
     if (result.isSuccess) {
        // Send confirmation email

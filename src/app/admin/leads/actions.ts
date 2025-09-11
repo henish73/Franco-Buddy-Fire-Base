@@ -45,25 +45,42 @@ export type LeadsFormState = {
   } | DemoRequestLead | ContactLead | null;
 };
 
+// Zod schema for adding a demo lead, only validates required fields from the form
+const addDemoLeadSchema = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  phone: z.string(),
+  selectedDate: z.string(),
+  selectedTime: z.string(),
+});
+
 // Action to add a demo request lead (from public form)
-export async function addDemoRequestAction(data: Omit<DemoRequestLead, 'id' | 'submittedAt'>): Promise<LeadsFormState> {
+export async function addDemoRequestAction(data: z.infer<typeof addDemoLeadSchema>): Promise<LeadsFormState> {
+  const validatedFields = addDemoLeadSchema.safeParse(data);
+  if (!validatedFields.success) {
+    return { message: "Invalid lead data provided.", isSuccess: false };
+  }
+
   try {
     const newLead: DemoRequestLead = {
-      ...data,
+      ...validatedFields.data,
       id: `demo_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       submittedAt: new Date().toISOString(),
-      status: data.status || 'New', // Use provided status or default to 'New'
+      status: 'Demo Scheduled', // Set status directly
+      goals: 'N/A', // Set default for this simplified form
+      frenchLevel: 'N/A', // Set default for this simplified form
     };
     simulatedDemoLeadsDb.push(newLead);
     console.log("[Server Action] New demo lead added:", newLead);
     revalidatePath('/admin/leads');
-    return { message: "Thank you! Your demo request has been submitted.", isSuccess: true, data: newLead };
+    return { message: "Demo request has been submitted.", isSuccess: true, data: newLead };
   } catch (e) {
     const error = e as Error;
     console.error("Error adding demo lead:", error.message);
     return { message: `Failed to submit demo request: ${error.message}`, isSuccess: false };
   }
 }
+
 
 // Action to add a contact submission lead (from public form)
 export async function addContactSubmissionAction(data: Omit<ContactLead, 'id' | 'submittedAt' | 'status'>): Promise<LeadsFormState> {
