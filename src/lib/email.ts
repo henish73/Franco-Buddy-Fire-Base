@@ -1,5 +1,9 @@
 // src/lib/email.ts
 import nodemailer from 'nodemailer';
+import { config } from 'dotenv';
+
+// Load environment variables from .env file
+config();
 
 type DemoBookingDetails = {
     name: string;
@@ -13,7 +17,7 @@ const SMTP_HOST = process.env.SMTP_HOST;
 const SMTP_PORT = Number(process.env.SMTP_PORT);
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
-const FROM_EMAIL = process.env.FROM_EMAIL;
+const FROM_EMAIL = process.env.FROM_EMAIL || SMTP_USER; // Use SMTP_USER as fallback for FROM_EMAIL
 
 // Create a transporter object. This will only be used if the required environment variables are set.
 const transporter = nodemailer.createTransport({
@@ -69,7 +73,7 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
 
     try {
         const info = await transporter.sendMail({
-            from: FROM_EMAIL,
+            from: `FrancoBuddy <${FROM_EMAIL}>`,
             to: email,
             subject: 'Your FrancoBuddy Demo Class is Confirmed!',
             html: emailHtml,
