@@ -12,6 +12,7 @@ export const coursesData: Course[] = [
     duration: "14 Weeks",
     imageUrl: "https://placehold.co/600x400.png",
     imageAiHint: "classroom study group",
+    status: "Active",
     price1on1: 399,
     price1on3: 249,
     detailedDescription: "Just starting out? Learn the basics of French grammar, vocabulary, and pronunciation. Ideal for those with little to no prior knowledge. This course prepares you to confidently handle everyday situations in French.",
@@ -58,6 +59,7 @@ export const coursesData: Course[] = [
     duration: "24 Weeks",
     imageUrl: "https://placehold.co/600x400.png",
     imageAiHint: "professional discussion group",
+    status: "Active",
     price1on1: 399,
     price1on3: 249,
     detailedDescription: "Ready to take your skills to the next level? Improve your fluency, expand your vocabulary, and master complex grammar concepts. This program dives deep into advanced strategies for each TEF Canada module, with extensive practice, mock tests, and personalized feedback to ensure you are fully prepared to achieve CLB 5-7.",
@@ -123,6 +125,7 @@ export const coursesData: Course[] = [
     duration: "20 Weeks",
     imageUrl: "https://placehold.co/600x400.png",
     imageAiHint: "expert award ceremony",
+    status: "Active",
     price1on1: 399,
     detailedDescription: "Perfect your French and achieve near-native fluency. Fine-tune your accent, master idiomatic expressions, and tackle advanced topics with confidence. This highly personalized 1-on-1 coaching focuses on perfecting nuances, advanced vocabulary, and flawless execution.",
      whatsIncluded: [
