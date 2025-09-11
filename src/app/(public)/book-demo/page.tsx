@@ -1,4 +1,5 @@
 
+
 import SectionTitle from '@/components/shared/SectionTitle';
 import DemoBookingForm from './DemoBookingForm';
 import { CalendarCheck, Sparkles, HelpCircle, Star, ShieldCheck, Users, UserCheck, BookOpen, Target, CheckCircle } from 'lucide-react';
@@ -9,9 +10,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 
 const testimonials = [
-  { quote: "The free demo was so insightful! The instructor pinpointed my exact weaknesses in just 30 minutes and gave me a clear plan. It was the best decision I made for my TEF prep.", author: "Priya Sharma", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
-  { quote: "I was hesitant at first, but the demo class showed me how different FRANCOBUDDY is. The focus on immigration goals from day one is incredible. I signed up immediately.", author: "Rahul Patel", location: "Vancouver, BC", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
-  { quote: "Booking the demo was the easiest and most valuable step. It gave me the confidence that I was choosing the right place to invest in my future in Canada.", author: "Kavya Reddy", location: "Calgary, AB", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 5 },
+  { quote: "The free demo was so insightful! The instructor pinpointed my exact weaknesses in just 30 minutes and gave me a clear plan. It was the best decision I made for my TEF prep.", author: "Priya Sharma", location: "Canada", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
+  { quote: "I was hesitant at first, but the demo class showed me how different FRANCOBUDDY is. The focus on immigration goals from day one is incredible. I signed up immediately.", author: "Rahul Patel", location: "Canada", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "Booking the demo was the easiest and most valuable step. It gave me the confidence that I was choosing the right place to invest in my future in Canada.", author: "Kavya Reddy", location: "Canada", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 5 },
 ];
 
 
@@ -130,11 +131,17 @@ export default function BookDemoPage() {
 
        <section className="py-20">
         <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold text-primary mb-6">Ready to take the next step?</h2>
-            <div className="flex justify-center">
-                <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse rounded-full">
-                    <Link href="/enrollment-form">Enroll in a Course Now</Link>
-                </Button>
+            <div className="grid md:grid-cols-2 gap-8 items-center max-w-4xl mx-auto">
+                <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
+                    <Image src="https://picsum.photos/seed/enroll/800/450" alt="Student enrolling in a course" fill className="object-cover" data-ai-hint="enroll now student laptop"/>
+                </div>
+                <div className="text-left">
+                    <h2 className="text-3xl font-bold text-primary mb-6">Ready to take the next step?</h2>
+                    <p className="text-muted-foreground mb-6">Once you've had your demo, you'll be ready to join our community of successful learners. Enroll in a course and start your journey to fluency.</p>
+                    <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 animate-pulse rounded-full">
+                        <Link href="/enrollment-form">Enroll in a Course Now</Link>
+                    </Button>
+                </div>
             </div>
         </div>
       </section>
