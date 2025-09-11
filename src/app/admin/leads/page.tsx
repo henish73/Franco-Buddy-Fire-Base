@@ -15,9 +15,9 @@ const formatDate = (dateString: string) => new Date(dateString).toLocaleDateStri
 
 const getStatusVariant = (status: string): "default" | "secondary" | "destructive" | "outline" => {
   switch (status.toLowerCase()) {
-    case 'new': return 'default';
-    case 'contacted': return 'secondary';
-    case 'demo scheduled': return 'outline';
+    case 'new': return 'secondary';
+    case 'contacted': return 'outline';
+    case 'demo scheduled': return 'default';
     case 'converted': return 'default';
     case 'closed': return 'destructive';
     case 'responded': return 'secondary';
@@ -79,9 +79,8 @@ export default function AdminLeadsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead className="hidden md:table-cell">Email</TableHead>
-                  <TableHead className="hidden lg:table-cell">TEF Goal</TableHead>
+                  <TableHead>Student Info</TableHead>
+                  <TableHead className="hidden md:table-cell">Demo Time</TableHead>
                   <TableHead className="hidden md:table-cell">Submitted</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead><span className="sr-only">Actions</span></TableHead>
@@ -90,9 +89,12 @@ export default function AdminLeadsPage() {
               <TableBody>
                 {demoRequests.map((lead) => (
                   <TableRow key={lead.id}>
-                    <TableCell className="font-medium">{lead.name}</TableCell>
-                    <TableCell className="hidden md:table-cell">{lead.email}</TableCell>
-                    <TableCell className="hidden lg:table-cell">{lead.goals}</TableCell>
+                    <TableCell className="font-medium">
+                        <div>{lead.name}</div>
+                        <div className="text-xs text-muted-foreground">{lead.email}</div>
+                        <div className="text-xs text-muted-foreground">{lead.phone}</div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">{lead.selectedDate} at {lead.selectedTime}</TableCell>
                     <TableCell className="hidden md:table-cell">{formatDate(lead.submittedAt)}</TableCell>
                     <TableCell><Badge variant={getStatusVariant(lead.status)}>{lead.status}</Badge></TableCell>
                     <TableCell>

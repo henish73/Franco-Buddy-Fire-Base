@@ -46,13 +46,13 @@ export type LeadsFormState = {
 };
 
 // Action to add a demo request lead (from public form)
-export async function addDemoRequestAction(data: Omit<DemoRequestLead, 'id' | 'submittedAt' | 'status'>): Promise<LeadsFormState> {
+export async function addDemoRequestAction(data: Omit<DemoRequestLead, 'id' | 'submittedAt'>): Promise<LeadsFormState> {
   try {
     const newLead: DemoRequestLead = {
       ...data,
       id: `demo_${Date.now()}`,
       submittedAt: new Date().toISOString(),
-      status: 'New',
+      status: data.status || 'New', // Use provided status or default to 'New'
     };
     simulatedDemoLeadsDb.push(newLead);
     console.log("[Server Action] New demo lead added:", newLead);

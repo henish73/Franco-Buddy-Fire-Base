@@ -1,4 +1,4 @@
-
+// src/app/(public)/book-demo/page.tsx
 
 import SectionTitle from '@/components/shared/SectionTitle';
 import DemoBookingForm from './DemoBookingForm';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import Image from 'next/image';
+import { getTimeSlotsAction } from '@/app/admin/settings/actions'; // Import the new action
 
 const testimonials = [
   { quote: "The free demo was so insightful! The instructor pinpointed my exact weaknesses in just 30 minutes and gave me a clear plan. It was the best decision I made for my TEF prep.", author: "Priya Sharma", location: "Canada", image: "https://picsum.photos/seed/t1/100/100", dataAiHint: "professional woman portrait", rating: 5 },
@@ -31,11 +32,13 @@ const faqItems = [
     },
     {
         q: "What happens after I submit the form?",
-        a: "Our team will contact you via WhatsApp or email within a few hours to schedule your free demo class at a time that is convenient for you."
+        a: "Our team will contact you via WhatsApp or email within a few hours to confirm your free demo class at the scheduled time."
     }
 ]
 
-export default function BookDemoPage() {
+export default async function BookDemoPage() {
+  const timeSlots = await getTimeSlotsAction();
+
   return (
     <>
       {/* Hero Section */}
@@ -70,7 +73,7 @@ export default function BookDemoPage() {
                 title="Secure Your Free Spot Now" 
                 subtitle="Select a date and time that works for you, and we'll confirm your personalized 30-minute demo class." 
             />
-           <DemoBookingForm />
+           <DemoBookingForm timeSlots={timeSlots} />
         </div>
       </section>
       

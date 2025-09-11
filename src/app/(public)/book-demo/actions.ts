@@ -8,8 +8,6 @@ const demoBookingSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   phone: z.string().min(10, { message: "Please enter a valid phone number."}),
-  frenchLevel: z.string().min(2, "Please describe your French level."),
-  goals: z.string().min(10, { message: "Goals must be at least 10 characters." }),
   selectedDate: z.string().min(1, { message: "Please select a date for the demo." }),
   selectedTime: z.string().min(1, { message: "Please select a time for the demo." }),
 });
@@ -20,8 +18,6 @@ export type DemoBookingFormState = {
     name?: string[];
     email?: string[];
     phone?: string[];
-    frenchLevel?: string[];
-    goals?: string[];
     selectedDate?: string[];
     selectedTime?: string[];
   };
@@ -34,7 +30,15 @@ export async function submitDemoBookingForm(
 ): Promise<DemoBookingFormState> {
   
   const rawFormData = Object.fromEntries(formData.entries());
-  const validatedFields = demoBookingSchema.safeParse(rawFormData);
+  // The 'goals' and 'frenchLevel' fields are no longer on the simplified form
+  const dataToValidate = {
+      name: rawFormData.name,
+      email: rawFormData.email,
+      phone: rawFormData.phone,
+      selectedDate: rawFormData.selectedDate,
+      selectedTime: rawFormData.selectedTime,
+  };
+  const validatedFields = demoBookingSchema.safeParse(dataToValidate);
 
   if (!validatedFields.success) {
     return {
@@ -45,11 +49,17 @@ export async function submitDemoBookingForm(
   }
 
   try {
-    const result = await addDemoRequestAction(validatedFields.data);
+    // Add the lead with a status of 'Demo Scheduled'
+    const result = await addDemoRequestAction({
+        ...validatedFields.data,
+        goals: 'N/A', // No longer collected on this form
+        frenchLevel: 'N/A', // No longer collected on this form
+        status: 'Demo Scheduled' // Set status directly
+    });
 
     if (result.isSuccess) {
        return {
-        message: "Thank you! Your demo request has been submitted. We'll send you a confirmation email with the meeting link shortly.",
+        message: "Thank you! Your demo has been scheduled. We'll send you a confirmation email with the meeting link shortly.",
         isSuccess: true,
         errors: {},
       };

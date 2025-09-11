@@ -2,6 +2,7 @@
 "use server";
 
 import { z } from 'zod';
+import { revalidatePath } from 'next/cache';
 
 const siteSettingsSchema = z.object({
   adminContactEmail: z.string().email({ message: "Invalid admin email address." }),
@@ -19,8 +20,34 @@ export type SiteSettingsFormState = {
   isSuccess: boolean;
 };
 
-// This would typically be a Firestore document ID or a known constant
-const SITE_SETTINGS_DOC_ID = 'generalSiteInfo'; 
+const timeSlotSchema = z.object({
+  id: z.string().optional(),
+  timeSlot: z.string().regex(/^\d{2}:\d{2} [AP]M - \d{2}:\d{2} [AP]M$/, "Time slot must be in 'HH:MM AM/PM - HH:MM AM/PM' format."),
+});
+
+export type TimeSlotFormState = {
+  message: string;
+  errors?: {
+    timeSlot?: string[];
+  };
+  isSuccess: boolean;
+};
+
+
+// In a real app, this would be a Firestore document
+let simulatedSiteSettingsDb = {
+  adminContactEmail: "admin@frenchgta.ca",
+  studentsHelpedCount: 250,
+  successRateCLB7: 96,
+};
+
+let simulatedTimeSlotsDb: { id: string; timeSlot: string }[] = [
+  { id: 'ts1', timeSlot: '10:00 AM - 11:00 AM' },
+  { id: 'ts2', timeSlot: '11:00 AM - 12:00 PM' },
+  { id: 'ts3', timeSlot: '02:00 PM - 03:00 PM' },
+  { id: 'ts4', timeSlot: '04:00 PM - 05:00 PM' },
+];
+
 
 export async function updateSiteSettings(
   prevState: SiteSettingsFormState,
@@ -44,19 +71,11 @@ export async function updateSiteSettings(
   }
 
   try {
-    // In a real application, you would:
-    // 1. Initialize Firestore admin SDK (if not already done globally for server actions)
-    // const db = admin.firestore(); // Assuming Firebase Admin SDK for server-side operations
-    // 2. Update the document in Firestore
-    // await db.collection('site_configuration').doc(SITE_SETTINGS_DOC_ID).set(validatedFields.data, { merge: true });
-    
-    console.log("Site settings would be saved to Firestore:", validatedFields.data);
-    // For now, we'll simulate a successful save without actual DB interaction.
-    // To make this truly live for other parts of the app, the reading parts (e.g., homepage)
-    // would also need to fetch from Firestore.
-
+    simulatedSiteSettingsDb = validatedFields.data;
+    console.log("Site settings saved (simulated):", simulatedSiteSettingsDb);
+    revalidatePath('/admin/settings');
     return {
-      message: "Site settings updated successfully! (Data would be saved to Firestore)",
+      message: "Site settings updated successfully!",
       isSuccess: true,
     };
   } catch (error) {
@@ -68,41 +87,66 @@ export async function updateSiteSettings(
   }
 }
 
-// New function to fetch settings (simulated)
-export async function getSiteSettings(): Promise<{ adminContactEmail: string; studentsHelpedCount: string; successRateCLB7: string; } | null> {
+export async function getSiteSettings(): Promise<typeof simulatedSiteSettingsDb> {
   try {
-    // In a real application, fetch from Firestore:
-    // const db = admin.firestore();
-    // const docRef = db.collection('site_configuration').doc(SITE_SETTINGS_DOC_ID);
-    // const docSnap = await docRef.get();
-    // if (docSnap.exists) {
-    //   const data = docSnap.data();
-    //   return {
-    //      adminContactEmail: data.adminContactEmail,
-    //      studentsHelpedCount: data.studentsHelpedCount.toString(), // Convert number to string for display consistency
-    //      successRateCLB7: data.successRateCLB7.toString() + "%", // Add %
-    //   };
-    // } else {
-    //   console.log("No site settings document found!");
-    //   return null;
-    // }
-
-    // Simulate fetch for now, returning default values if not "saved"
-    // This is a placeholder. In a real scenario, if the admin saves "200" and "95%",
-    // this function (when connected to Firestore) would return those values.
-    console.log(`Simulating fetch of site settings from Firestore. If admin saved new values, they would be reflected here.`);
-    // For this example, to show it *can* be dynamic, let's return some values.
-    // To see changes, you'd need to implement actual Firestore write in updateSiteSettings
-    // and read here. This simulation won't pick up "saved" values from the admin panel yet
-    // without actual database integration.
-    return {
-      adminContactEmail: "admin-from-db@frenchgta.ca", // Example
-      studentsHelpedCount: "175+", // Example
-      successRateCLB7: "93%", // Example
-    };
-
+    return { ...simulatedSiteSettingsDb };
   } catch (error) {
     console.error("Error fetching site settings:", error);
-    return null;
+    return {
+      adminContactEmail: "error@example.com",
+      studentsHelpedCount: 0,
+      successRateCLB7: 0,
+    };
   }
+}
+
+
+// --- Time Slot Actions ---
+export async function getTimeSlotsAction(): Promise<{ id: string, timeSlot: string }[]> {
+  try {
+    return JSON.parse(JSON.stringify(simulatedTimeSlotsDb));
+  } catch (error) {
+    console.error("Error fetching time slots:", error);
+    return [];
+  }
+}
+
+export async function addTimeSlotAction(prevState: TimeSlotFormState, formData: FormData): Promise<TimeSlotFormState> {
+  const validatedFields = timeSlotSchema.safeParse({ timeSlot: formData.get('timeSlot') });
+
+  if (!validatedFields.success) {
+    return { message: "Validation failed", errors: validatedFields.error.flatten().fieldErrors, isSuccess: false };
+  }
+
+  if (simulatedTimeSlotsDb.some(ts => ts.timeSlot === validatedFields.data.timeSlot)) {
+    return { message: "This time slot already exists.", isSuccess: false };
+  }
+  
+  try {
+    const newTimeSlot = {
+      id: `ts_${Date.now()}`,
+      timeSlot: validatedFields.data.timeSlot,
+    };
+    simulatedTimeSlotsDb.push(newTimeSlot);
+    revalidatePath('/admin/settings');
+    revalidatePath('/book-demo');
+    return { message: "Time slot added successfully!", isSuccess: true };
+  } catch (e) {
+    return { message: "Failed to add time slot.", isSuccess: false };
+  }
+}
+
+export async function deleteTimeSlotAction(id: string): Promise<TimeSlotFormState> {
+    try {
+        const initialLength = simulatedTimeSlotsDb.length;
+        simulatedTimeSlotsDb = simulatedTimeSlotsDb.filter(ts => ts.id !== id);
+        if (initialLength === simulatedTimeSlotsDb.length) {
+            return { message: "Time slot not found.", isSuccess: false };
+        }
+        revalidatePath('/admin/settings');
+        revalidatePath('/book-demo');
+        return { message: "Time slot deleted successfully!", isSuccess: true };
+    } catch (e) {
+        return { message: "Failed to delete time slot.", isSuccess: false };
+    }
 }

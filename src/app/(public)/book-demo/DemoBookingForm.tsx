@@ -21,8 +21,6 @@ const initialState: DemoBookingFormState = {
   isSuccess: false,
 };
 
-const timeSlots = ["10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "2:00 PM - 3:00 PM", "4:00 PM - 5:00 PM"];
-
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -32,7 +30,11 @@ function SubmitButton() {
   );
 }
 
-export default function DemoBookingForm() {
+type DemoBookingFormProps = {
+    timeSlots: { id: string, timeSlot: string }[];
+}
+
+export default function DemoBookingForm({ timeSlots = [] }: DemoBookingFormProps) {
   const [state, formAction] = useActionState(submitDemoBookingForm, initialState);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>('');
@@ -92,19 +94,24 @@ export default function DemoBookingForm() {
                     </div>
                      <div className="space-y-2">
                         <Label className="flex items-center gap-2 mb-2 text-lg"><Clock /> Select a Time (EST)</Label>
-                        <RadioGroup 
-                            name="time-selection-visual"
-                            value={selectedTime}
-                            onValueChange={setSelectedTime}
-                            className="space-y-2"
-                        >
-                        {timeSlots.map(slot => (
-                            <div key={slot} className="flex items-center p-3 rounded-md hover:bg-muted transition-colors border">
-                            <RadioGroupItem value={slot} id={slot} />
-                            <Label htmlFor={slot} className="pl-3 font-normal cursor-pointer flex-grow">{slot}</Label>
-                            </div>
-                        ))}
-                        </RadioGroup>
+                        {timeSlots.length > 0 ? (
+                             <RadioGroup 
+                                name="time-selection-visual"
+                                value={selectedTime}
+                                onValueChange={setSelectedTime}
+                                className="space-y-2"
+                            >
+                            {timeSlots.map(slot => (
+                                <div key={slot.id} className="flex items-center p-3 rounded-md hover:bg-muted transition-colors border">
+                                <RadioGroupItem value={slot.timeSlot} id={slot.id} />
+                                <Label htmlFor={slot.id} className="pl-3 font-normal cursor-pointer flex-grow">{slot.timeSlot}</Label>
+                                </div>
+                            ))}
+                            </RadioGroup>
+                        ) : (
+                            <p className="text-sm text-muted-foreground">No time slots currently available. Please check back later.</p>
+                        )}
+                       
                         {state.errors?.selectedTime && <p className="text-sm text-destructive mt-1">{state.errors.selectedTime.join(', ')}</p>}
                     </div>
                 </div>
