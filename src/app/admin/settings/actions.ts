@@ -22,13 +22,15 @@ export type SiteSettingsFormState = {
 
 const timeSlotSchema = z.object({
   id: z.string().optional(),
-  timeSlot: z.string().regex(/^\d{2}:\d{2} [AP]M - \d{2}:\d{2} [AP]M$/, "Time slot must be in 'HH:MM AM/PM - HH:MM AM/PM' format."),
+  date: z.string().refine((val) => !isNaN(Date.parse(val)), { message: "Invalid date" }),
+  timeSlotText: z.string().regex(/^\d{2}:\d{2} [AP]M - \d{2}:\d{2} [AP]M$/, "Time must be in 'HH:MM AM/PM - HH:MM AM/PM' format."),
 });
 
 export type TimeSlotFormState = {
   message: string;
   errors?: {
-    timeSlot?: string[];
+    date?: string[];
+    timeSlotText?: string[];
   };
   isSuccess: boolean;
 };
@@ -41,11 +43,9 @@ let simulatedSiteSettingsDb = {
   successRateCLB7: 96,
 };
 
-let simulatedTimeSlotsDb: { id: string; timeSlot: string }[] = [
-  { id: 'ts1', timeSlot: '10:00 AM - 11:00 AM' },
-  { id: 'ts2', timeSlot: '11:00 AM - 12:00 PM' },
-  { id: 'ts3', timeSlot: '02:00 PM - 03:00 PM' },
-  { id: 'ts4', timeSlot: '04:00 PM - 05:00 PM' },
+let simulatedTimeSlotsDb: { id: string; dateTime: string; timeSlotText: string }[] = [
+  { id: 'ts1', dateTime: new Date().toISOString(), timeSlotText: '10:00 AM - 11:00 AM' },
+  { id: 'ts2', dateTime: new Date().toISOString(), timeSlotText: '11:00 AM - 12:00 PM' },
 ];
 
 
@@ -102,7 +102,7 @@ export async function getSiteSettings(): Promise<typeof simulatedSiteSettingsDb>
 
 
 // --- Time Slot Actions ---
-export async function getTimeSlotsAction(): Promise<{ id: string, timeSlot: string }[]> {
+export async function getTimeSlotsAction(): Promise<{ id: string, dateTime: string, timeSlotText: string }[]> {
   try {
     return JSON.parse(JSON.stringify(simulatedTimeSlotsDb));
   } catch (error) {
@@ -112,20 +112,27 @@ export async function getTimeSlotsAction(): Promise<{ id: string, timeSlot: stri
 }
 
 export async function addTimeSlotAction(prevState: TimeSlotFormState, formData: FormData): Promise<TimeSlotFormState> {
-  const validatedFields = timeSlotSchema.safeParse({ timeSlot: formData.get('timeSlot') });
+  const validatedFields = timeSlotSchema.safeParse({
+    date: formData.get('date'),
+    timeSlotText: formData.get('timeSlotText'),
+  });
 
   if (!validatedFields.success) {
     return { message: "Validation failed", errors: validatedFields.error.flatten().fieldErrors, isSuccess: false };
   }
 
-  if (simulatedTimeSlotsDb.some(ts => ts.timeSlot === validatedFields.data.timeSlot)) {
-    return { message: "This time slot already exists.", isSuccess: false };
+  const { date, timeSlotText } = validatedFields.data;
+  
+  // Check for duplicates on the same date and time
+  if (simulatedTimeSlotsDb.some(ts => ts.dateTime.startsWith(date.split('T')[0]) && ts.timeSlotText === timeSlotText)) {
+    return { message: "This exact date and time slot already exists.", isSuccess: false };
   }
   
   try {
     const newTimeSlot = {
       id: `ts_${Date.now()}`,
-      timeSlot: validatedFields.data.timeSlot,
+      dateTime: new Date(date).toISOString(),
+      timeSlotText: timeSlotText,
     };
     simulatedTimeSlotsDb.push(newTimeSlot);
     revalidatePath('/admin/settings');

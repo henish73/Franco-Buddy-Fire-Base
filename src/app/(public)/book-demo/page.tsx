@@ -38,6 +38,7 @@ const faqItems = [
 
 export default async function BookDemoPage() {
   const timeSlots = await getTimeSlotsAction();
+  const availableDates = timeSlots.map(slot => new Date(slot.dateTime));
 
   return (
     <>
@@ -73,7 +74,7 @@ export default async function BookDemoPage() {
                 title="Secure Your Free Spot Now" 
                 subtitle="Select a date and time that works for you, and we'll confirm your personalized 30-minute demo class." 
             />
-           <DemoBookingForm timeSlots={timeSlots} />
+           <DemoBookingForm timeSlots={timeSlots} availableDates={availableDates} />
         </div>
       </section>
       

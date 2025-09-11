@@ -1,19 +1,21 @@
 // src/app/admin/settings/TimeSlotManager.tsx
 "use client";
 
-import { useActionState, useTransition } from 'react';
+import { useActionState, useTransition, useState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, CheckCircle, PlusCircle, Trash2 } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, CheckCircle, PlusCircle, Trash2, CalendarIcon } from 'lucide-react';
 import { addTimeSlotAction, deleteTimeSlotAction, type TimeSlotFormState } from './actions';
 import { useToast } from '@/hooks/use-toast';
+import { Calendar } from '@/components/ui/calendar';
+import { format, isSameDay } from 'date-fns';
 
 type TimeSlotManagerProps = {
-  initialTimeSlots: { id: string; timeSlot: string }[];
+  initialTimeSlots: { id: string; dateTime: string; timeSlotText: string }[];
 };
 
 const initialFormState: TimeSlotFormState = {
@@ -34,32 +36,61 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
   const { toast } = useToast();
   const [addState, addFormAction] = useActionState(addTimeSlotAction, initialFormState);
   const [isDeleting, startDeleteTransition] = useTransition();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  
+  const [timeSlots, setTimeSlots] = useState(initialTimeSlots.map(slot => ({ ...slot, dateTime: new Date(slot.dateTime) })));
+
+  useEffect(() => {
+    setTimeSlots(initialTimeSlots.map(slot => ({ ...slot, dateTime: new Date(slot.dateTime) })));
+  }, [initialTimeSlots]);
 
   const handleDelete = async (id: string) => {
     startDeleteTransition(async () => {
       const result = await deleteTimeSlotAction(id);
       if (result.isSuccess) {
         toast({ title: 'Success', description: result.message });
+        // Manually filter out the deleted slot to update UI instantly
+        setTimeSlots(prev => prev.filter(slot => slot.id !== id));
       } else {
         toast({ title: 'Error', description: result.message, variant: 'destructive' });
       }
     });
   };
+  
+  const selectedDateSlots = timeSlots.filter(slot => selectedDate && isSameDay(slot.dateTime, selectedDate));
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Demo Time Slots</CardTitle>
-        <CardDescription>Manage the available time slots for the demo booking form.</CardDescription>
+        <CardTitle>Demo Availability</CardTitle>
+        <CardDescription>Manage available dates and times for the demo booking form.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <h3 className="font-medium mb-2">Current Time Slots</h3>
-          {initialTimeSlots.length > 0 ? (
+            <h3 className="font-medium mb-2">1. Select a Date</h3>
+            <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                className="rounded-md border"
+                modifiers={{
+                    available: timeSlots.map(slot => slot.dateTime),
+                }}
+                 modifiersStyles={{
+                    available: {
+                      border: "2px solid hsl(var(--primary))",
+                      borderRadius: '100%'
+                    }
+                }}
+            />
+        </div>
+        <div>
+          <h3 className="font-medium mb-2">2. View & Manage Slots for {selectedDate ? format(selectedDate, 'PPP') : '...'}</h3>
+          {selectedDateSlots.length > 0 ? (
             <div className="space-y-2">
-              {initialTimeSlots.map((slot) => (
+              {selectedDateSlots.map((slot) => (
                 <div key={slot.id} className="flex items-center justify-between p-2 border rounded-md">
-                  <span>{slot.timeSlot}</span>
+                  <span>{slot.timeSlotText}</span>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -72,24 +103,25 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
               ))}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">No time slots configured.</p>
+            <p className="text-sm text-muted-foreground">No time slots configured for this date.</p>
           )}
         </div>
       </CardContent>
       <CardFooter className="border-t pt-6">
         <form action={addFormAction} className="w-full space-y-4">
+            <input type="hidden" name="date" value={selectedDate?.toISOString()} />
             <div>
-                <Label htmlFor="timeSlot">Add New Time Slot</Label>
+                <Label htmlFor="timeSlotText">3. Add New Time Slot for {selectedDate ? format(selectedDate, 'PPP') : '...'}</Label>
                 <div className="flex gap-2 mt-1">
                     <Input
-                    id="timeSlot"
-                    name="timeSlot"
+                    id="timeSlotText"
+                    name="timeSlotText"
                     placeholder="e.g., 01:00 PM - 02:00 PM"
                     required
                     />
                     <SubmitButton />
                 </div>
-                {addState.errors?.timeSlot && <p className="text-sm text-destructive mt-1">{addState.errors.timeSlot.join(', ')}</p>}
+                {addState.errors?.timeSlotText && <p className="text-sm text-destructive mt-1">{addState.errors.timeSlotText.join(', ')}</p>}
             </div>
           {addState.message && (
             <Alert variant={addState.isSuccess ? 'default' : 'destructive'}>

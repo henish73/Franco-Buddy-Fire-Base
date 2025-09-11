@@ -7,14 +7,13 @@ import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle, AlertCircle, CalendarCheck, Clock, User, Mail, Phone, Target } from "lucide-react";
+import { CheckCircle, AlertCircle, CalendarCheck, Clock, User, Mail, Phone } from "lucide-react";
 import { submitDemoBookingForm, type DemoBookingFormState } from "./actions";
 import { Calendar } from "@/components/ui/calendar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import SectionTitle from "@/components/shared/SectionTitle";
+import { isSameDay } from 'date-fns';
 
 const initialState: DemoBookingFormState = {
   message: "",
@@ -31,18 +30,23 @@ function SubmitButton() {
 }
 
 type DemoBookingFormProps = {
-    timeSlots: { id: string, timeSlot: string }[];
+    timeSlots: { id: string, dateTime: string, timeSlotText: string }[];
+    availableDates: Date[];
 }
 
-export default function DemoBookingForm({ timeSlots = [] }: DemoBookingFormProps) {
+export default function DemoBookingForm({ timeSlots = [], availableDates = [] }: DemoBookingFormProps) {
   const [state, formAction] = useActionState(submitDemoBookingForm, initialState);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>('');
 
   useEffect(() => {
     // Set initial date on client to avoid hydration mismatch
-    setDate(new Date());
-  }, []);
+    if (availableDates.length > 0) {
+      setDate(availableDates[0]);
+    } else {
+        setDate(new Date());
+    }
+  }, [availableDates]);
 
 
   if (state.isSuccess) {
@@ -56,6 +60,11 @@ export default function DemoBookingForm({ timeSlots = [] }: DemoBookingFormProps
         </Card>
     )
   }
+
+  const timeSlotsForSelectedDate = date
+    ? timeSlots.filter(slot => isSameDay(new Date(slot.dateTime), date))
+    : [];
+
 
   return (
     <Card className="w-full max-w-4xl shadow-xl">
@@ -72,7 +81,7 @@ export default function DemoBookingForm({ timeSlots = [] }: DemoBookingFormProps
                         selected={date}
                         onSelect={setDate}
                         className="rounded-md border bg-card"
-                        disabled={(day) => day < new Date(new Date().setDate(new Date().getDate() - 1))}
+                        disabled={(day) => !availableDates.some(d => isSameDay(d, day))}
                     />
                     {state.errors?.selectedDate && <p className="text-sm text-destructive mt-1">{state.errors.selectedDate.join(', ')}</p>}
                 </div>
@@ -94,22 +103,22 @@ export default function DemoBookingForm({ timeSlots = [] }: DemoBookingFormProps
                     </div>
                      <div className="space-y-2">
                         <Label className="flex items-center gap-2 mb-2 text-lg"><Clock /> Select a Time (EST)</Label>
-                        {timeSlots.length > 0 ? (
+                        {timeSlotsForSelectedDate.length > 0 ? (
                              <RadioGroup 
                                 name="time-selection-visual"
                                 value={selectedTime}
                                 onValueChange={setSelectedTime}
                                 className="space-y-2"
                             >
-                            {timeSlots.map(slot => (
+                            {timeSlotsForSelectedDate.map(slot => (
                                 <div key={slot.id} className="flex items-center p-3 rounded-md hover:bg-muted transition-colors border">
-                                <RadioGroupItem value={slot.timeSlot} id={slot.id} />
-                                <Label htmlFor={slot.id} className="pl-3 font-normal cursor-pointer flex-grow">{slot.timeSlot}</Label>
+                                <RadioGroupItem value={slot.timeSlotText} id={slot.id} />
+                                <Label htmlFor={slot.id} className="pl-3 font-normal cursor-pointer flex-grow">{slot.timeSlotText}</Label>
                                 </div>
                             ))}
                             </RadioGroup>
                         ) : (
-                            <p className="text-sm text-muted-foreground">No time slots currently available. Please check back later.</p>
+                            <p className="text-sm text-muted-foreground">{date ? "No time slots available for this date. Please select another date." : "Please select a date to see available times."}</p>
                         )}
                        
                         {state.errors?.selectedTime && <p className="text-sm text-destructive mt-1">{state.errors.selectedTime.join(', ')}</p>}
