@@ -1,7 +1,7 @@
 // src/app/(public)/book-demo/DemoBookingForm.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
@@ -34,8 +34,14 @@ function SubmitButton() {
 
 export default function DemoBookingForm() {
   const [state, formAction] = useActionState(submitDemoBookingForm, initialState);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string>('');
+
+  useEffect(() => {
+    // Set initial date on client to avoid hydration mismatch
+    setDate(new Date());
+  }, []);
+
 
   if (state.isSuccess) {
     return (
@@ -56,26 +62,8 @@ export default function DemoBookingForm() {
             <input type="hidden" name="selectedDate" value={date ? date.toISOString().split('T')[0] : ""} />
             <input type="hidden" name="selectedTime" value={selectedTime} />
             
-            <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                    <Label htmlFor="name" className="flex items-center gap-2 mb-2"><User /> Full Name</Label>
-                    <Input id="name" name="name" placeholder="Your Name" required />
-                    {state.errors?.name && <p className="text-sm text-destructive mt-1">{state.errors.name.join(', ')}</p>}
-                </div>
-                <div>
-                    <Label htmlFor="email" className="flex items-center gap-2 mb-2"><Mail /> Email Address</Label>
-                    <Input id="email" name="email" type="email" placeholder="your.email@example.com" required />
-                    {state.errors?.email && <p className="text-sm text-destructive mt-1">{state.errors.email.join(', ')}</p>}
-                </div>
-                <div className="md:col-span-2">
-                    <Label htmlFor="phone" className="flex items-center gap-2 mb-2"><Phone /> Phone Number</Label>
-                    <Input id="phone" name="phone" type="tel" placeholder="+1 (123) 456-7890" required/>
-                    {state.errors?.phone && <p className="text-sm text-destructive mt-1">{state.errors.phone.join(', ')}</p>}
-                </div>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8 items-start border-t pt-8">
-                <div className="space-y-2">
+            <div className="grid md:grid-cols-2 gap-8 items-start">
+                 <div className="space-y-2">
                      <Label className="flex items-center gap-2 mb-2 text-lg"><CalendarCheck /> Select a Date</Label>
                      <Calendar
                         mode="single"
@@ -86,22 +74,39 @@ export default function DemoBookingForm() {
                     />
                     {state.errors?.selectedDate && <p className="text-sm text-destructive mt-1">{state.errors.selectedDate.join(', ')}</p>}
                 </div>
-                 <div className="space-y-2">
-                    <Label className="flex items-center gap-2 mb-2 text-lg"><Clock /> Select a Time (EST)</Label>
-                     <RadioGroup 
-                        name="time-selection-visual"
-                        value={selectedTime}
-                        onValueChange={setSelectedTime}
-                        className="space-y-2"
-                    >
-                      {timeSlots.map(slot => (
-                        <div key={slot} className="flex items-center p-3 rounded-md hover:bg-muted transition-colors border">
-                          <RadioGroupItem value={slot} id={slot} />
-                          <Label htmlFor={slot} className="pl-3 font-normal cursor-pointer flex-grow">{slot}</Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                    {state.errors?.selectedTime && <p className="text-sm text-destructive mt-1">{state.errors.selectedTime.join(', ')}</p>}
+                <div className="space-y-6">
+                    <div>
+                        <Label htmlFor="name" className="flex items-center gap-2 mb-2"><User /> Full Name</Label>
+                        <Input id="name" name="name" placeholder="Your Name" required />
+                        {state.errors?.name && <p className="text-sm text-destructive mt-1">{state.errors.name.join(', ')}</p>}
+                    </div>
+                    <div>
+                        <Label htmlFor="email" className="flex items-center gap-2 mb-2"><Mail /> Email Address</Label>
+                        <Input id="email" name="email" type="email" placeholder="your.email@example.com" required />
+                        {state.errors?.email && <p className="text-sm text-destructive mt-1">{state.errors.email.join(', ')}</p>}
+                    </div>
+                    <div>
+                        <Label htmlFor="phone" className="flex items-center gap-2 mb-2"><Phone /> Phone Number</Label>
+                        <Input id="phone" name="phone" type="tel" placeholder="+1 (123) 456-7890" required/>
+                        {state.errors?.phone && <p className="text-sm text-destructive mt-1">{state.errors.phone.join(', ')}</p>}
+                    </div>
+                     <div className="space-y-2">
+                        <Label className="flex items-center gap-2 mb-2 text-lg"><Clock /> Select a Time (EST)</Label>
+                        <RadioGroup 
+                            name="time-selection-visual"
+                            value={selectedTime}
+                            onValueChange={setSelectedTime}
+                            className="space-y-2"
+                        >
+                        {timeSlots.map(slot => (
+                            <div key={slot} className="flex items-center p-3 rounded-md hover:bg-muted transition-colors border">
+                            <RadioGroupItem value={slot} id={slot} />
+                            <Label htmlFor={slot} className="pl-3 font-normal cursor-pointer flex-grow">{slot}</Label>
+                            </div>
+                        ))}
+                        </RadioGroup>
+                        {state.errors?.selectedTime && <p className="text-sm text-destructive mt-1">{state.errors.selectedTime.join(', ')}</p>}
+                    </div>
                 </div>
             </div>
 
