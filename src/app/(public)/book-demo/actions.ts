@@ -8,9 +8,10 @@ const demoBookingSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   phone: z.string().min(10, { message: "Please enter a valid phone number."}),
-  frenchLevel: z.string().min(1, "Please select your French level."),
-  timeline: z.string().min(1, "Please select your timeline."),
+  frenchLevel: z.string().min(2, "Please describe your French level."),
   goals: z.string().min(10, { message: "Goals must be at least 10 characters." }),
+  selectedDate: z.string().min(1, { message: "Please select a date for the demo." }),
+  selectedTime: z.string().min(1, { message: "Please select a time for the demo." }),
 });
 
 export type DemoBookingFormState = {
@@ -20,8 +21,9 @@ export type DemoBookingFormState = {
     email?: string[];
     phone?: string[];
     frenchLevel?: string[];
-    timeline?: string[];
     goals?: string[];
+    selectedDate?: string[];
+    selectedTime?: string[];
   };
   isSuccess: boolean;
 };
@@ -43,16 +45,11 @@ export async function submitDemoBookingForm(
   }
 
   try {
-    // This now calls the centralized action in the admin folder
-    const result = await addDemoRequestAction({
-        ...validatedFields.data,
-        selectedDate: "Not Selected", // Field removed from form
-        selectedTime: "Not Selected", // Field removed from form
-    });
+    const result = await addDemoRequestAction(validatedFields.data);
 
     if (result.isSuccess) {
        return {
-        message: "Thank you! Your demo request has been submitted. We'll contact you shortly to schedule your session.",
+        message: "Thank you! Your demo request has been submitted. We'll send you a confirmation email with the meeting link shortly.",
         isSuccess: true,
         errors: {},
       };

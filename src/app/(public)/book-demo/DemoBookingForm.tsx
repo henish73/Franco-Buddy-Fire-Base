@@ -1,6 +1,7 @@
 // src/app/(public)/book-demo/DemoBookingForm.tsx
 "use client";
 
+import { useState } from "react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
@@ -9,17 +10,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle, AlertCircle, CalendarCheck } from "lucide-react";
+import { CheckCircle, AlertCircle, CalendarCheck, Clock, User, Mail, Phone, Target } from "lucide-react";
 import { submitDemoBookingForm, type DemoBookingFormState } from "./actions";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const initialState: DemoBookingFormState = {
   message: "",
   isSuccess: false,
 };
 
-const frenchLevels = ["New Beginner", "A1-A2", "B1-B2", "C1-C2"];
-const timelines = ["Immediately", "Within 1 month", "Within 3 months", "Just researching"];
+const timeSlots = ["10:00 AM - 11:00 AM", "11:00 AM - 12:00 PM", "2:00 PM - 3:00 PM", "4:00 PM - 5:00 PM"];
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -32,6 +33,8 @@ function SubmitButton() {
 
 export default function DemoBookingForm() {
   const [state, formAction] = useActionState(submitDemoBookingForm, initialState);
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [selectedTime, setSelectedTime] = useState<string>('');
 
   if (state.isSuccess) {
     return (
@@ -45,52 +48,70 @@ export default function DemoBookingForm() {
     )
   }
 
-
   return (
     <Card className="w-full max-w-lg shadow-xl">
       <CardContent className="p-6 md:p-8">
         <form action={formAction} className="space-y-6">
+            <input type="hidden" name="selectedDate" value={date ? date.toISOString().split('T')[0] : ""} />
+            <input type="hidden" name="selectedTime" value={selectedTime} />
+            
             <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name" className="flex items-center gap-2 mb-2"><User /> Full Name</Label>
                     <Input id="name" name="name" placeholder="Your Name" required />
                     {state.errors?.name && <p className="text-sm text-destructive mt-1">{state.errors.name.join(', ')}</p>}
                 </div>
                 <div>
-                    <Label htmlFor="email">Email Address</Label>
+                    <Label htmlFor="email" className="flex items-center gap-2 mb-2"><Mail /> Email Address</Label>
                     <Input id="email" name="email" type="email" placeholder="your.email@example.com" required />
                     {state.errors?.email && <p className="text-sm text-destructive mt-1">{state.errors.email.join(', ')}</p>}
                 </div>
-                <div>
-                    <Label htmlFor="phone">Phone Number (with country code)</Label>
+                <div className="md:col-span-2">
+                    <Label htmlFor="phone" className="flex items-center gap-2 mb-2"><Phone /> Phone Number</Label>
                     <Input id="phone" name="phone" type="tel" placeholder="+1 (123) 456-7890" required/>
                     {state.errors?.phone && <p className="text-sm text-destructive mt-1">{state.errors.phone.join(', ')}</p>}
                 </div>
-                <div>
-                    <Label htmlFor="frenchLevel">Your French Level</Label>
-                    <Select name="frenchLevel" required>
-                        <SelectTrigger><SelectValue placeholder="Select your level" /></SelectTrigger>
-                        <SelectContent>
-                            {frenchLevels.map(level => <SelectItem key={level} value={level}>{level}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                    {state.errors?.frenchLevel && <p className="text-sm text-destructive mt-1">{state.errors.frenchLevel.join(', ')}</p>}
-                </div>
             </div>
              <div>
-                <Label htmlFor="timeline">How soon do you want to start?</Label>
-                <Select name="timeline" required>
-                    <SelectTrigger><SelectValue placeholder="Select your timeline" /></SelectTrigger>
-                    <SelectContent>
-                        {timelines.map(time => <SelectItem key={time} value={time}>{time}</SelectItem>)}
-                    </SelectContent>
-                </Select>
-                 {state.errors?.timeline && <p className="text-sm text-destructive mt-1">{state.errors.timeline.join(', ')}</p>}
-            </div>
-            <div>
-                <Label htmlFor="goals">Your Goals</Label>
+                <Label htmlFor="goals" className="flex items-center gap-2 mb-2"><Target /> Your Goals</Label>
                 <Textarea id="goals" name="goals" placeholder="e.g., TEF for Express Entry, Improve speaking confidence..." rows={3} required />
                 {state.errors?.goals && <p className="text-sm text-destructive mt-1">{state.errors.goals.join(', ')}</p>}
+            </div>
+             <div>
+                <Label htmlFor="frenchLevel" className="flex items-center gap-2 mb-2">Your Current French Level</Label>
+                <Input id="frenchLevel" name="frenchLevel" placeholder="e.g., Beginner, A2, etc." required/>
+                {state.errors?.frenchLevel && <p className="text-sm text-destructive mt-1">{state.errors.frenchLevel.join(', ')}</p>}
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 border-t pt-6">
+                <div className="space-y-2">
+                     <Label className="flex items-center gap-2 mb-2"><CalendarCheck /> Select a Date</Label>
+                     <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        className="rounded-md border bg-card"
+                        disabled={(day) => day < new Date(new Date().setDate(new Date().getDate() - 1))}
+                    />
+                    {state.errors?.selectedDate && <p className="text-sm text-destructive mt-1">{state.errors.selectedDate.join(', ')}</p>}
+                </div>
+                 <div className="space-y-2">
+                    <Label className="flex items-center gap-2 mb-2"><Clock /> Select a Time (EST)</Label>
+                     <RadioGroup 
+                        name="time-selection-visual"
+                        value={selectedTime}
+                        onValueChange={setSelectedTime}
+                        className="space-y-2"
+                    >
+                      {timeSlots.map(slot => (
+                        <div key={slot} className="flex items-center">
+                          <RadioGroupItem value={slot} id={slot} />
+                          <Label htmlFor={slot} className="pl-2 font-normal cursor-pointer">{slot}</Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                    {state.errors?.selectedTime && <p className="text-sm text-destructive mt-1">{state.errors.selectedTime.join(', ')}</p>}
+                </div>
             </div>
 
             <div className="pt-4">
