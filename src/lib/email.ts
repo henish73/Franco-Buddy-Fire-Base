@@ -58,6 +58,12 @@ function generateCalendarLinks(details: DemoBookingDetails, googleMeetLink: stri
 }
 
 export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Promise<void> {
+    if (!SMTP_USER || !SMTP_PASSWORD) {
+        // This is a server-side check. If this fails, something is wrong with the .env setup.
+        console.error("SMTP credentials are not configured in the environment variables.");
+        throw new Error("SMTP credentials not found. Email cannot be sent.");
+    }
+    
     const { name, email, selectedDate, selectedTime } = details;
     const googleMeetLink = `https://meet.google.com/lookup/${Math.random().toString(36).substring(2, 12)}`;
     const { googleLink, icsLink } = generateCalendarLinks(details, googleMeetLink);

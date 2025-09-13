@@ -10,8 +10,6 @@ export type DemoRequestLead = {
   name: string;
   email: string;
   phone: string;
-  frenchLevel: string;
-  goals: string;
   selectedDate: string;
   selectedTime: string;
   submittedAt: string;
@@ -67,8 +65,6 @@ export async function addDemoRequestAction(data: z.infer<typeof addDemoLeadSchem
       id: `demo_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       submittedAt: new Date().toISOString(),
       status: 'Demo Scheduled', // Set status directly
-      goals: 'N/A', // Set default for this simplified form
-      frenchLevel: 'N/A', // Set default for this simplified form
     };
     simulatedDemoLeadsDb.push(newLead);
     console.log("[Server Action] New demo lead added:", newLead);

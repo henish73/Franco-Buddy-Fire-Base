@@ -60,7 +60,7 @@ export async function getAssessmentHistoryAction(): Promise<HistoricalAssessment
       timestamp: new Date(Date.now() - 86400000 * 1).toISOString(), // 1 day ago
       score: 82,
       details: {
-        feedback: { grammar: "Excellent", vocabulary: "Rich", structure: "Well-organized", coherence: "Very good", taskAchievement: "Fully addressed", toneAndRegister: "Appropriately formal." },
+        feedback: { grammar: "Excellent", vocabulary: "Rich", structure: "Well-organized", coherence: "Very good", taskAchievement: "Fully addressed"},
         suggestionsForImprovement: ["Consider using more varied sentence openers."],
       } as WritingAssessmentOutput,
     },

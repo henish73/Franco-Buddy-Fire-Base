@@ -10,8 +10,7 @@ export default function AdminLayout({ children }: PropsWithChildren) {
       <AdminSidebar />
       <SidebarInset>
         <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6 shadow-sm justify-between md:justify-end">
-            {/* Placeholder for Admin Header content, e.g., search, notifications, user menu */}
-            {/* Trigger is typically used if sidebar is collapsible by header button */}
+            {/* Trigger is for mobile view */}
             <div className="md:hidden">
               <SidebarTrigger />
             </div>
