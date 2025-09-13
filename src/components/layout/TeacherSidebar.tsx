@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Users, CalendarCheck, LogOut, ExternalLink, Home
+  LayoutDashboard, Users, CalendarCheck, LogOut, ExternalLink, Home, Wallet
 } from 'lucide-react';
 import {
   Sidebar,
@@ -24,6 +24,7 @@ const teacherNavItems = [
   { href: '/teacher/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/teacher/attendance', label: 'Attendance', icon: CalendarCheck },
   { href: '/teacher/students', label: 'My Students', icon: Users },
+  { href: '/teacher/payroll', label: 'Payroll', icon: Wallet },
 ];
 
 export default function TeacherSidebar() {

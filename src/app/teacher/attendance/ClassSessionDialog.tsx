@@ -40,6 +40,7 @@ export default function ClassSessionDialog({ isOpen, setIsOpen, editingSession, 
     defaultValues: {
         date: selectedDate || new Date(),
         time: '',
+        durationHours: 1,
         topicTaught: '',
         notes: '',
         attendees: [],
@@ -55,6 +56,7 @@ export default function ClassSessionDialog({ isOpen, setIsOpen, editingSession, 
         reset({
           date: selectedDate || new Date(),
           time: '',
+          durationHours: 1,
           topicTaught: '',
           notes: '',
           attendees: mockStudents.map(s => ({...s, present: false})), // Pre-populate with all students
@@ -97,6 +99,11 @@ export default function ClassSessionDialog({ isOpen, setIsOpen, editingSession, 
               <Input id="time" {...register('time')} placeholder="e.g., 18:00 - 19:30" />
               {errors.time && <p className="text-sm text-destructive mt-1">{errors.time.message}</p>}
             </div>
+             <div>
+              <Label htmlFor="durationHours">Duration (in hours)</Label>
+              <Input id="durationHours" type="number" step="0.5" {...register('durationHours')} />
+              {errors.durationHours && <p className="text-sm text-destructive mt-1">{errors.durationHours.message}</p>}
+            </div>
             <div>
                 <Label>Status</Label>
                 <Controller
@@ -123,7 +130,7 @@ export default function ClassSessionDialog({ isOpen, setIsOpen, editingSession, 
           </div>
           <div>
             <Label>Attendance</Label>
-            <Card className="p-4 mt-1">
+            <Card className="p-4 mt-1 max-h-48 overflow-y-auto">
                 <div className="grid grid-cols-2 gap-4">
                  {attendees.map((attendee, index) => (
                     <div key={attendee.studentId} className="flex items-center space-x-2">
