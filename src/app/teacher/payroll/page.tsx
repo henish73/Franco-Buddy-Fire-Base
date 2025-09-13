@@ -11,6 +11,7 @@ import type { ClassSession } from '../attendance/schema';
 import { Wallet, Calendar, Clock, RefreshCw, BarChart } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function PayrollPage() {
   const { toast } = useToast();
@@ -128,10 +129,10 @@ export default function PayrollPage() {
       </Card>
       <Alert>
         <BarChart className="h-4 w-4" />
-        <Alert.Title>Note</Alert.Title>
-        <Alert.Description>
+        <AlertTitle>Note</AlertTitle>
+        <AlertDescription>
           This is an estimate of your earnings. Official payment summaries will be sent at the end of each payment cycle.
-        </Alert.Description>
+        </AlertDescription>
       </Alert>
     </div>
   );
