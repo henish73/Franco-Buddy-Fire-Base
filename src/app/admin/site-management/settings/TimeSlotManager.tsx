@@ -2,11 +2,10 @@
 "use client";
 
 import { useState, useTransition, useEffect } from 'react';
-import { useForm, type SubmitHandler, useFieldArray } from "react-hook-form";
+import { useForm, type SubmitHandler, useFieldArray, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -17,11 +16,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
 const timeSlotSchema = z.object({
   id: z.string(),
   dateTime: z.string(),
-  timeSlotText: z.string(),
+  timeSlotText: z.string().min(1, "Time slot cannot be empty."),
 });
 
 const timeSlotsFormSchema = z.object({
@@ -29,6 +29,22 @@ const timeSlotsFormSchema = z.object({
 });
 
 type TimeSlotsFormData = z.infer<typeof timeSlotsFormSchema>;
+
+const timeOptions = [
+  "09:00 AM - 09:30 AM", "09:30 AM - 10:00 AM",
+  "10:00 AM - 10:30 AM", "10:30 AM - 11:00 AM",
+  "11:00 AM - 11:30 AM", "11:30 AM - 12:00 PM",
+  "12:00 PM - 12:30 PM", "12:30 PM - 01:00 PM",
+  "01:00 PM - 01:30 PM", "01:30 PM - 02:00 PM",
+  "02:00 PM - 02:30 PM", "02:30 PM - 03:00 PM",
+  "03:00 PM - 03:30 PM", "03:30 PM - 04:00 PM",
+  "04:00 PM - 04:30 PM", "04:30 PM - 05:00 PM",
+  "05:00 PM - 05:30 PM", "05:30 PM - 06:00 PM",
+  "06:00 PM - 06:30 PM", "06:30 PM - 07:00 PM",
+  "07:00 PM - 07:30 PM", "07:30 PM - 08:00 PM",
+  "08:00 PM - 08:30 PM", "08:30 PM - 09:00 PM",
+];
+
 
 type TimeSlotManagerProps = {
   initialTimeSlots: TimeSlot[];
@@ -100,11 +116,24 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
                         />
                     </PopoverContent>
                 </Popover>
-                <Input
-                  {...register(`slots.${index}.timeSlotText`)}
-                  placeholder="e.g., 10:00 AM - 10:30 AM"
-                  className="flex-grow"
+                
+                <Controller
+                  control={control}
+                  name={`slots.${index}.timeSlotText`}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <SelectTrigger className="flex-grow">
+                        <SelectValue placeholder="Select a time" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {timeOptions.map(time => (
+                          <SelectItem key={time} value={time}>{time}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 />
+
                 <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -115,7 +144,7 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full">
-                  <PlusCircle className="mr-2 h-4 w-4" /> Add New Time Slot
+                  <PlusCircle className="mr-2 h-4 w-4" /> Add New Slot Date
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
