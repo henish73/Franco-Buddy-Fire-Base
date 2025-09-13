@@ -3,7 +3,7 @@
 
 import { z } from 'zod';
 import { addDemoRequestAction } from '@/app/admin/finance-management/actions';
-import { sendDemoConfirmationEmail } from '@/lib/email';
+// Removed: import { sendDemoConfirmationEmail } from '@/lib/email';
 
 const demoBookingSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -12,6 +12,8 @@ const demoBookingSchema = z.object({
   selectedDate: z.string().min(1, { message: "Please select a date for the demo." }),
   selectedTime: z.string().min(1, { message: "Please select a time for the demo." }),
 });
+
+export type DemoBookingData = z.infer<typeof demoBookingSchema>;
 
 export type DemoBookingFormState = {
   message: string;
@@ -23,6 +25,7 @@ export type DemoBookingFormState = {
     selectedTime?: string[];
   };
   isSuccess: boolean;
+  bookingDetails?: DemoBookingData & { googleMeetLink: string };
 };
 
 export async function submitDemoBookingForm(
@@ -42,25 +45,20 @@ export async function submitDemoBookingForm(
   }
 
   try {
-    // This now passes only the validated data. Defaults are handled in the receiving action.
     const result = await addDemoRequestAction(validatedFields.data);
 
     if (result.isSuccess) {
-       try {
-        await sendDemoConfirmationEmail(validatedFields.data);
+        const googleMeetLink = `https://meet.google.com/lookup/${Math.random().toString(36).substring(2, 12)}`;
+        
         return {
-            message: "Thank you! Your demo has been scheduled. We'll send you a confirmation email with the meeting link shortly.",
+            message: "Thank you! Your demo has been scheduled. Please add it to your calendar below.",
             isSuccess: true,
             errors: {},
+            bookingDetails: {
+                ...validatedFields.data,
+                googleMeetLink,
+            }
         };
-       } catch (emailError) {
-         console.error("Email sending failed after lead creation:", emailError);
-         // The lead was created, but email failed. Let the user know.
-         return {
-            message: "Your demo was booked successfully, but we couldn't send the confirmation email. Please contact us directly.",
-            isSuccess: true, // It was partially successful
-         }
-       }
     } else {
       return {
         message: result.message || "An unexpected error occurred while saving your request.",

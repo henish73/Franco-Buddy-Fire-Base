@@ -7,13 +7,13 @@ import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle, AlertCircle, CalendarCheck, Clock, User, Mail, Phone } from "lucide-react";
-import { submitDemoBookingForm, type DemoBookingFormState } from "./actions";
+import { CheckCircle, AlertCircle, CalendarCheck, Clock, User, Mail, Phone, ExternalLink, Download } from "lucide-react";
+import { submitDemoBookingForm, type DemoBookingFormState, type DemoBookingData } from "./actions";
 import { Calendar } from "@/components/ui/calendar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { isSameDay } from 'date-fns';
+import { isSameDay, format } from 'date-fns';
 
 const initialState: DemoBookingFormState = {
   message: "",
@@ -29,6 +29,47 @@ function SubmitButton() {
   );
 }
 
+function generateCalendarLinks(details: DemoBookingData & { googleMeetLink: string }) {
+    const { name, selectedDate, selectedTime, googleMeetLink } = details;
+    if (!selectedDate || !selectedTime) return { googleLink: '#', icsLink: '#' };
+
+    // Parse time and create start/end Date objects in UTC
+    const [startTime] = selectedTime.split(' - ');
+    const [time, period] = startTime.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+
+    if (period === 'PM' && hours < 12) hours += 12;
+    if (period === 'AM' && hours === 12) hours = 0;
+
+    const startDate = new Date(selectedDate);
+    // Adjust for timezone differences by treating the date as local
+    const timezoneOffset = startDate.getTimezoneOffset() * 60000;
+    const localDate = new Date(startDate.getTime() + timezoneOffset);
+
+    localDate.setUTCHours(hours, minutes, 0, 0);
+    const endDate = new Date(localDate.getTime() + 60 * 60 * 1000); // 1 hour duration
+
+    const title = encodeURIComponent("FrancoBuddy TEF Demo Class");
+    const description = encodeURIComponent(`Your personalized TEF Canada demo class with a FrancoBuddy expert.\n\nJoin here: ${googleMeetLink}`);
+
+    const googleFormat = (date: Date) => date.toISOString().replace(/[-:.]/g, '').slice(0, -1) + 'Z';
+    const googleLink = `https://www.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${googleFormat(localDate)}/${googleFormat(endDate)}&details=${description}&location=${encodeURIComponent(googleMeetLink)}`;
+
+    const icsContent = [
+        "BEGIN:VCALENDAR", "VERSION:2.0", "BEGIN:VEVENT",
+        `DTSTART:${googleFormat(localDate)}`,
+        `DTEND:${googleFormat(endDate)}`,
+        `SUMMARY:${name}'s FrancoBuddy Demo`,
+        `DESCRIPTION:${description.replace(/\n/g, '\\n')}`,
+        `LOCATION:${googleMeetLink}`,
+        "END:VEVENT", "END:VCALENDAR"
+    ].join("\n");
+    const icsLink = `data:text/calendar;charset=utf8,${encodeURIComponent(icsContent)}`;
+
+    return { googleLink, icsLink };
+}
+
+
 type DemoBookingFormProps = {
     timeSlots: { id: string, dateTime: string, timeSlotText: string }[];
     availableDates: Date[];
@@ -40,7 +81,6 @@ export default function DemoBookingForm({ timeSlots = [], availableDates = [] }:
   const [selectedTime, setSelectedTime] = useState<string>('');
 
   useEffect(() => {
-    // Set initial date on client to avoid hydration mismatch
     if (availableDates.length > 0) {
       setDate(availableDates[0]);
     } else {
@@ -48,15 +88,34 @@ export default function DemoBookingForm({ timeSlots = [], availableDates = [] }:
     }
   }, [availableDates]);
 
-
-  if (state.isSuccess) {
+  if (state.isSuccess && state.bookingDetails) {
+    const { googleLink, icsLink } = generateCalendarLinks(state.bookingDetails);
     return (
-        <Card className="w-full max-w-md mx-auto shadow-xl bg-gradient-to-br from-primary/10 to-accent/10">
-            <CardContent className="p-8 text-center">
+        <Card className="w-full max-w-lg mx-auto shadow-xl bg-gradient-to-br from-primary/10 to-accent/10">
+            <CardHeader className="text-center">
                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-primary mb-2">Thank You!</h3>
-                <p className="text-muted-foreground">{state.message}</p>
+                <CardTitle className="text-2xl font-bold text-primary">Demo Booked Successfully!</CardTitle>
+                <CardDescription>{state.message}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-center">
+                 <div className="p-4 bg-background/50 rounded-md">
+                    <p><strong>Date:</strong> {format(new Date(state.bookingDetails.selectedDate), 'PPP')}</p>
+                    <p><strong>Time:</strong> {state.bookingDetails.selectedTime} (EST)</p>
+                    <p><strong>Link:</strong> <a href={state.bookingDetails.googleMeetLink} target="_blank" rel="noopener noreferrer" className="text-primary underline">{state.bookingDetails.googleMeetLink}</a></p>
+                 </div>
+                 <p className="font-semibold">Add to your calendar:</p>
+                 <div className="flex justify-center gap-4">
+                     <Button asChild>
+                         <a href={googleLink} target="_blank" rel="noopener noreferrer"><ExternalLink className="mr-2"/> Google Calendar</a>
+                     </Button>
+                      <Button asChild variant="secondary" download="francobuddy_demo.ics">
+                         <a href={icsLink}><Download className="mr-2"/> Other Calendar (.ics)</a>
+                     </Button>
+                 </div>
             </CardContent>
+            <CardFooter>
+                 <p className="text-xs text-muted-foreground mx-auto">A confirmation has NOT been sent to your email. Please ensure you add this event to your calendar.</p>
+            </CardFooter>
         </Card>
     )
   }
@@ -64,7 +123,6 @@ export default function DemoBookingForm({ timeSlots = [], availableDates = [] }:
   const timeSlotsForSelectedDate = date
     ? timeSlots.filter(slot => isSameDay(new Date(slot.dateTime), date))
     : [];
-
 
   return (
     <Card className="w-full max-w-4xl shadow-xl">
