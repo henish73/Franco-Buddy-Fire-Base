@@ -31,18 +31,18 @@ const timeSlotsFormSchema = z.object({
 type TimeSlotsFormData = z.infer<typeof timeSlotsFormSchema>;
 
 const timeOptions = [
-  "09:00 AM - 09:30 AM", "09:30 AM - 10:00 AM",
-  "10:00 AM - 10:30 AM", "10:30 AM - 11:00 AM",
-  "11:00 AM - 11:30 AM", "11:30 AM - 12:00 PM",
-  "12:00 PM - 12:30 PM", "12:30 PM - 01:00 PM",
-  "01:00 PM - 01:30 PM", "01:30 PM - 02:00 PM",
-  "02:00 PM - 02:30 PM", "02:30 PM - 03:00 PM",
-  "03:00 PM - 03:30 PM", "03:30 PM - 04:00 PM",
-  "04:00 PM - 04:30 PM", "04:30 PM - 05:00 PM",
-  "05:00 PM - 05:30 PM", "05:30 PM - 06:00 PM",
-  "06:00 PM - 06:30 PM", "06:30 PM - 07:00 PM",
-  "07:00 PM - 07:30 PM", "07:30 PM - 08:00 PM",
-  "08:00 PM - 08:30 PM", "08:30 PM - 09:00 PM",
+  "09:00 AM - 10:00 AM",
+  "10:00 AM - 11:00 AM",
+  "11:00 AM - 12:00 PM",
+  "12:00 PM - 01:00 PM",
+  "01:00 PM - 02:00 PM",
+  "02:00 PM - 03:00 PM",
+  "03:00 PM - 04:00 PM",
+  "04:00 PM - 05:00 PM",
+  "05:00 PM - 06:00 PM",
+  "06:00 PM - 07:00 PM",
+  "07:00 PM - 08:00 PM",
+  "08:00 PM - 09:00 PM",
 ];
 
 
@@ -80,7 +80,7 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
       append({
         id: `slot_${Date.now()}`,
         dateTime: date.toISOString(),
-        timeSlotText: "12:00 PM - 12:30 PM" // Default placeholder text
+        timeSlotText: "12:00 PM - 01:00 PM" // Default placeholder text
       });
       toast({ title: "Slot Added", description: `New slot added for ${format(date, 'PPP')}. Edit the time and save.` });
     }

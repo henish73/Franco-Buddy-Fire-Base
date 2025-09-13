@@ -16,7 +16,8 @@ function generateCalendarLinks(details: DemoBookingDetails, googleMeetLink: stri
     const { selectedDate, selectedTime } = details;
 
     // Parse time and create start/end Date objects in UTC
-    const [time, period] = selectedTime.split(' ');
+    const [startTime] = selectedTime.split(' - ');
+    const [time, period] = startTime.split(' ');
     let [hours, minutes] = time.split(':').map(Number);
 
     if (period === 'PM' && hours < 12) {
@@ -29,8 +30,8 @@ function generateCalendarLinks(details: DemoBookingDetails, googleMeetLink: stri
     const startDate = new Date(selectedDate);
     startDate.setUTCHours(hours, minutes, 0, 0);
     
-    // Demo is 30 minutes long
-    const endDate = new Date(startDate.getTime() + 30 * 60 * 1000);
+    // Demo is now 1 hour long
+    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
 
     const title = encodeURIComponent("FrancoBuddy TEF Demo Class");
     const description = encodeURIComponent(`Your personalized TEF Canada demo class with a FrancoBuddy expert.\n\nJoin here: ${googleMeetLink}`);
