@@ -1,6 +1,7 @@
-// src/app/admin/settings/actions.ts
+// src/app/admin/site-management/settings/actions.ts
 "use server";
 
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 const siteSettingsSchema = z.object({
@@ -52,8 +53,7 @@ export async function updateSiteSettings(
     simulatedSiteSettingsDb = validatedFields.data;
     console.log("Site settings saved (simulated):", simulatedSiteSettingsDb);
     
-    // In a real app, revalidate paths that use this data, e.g., the homepage
-    // revalidatePath('/');
+    revalidatePath('/', 'layout'); // Revalidate all pages that might use this data
 
     return {
       message: "Site settings updated successfully!",
@@ -81,4 +81,43 @@ export async function getSiteSettings(): Promise<typeof simulatedSiteSettingsDb>
       successRateCLB7: 0,
     };
   }
+}
+
+// --- Time Slot Management ---
+
+export type TimeSlot = {
+  id: string;
+  dateTime: string; // ISO string
+  timeSlotText: string; // e.g., "10:00 AM - 10:30 AM"
+};
+
+type TimeSlotFormState = {
+    message: string;
+    isSuccess: boolean;
+}
+
+// In a real app, this would be a Firestore collection
+let simulatedTimeSlotsDb: TimeSlot[] = [
+    { id: 'ts1', dateTime: new Date().toISOString(), timeSlotText: "10:00 AM - 10:30 AM" },
+    { id: 'ts2', dateTime: new Date().toISOString(), timeSlotText: "11:00 AM - 11:30 AM" },
+];
+
+export async function getTimeSlotsAction(): Promise<TimeSlot[]> {
+    try {
+        return JSON.parse(JSON.stringify(simulatedTimeSlotsDb));
+    } catch(e) {
+        return [];
+    }
+}
+
+export async function updateTimeSlotsAction(slots: TimeSlot[]): Promise<TimeSlotFormState> {
+    try {
+        // Here, you would perform validation on the array of slots if needed
+        simulatedTimeSlotsDb = slots;
+        console.log("Time slots updated (simulated):", simulatedTimeSlotsDb);
+        revalidatePath('/book-demo'); // Revalidate page that uses these slots
+        return { message: "Time slots updated successfully!", isSuccess: true };
+    } catch(e) {
+        return { message: "Failed to update time slots.", isSuccess: false };
+    }
 }
