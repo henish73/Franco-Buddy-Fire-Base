@@ -37,12 +37,6 @@ type TimeSlotManagerProps = {
 export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerProps) {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-
-  useEffect(() => {
-    setSelectedDate(new Date());
-  }, []);
-
 
   const { control, register, handleSubmit, watch, setValue } = useForm<TimeSlotsFormData>({
     resolver: zodResolver(timeSlotsFormSchema),
@@ -65,18 +59,16 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
     });
   };
   
-  const handleAddNewSlot = () => {
-    if(selectedDate) {
-        const newSlotDateTime = selectedDate.toISOString();
-        append({
-            id: `slot_${Date.now()}`,
-            dateTime: newSlotDateTime,
-            timeSlotText: "New Slot - Edit Me"
-        });
-    } else {
-        toast({ title: "Select a Date", description: "Please select a date before adding a new slot.", variant: "destructive" });
+  const handleDateSelectAndAdd = (date: Date | undefined) => {
+    if (date) {
+      append({
+        id: `slot_${Date.now()}`,
+        dateTime: date.toISOString(),
+        timeSlotText: "12:00 PM - 12:30 PM" // Default placeholder text
+      });
+      toast({ title: "Slot Added", description: `New slot added for ${format(date, 'PPP')}. Edit the time and save.` });
     }
-  }
+  };
 
   return (
     <Card className="shadow-lg">
@@ -121,16 +113,19 @@ export default function TimeSlotManager({ initialTimeSlots }: TimeSlotManagerPro
           </div>
           <div className="flex gap-2">
             <Popover>
-                <PopoverTrigger asChild>
-                    <Button variant="outline"><CalendarIcon className="mr-2 h-4 w-4"/>Add Slot for Date</Button>
-                </PopoverTrigger>
-                 <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar mode="single" selected={selectedDate} onSelect={setSelectedDate} initialFocus/>
-                 </PopoverContent>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-full">
+                  <PlusCircle className="mr-2 h-4 w-4" /> Add New Time Slot
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  onSelect={handleDateSelectAndAdd}
+                  initialFocus
+                />
+              </PopoverContent>
             </Popover>
-             <Button type="button" variant="secondary" onClick={handleAddNewSlot}>
-              <PlusCircle className="mr-2 h-4 w-4" /> Add
-            </Button>
           </div>
           <Button type="submit" disabled={isPending} className="w-full">
             {isPending ? "Saving..." : "Save All Time Slots"}
