@@ -1,6 +1,6 @@
 // src/app/student/ai-tutor/reading/page.tsx
 import { getReadingPassagesAction } from '@/app/admin/site-management/ai-content/readingPassageActions';
-import type { ReadingPassage } from '@/app/admin/site-management/ai-content/readingPassageSchemas';
+import type { ReadingPassage } from '@/app/admin/site-management/ai-content/schemas';
 import ReadingAssessmentClient from './ReadingAssessmentClient';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, BookOpen } from 'lucide-react';

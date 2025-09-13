@@ -1,6 +1,6 @@
 // src/app/student/ai-tutor/speaking/page.tsx
 import { getSpeakingPromptsAction } from '@/app/admin/site-management/ai-content/speakingPromptActions';
-import type { SpeakingPrompt } from '@/app/admin/site-management/ai-content/speakingPromptSchemas';
+import type { SpeakingPrompt } from '@/app/admin/site-management/ai-content/schemas';
 import SpeakingAssessmentClient from './SpeakingAssessmentClient';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Mic } from 'lucide-react';

@@ -27,7 +27,7 @@ import {
   type SpeakingPromptFormData, 
   type SpeakingPromptFormState, 
   type SpeakingPrompt 
-} from './speakingPromptSchemas';
+} from './schemas';
 
 import {
   getWritingPromptsAction,
@@ -40,7 +40,7 @@ import {
   type WritingPromptFormData, 
   type WritingPromptFormState, 
   type WritingPrompt 
-} from './writingPromptSchemas';
+} from './schemas';
 
 import {
   getReadingPassagesAction,
@@ -52,9 +52,8 @@ import {
   readingPassageSchema, 
   type ReadingPassageFormData, 
   type ReadingPassageFormState, 
-  type ReadingPassage,
-  type QuizQuestion // Import QuizQuestion for form reset
-} from './readingPassageSchemas';
+  type ReadingPassage
+} from './schemas';
 
 import {
   getListeningAudioAction,
@@ -67,7 +66,7 @@ import {
   type ListeningAudioFormData, 
   type ListeningAudioFormState, 
   type ListeningAudio 
-} from './listeningAudioSchemas';
+} from './schemas';
 
 
 const initialSpeakingPromptFormState: SpeakingPromptFormState = { message: "", isSuccess: false, errors: {} };
@@ -180,7 +179,7 @@ export default function AdminAIContentPage() {
       startTransition(async () => {
         const result = await (editingSpeakingPrompt ? updateSpeakingPromptAction(initialSpeakingPromptFormState, formData) : addSpeakingPromptAction(initialSpeakingPromptFormState, formData));
         if (result.isSuccess) { toast({ title: "Success", description: result.message }); setIsSpeakingPromptDialogOpen(false); fetchData('speaking'); } 
-        else { toast({ title: "Error", description: result.message || "Failed to save.", errors: result.errors, variant: "destructive" }); }
+        else { toast({ title: "Error", description: result.message || "Failed to save.", variant: "destructive" }); }
       });
     })(event);
   };
@@ -211,7 +210,7 @@ export default function AdminAIContentPage() {
       startTransition(async () => {
         const result = await (editingWritingPrompt ? updateWritingPromptAction(initialWritingPromptFormState, formData) : addWritingPromptAction(initialWritingPromptFormState, formData));
         if (result.isSuccess) { toast({ title: "Success", description: result.message }); setIsWritingPromptDialogOpen(false); fetchData('writing'); }
-        else { toast({ title: "Error", description: result.message || "Failed to save.", errors: result.errors, variant: "destructive" }); }
+        else { toast({ title: "Error", description: result.message || "Failed to save.", variant: "destructive" }); }
       });
     })(event);
   };
@@ -245,7 +244,7 @@ export default function AdminAIContentPage() {
       startTransition(async () => {
         const result = await (editingReadingPassage ? updateReadingPassageAction(initialReadingPassageFormState, formData) : addReadingPassageAction(initialReadingPassageFormState, formData));
         if (result.isSuccess) { toast({ title: "Success", description: result.message }); setIsReadingPassageDialogOpen(false); fetchData('reading'); }
-        else { toast({ title: "Error", description: result.message || "Failed to save.", errors: result.errors, variant: "destructive" }); }
+        else { toast({ title: "Error", description: result.message || "Failed to save.", variant: "destructive" }); }
       });
     })(event);
   };
@@ -279,7 +278,7 @@ export default function AdminAIContentPage() {
       startTransition(async () => {
         const result = await (editingListeningAudio ? updateListeningAudioAction(initialListeningAudioFormState, formData) : addListeningAudioAction(initialListeningAudioFormState, formData));
         if (result.isSuccess) { toast({ title: "Success", description: result.message }); setIsListeningAudioDialogOpen(false); fetchData('listening'); }
-        else { toast({ title: "Error", description: result.message || "Failed to save.", errors: result.errors, variant: "destructive" }); }
+        else { toast({ title: "Error", description: result.message || "Failed to save.", variant: "destructive" }); }
       });
     })(event);
   };

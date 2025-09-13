@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Mic, StopCircle, Play, AlertCircle, CheckCircle, RefreshCw, Sparkles, Send } from "lucide-react";
-import type { SpeakingPrompt } from '@/app/admin/ai-content/speakingPromptSchemas';
+import type { SpeakingPrompt } from '@/app/admin/site-management/ai-content/schemas';
 import { submitSpeakingAssessment, type SpeakingAssessmentFormState } from "./actions";
 
 const initialAssessmentState: SpeakingAssessmentFormState = {

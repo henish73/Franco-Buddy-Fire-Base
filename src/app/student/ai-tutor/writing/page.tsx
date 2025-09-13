@@ -1,6 +1,6 @@
 // src/app/student/ai-tutor/writing/page.tsx
 import { getWritingPromptsAction } from '@/app/admin/site-management/ai-content/writingPromptActions';
-import type { WritingPrompt } from '@/app/admin/site-management/ai-content/writingPromptSchemas';
+import type { WritingPrompt } from '@/app/admin/site-management/ai-content/schemas';
 import WritingAssessmentClient from './WritingAssessmentClient';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, MessageSquareText } from 'lucide-react';

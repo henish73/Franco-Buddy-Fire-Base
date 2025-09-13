@@ -3,7 +3,7 @@
 
 import { z } from "zod";
 import { getReadingPassagesAction } from '@/app/admin/site-management/ai-content/readingPassageActions'; // To fetch passage and its questions
-import type { ReadingPassage, QuizQuestion } from '@/app/admin/site-management/ai-content/readingPassageSchemas';
+import type { ReadingPassage, QuizQuestion } from '@/app/admin/site-management/ai-content/schemas';
 
 export type ReadingQuizResultItem = {
   questionId: string;

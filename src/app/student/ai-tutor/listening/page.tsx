@@ -1,6 +1,6 @@
 // src/app/student/ai-tutor/listening/page.tsx
 import { getListeningAudioAction } from '@/app/admin/site-management/ai-content/listeningAudioActions';
-import type { ListeningAudio } from '@/app/admin/site-management/ai-content/listeningAudioSchemas';
+import type { ListeningAudio } from '@/app/admin/site-management/ai-content/schemas';
 import ListeningAssessmentClient from './ListeningAssessmentClient';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Headphones } from 'lucide-react';
