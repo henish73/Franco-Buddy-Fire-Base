@@ -10,9 +10,9 @@ import { getCoursesAction } from '@/app/admin/courses/actions';
 import type { Course } from '@/components/shared/CourseCard';
 
 const testimonials = [
-  { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Canada", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
-  { quote: "I needed a high TCF score for my work permit extension. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Canada", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
-  { quote: "Living in Alberta, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Calgary, AB", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 4.8 },
+  { quote: "FRANCOBUDDY was a game-changer! I scored 371/400 in my TEF Canada exam, crucial for my PR application in Toronto. The instructors are the best for anyone serious about immigration.", author: "Priya Sharma", role: "Software Engineer", location: "Toronto, ON", image: "https://picsum.photos/100/100", dataAiHint: "professional woman portrait", rating: 5 },
+  { quote: "I needed a high TCF score for my work permit extension in Mississauga. FRANCOBUDDY's personalized approach helped me go from zero French to a confident B2. Highly recommend for TEF and TCF.", author: "Rahul Patel", role: "Business Analyst", location: "Mississauga, ON", image: "https://picsum.photos/101/101", dataAiHint: "professional man portrait", rating: 5 },
+  { quote: "Living in Brampton, I needed flexible TEF classes. The online program was perfect, and the small class size helped me pass with flying colors for my Express Entry profile.", author: "Kavya Reddy", role: "University Student", location: "Brampton, ON", image: "https://picsum.photos/102/102", dataAiHint: "female student portrait", rating: 4.8 },
 ];
 
 const whyFrancoBuddyItems = [
@@ -168,7 +168,9 @@ export default async function HomePage() {
                 <CardContent className="flex-grow p-0">
                   <p className="text-muted-foreground italic">&quot;{testimonial.quote}&quot;</p>
                    <div className="flex items-center mt-4">
-                        {[...Array(5)].map((_, i) => <Star key={i} className={`h-5 w-5 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} />)}
+                        {[...Array(Math.floor(testimonial.rating))].map((_, i) => <Star key={i} className={'h-5 w-5 text-yellow-400 fill-yellow-400'} />)}
+                        {testimonial.rating % 1 !== 0 && <Star className={'h-5 w-5 text-yellow-400 fill-yellow-400 opacity-50'} />}
+                        {[...Array(5 - Math.ceil(testimonial.rating))].map((_, i) => <Star key={i + Math.ceil(testimonial.rating)} className={'h-5 w-5 text-gray-300'} />)}
                         <span className="ml-2 text-sm font-bold text-foreground">{testimonial.rating}/5</span>
                    </div>
                 </CardContent>
