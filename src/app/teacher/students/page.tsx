@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Users, Mail, MessageSquare } from "lucide-react";
-import { getStudentsAction } from '@/app/admin/students/actions';
-import type { Student } from '@/app/admin/students/schema';
+import { getStudentsAction } from '@/app/admin/student-management/actions';
+import type { Student } from '@/app/admin/student-management/schema';
 import { useToast } from '@/hooks/use-toast';
 
 // This page currently uses the same data source as the admin page.
@@ -28,7 +28,7 @@ export default function TeacherStudentsPage() {
         toast({ title: "Error", description: "Could not fetch student data.", variant: "destructive" });
       }
     });
-  }, []);
+  }, [toast]);
 
   return (
     <div className="space-y-8">
