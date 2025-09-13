@@ -2,8 +2,8 @@
 "use server";
 
 import { z } from 'zod';
-import { addEnrollmentAction } from '@/app/admin/enrollments/actions';
-import { addStudentAction } from '@/app/admin/students/actions';
+import { addEnrollmentAction } from '@/app/admin/finance-management/actions';
+import { addStudentAction } from '@/app/admin/student-management/actions';
 
 const enrollmentSchema = z.object({
   courseId: z.string(),

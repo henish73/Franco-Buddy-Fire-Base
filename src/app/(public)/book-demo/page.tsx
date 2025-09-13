@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import Image from 'next/image';
-import { getTimeSlotsAction } from '@/app/admin/settings/actions'; // Import the new action
+import { getTimeSlotsAction } from '@/app/admin/site-management/settings/actions'; // Import the new action
 
 const testimonials = [
   { quote: "The free demo was so insightful! The instructor pinpointed my exact weaknesses in just 30 minutes and gave me a clear plan. It was the best decision I made for my TEF prep.", author: "Priya Sharma", location: "Canada", image: "https://picsum.photos/seed/t1/100/100", dataAiHint: "professional woman portrait", rating: 5 },

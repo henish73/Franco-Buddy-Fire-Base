@@ -2,7 +2,7 @@
 "use server";
 
 import { z } from 'zod';
-import { addDemoRequestAction } from '@/app/admin/leads/actions';
+import { addDemoRequestAction } from '@/app/admin/finance-management/actions';
 import { sendDemoConfirmationEmail } from '@/lib/email';
 
 const demoBookingSchema = z.object({

@@ -3,7 +3,7 @@
 
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
-import { addContactSubmissionAction } from '@/app/admin/leads/actions';
+import { addContactSubmissionAction } from '@/app/admin/finance-management/actions';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
