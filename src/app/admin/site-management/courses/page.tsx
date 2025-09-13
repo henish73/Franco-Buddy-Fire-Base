@@ -1,4 +1,4 @@
-// src/app/admin/courses/page.tsx
+// src/app/admin/site-management/courses/page.tsx
 "use client";
 
 import { useState, useEffect, useTransition, FormEvent } from 'react';
@@ -110,7 +110,7 @@ export default function AdminCoursesPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-primary">Course Management</h1>
+        <h2 className="text-2xl font-bold text-foreground">Course Management</h2>
         <div>
            <Button onClick={fetchCourses} variant="outline" size="icon" className="mr-2" aria-label="Refresh Courses" disabled={isPending}>
             <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
@@ -125,7 +125,6 @@ export default function AdminCoursesPage() {
             <DialogTitle>{editingCourse ? "Edit Course" : "Add New Course"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4 flex-grow overflow-y-auto pr-4">
-            {/* Form fields as before, using react-hook-form's register */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">Title</Label>
               <Input id="title" {...register("title")} className="col-span-3" />

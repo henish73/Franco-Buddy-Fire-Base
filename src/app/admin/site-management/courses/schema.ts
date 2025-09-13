@@ -1,4 +1,4 @@
-// src/app/admin/courses/schema.ts
+// src/app/admin/site-management/courses/schema.ts
 import { z } from 'zod';
 
 // These schemas are now just for validation within the actions, not for transformation.

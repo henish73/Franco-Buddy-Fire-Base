@@ -1,4 +1,4 @@
-// src/app/admin/students/schema.ts
+// src/app/admin/student-management/schema.ts
 import { z } from 'zod';
 
 // --- Student Data Type ---

@@ -1,4 +1,4 @@
-// src/app/admin/courses/actions.ts
+// src/app/admin/site-management/courses/actions.ts
 "use server";
 
 import { revalidatePath } from 'next/cache';
@@ -87,7 +87,7 @@ export async function addCourseAction(prevState: CourseFormState, formData: Form
     }
     try {
         await saveCourse(validatedFields.data);
-        revalidatePath('/admin/courses');
+        revalidatePath('/admin/site-management/courses');
         revalidatePath('/courses');
         return { message: "Course added successfully!", isSuccess: true };
     } catch (e) {
@@ -106,7 +106,7 @@ export async function updateCourseAction(prevState: CourseFormState, formData: F
     
     try {
         await saveCourse(validatedFields.data, id);
-        revalidatePath('/admin/courses');
+        revalidatePath('/admin/site-management/courses');
         revalidatePath(`/courses/${id}`);
         revalidatePath('/courses');
         return { message: "Course updated successfully!", isSuccess: true };
@@ -122,7 +122,7 @@ export async function deleteCourseAction(courseId: string): Promise<CourseFormSt
     if (simulatedCoursesDb.length === initialLength) {
         throw new Error("Course not found for deletion.");
     }
-    revalidatePath('/admin/courses');
+    revalidatePath('/admin/site-management/courses');
     revalidatePath('/courses');
     return { message: "Course deleted successfully!", isSuccess: true };
   } catch (e) {

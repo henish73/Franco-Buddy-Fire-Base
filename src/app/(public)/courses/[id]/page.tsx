@@ -10,7 +10,7 @@ import {
     ClipboardCheck, Award, MessageSquare, MessageCircle, User as UserIcon, Star, ShieldCheck, Clock
 } from 'lucide-react';
 import type { Course, Module, Lesson } from '@/components/shared/CourseCard';
-import { getCoursesAction } from '@/app/admin/courses/actions'; 
+import { getCoursesAction } from '@/app/admin/site-management/courses/actions'; 
 import { notFound } from 'next/navigation';
 
 const iconMap = { Users, Award, Video, FileText, Brain, ClipboardCheck, Target, MessageSquare, MessageCircle, Clock };

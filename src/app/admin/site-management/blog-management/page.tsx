@@ -1,4 +1,4 @@
-// src/app/admin/blog-management/page.tsx
+// src/app/admin/site-management/blog-management/page.tsx
 "use client";
 
 import { useState, useEffect, useTransition, FormEvent, useActionState } from 'react';
@@ -316,7 +316,9 @@ export default function AdminBlogManagementPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-primary">Blog Content Management</h1>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold text-foreground">Manage Blog Content</h2>
+      </div>
 
       <Tabs defaultValue="posts">
         <TabsList className="grid w-full grid-cols-3 md:max-w-md">
@@ -328,7 +330,7 @@ export default function AdminBlogManagementPage() {
         {/* Posts Tab Content */}
         <TabsContent value="posts" className="mt-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-foreground">Manage Posts</h2>
+            <h3 className="text-xl font-semibold text-foreground">Blog Posts</h3>
             <div>
               <Button onClick={fetchPosts} variant="outline" size="icon" className="mr-2" aria-label="Refresh Posts" disabled={isPending}>
                 <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
@@ -492,7 +494,7 @@ export default function AdminBlogManagementPage() {
         {/* Categories Tab Content */}
         <TabsContent value="categories" className="mt-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-foreground">Manage Categories</h2>
+            <h3 className="text-xl font-semibold text-foreground">Categories</h3>
             <div>
               <Button onClick={fetchCategories} variant="outline" size="icon" className="mr-2" aria-label="Refresh Categories" disabled={isPending}>
                 <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
@@ -569,7 +571,7 @@ export default function AdminBlogManagementPage() {
         {/* Tags Tab Content */}
         <TabsContent value="tags" className="mt-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-foreground">Manage Tags</h2>
+            <h3 className="text-xl font-semibold text-foreground">Tags</h3>
              <div>
               <Button onClick={fetchTags} variant="outline" size="icon" className="mr-2" aria-label="Refresh Tags" disabled={isPending}>
                 <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />

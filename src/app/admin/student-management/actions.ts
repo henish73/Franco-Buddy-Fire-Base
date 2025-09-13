@@ -1,4 +1,4 @@
-// src/app/admin/students/actions.ts
+// src/app/admin/student-management/actions.ts
 "use server";
 
 import { revalidatePath } from 'next/cache';
@@ -43,7 +43,7 @@ export async function addStudentAction(studentData: Omit<StudentFormData, 'id'>)
         };
         simulatedStudentsDb.push(newStudent);
         console.log("New student added (password would be hashed):", newStudent);
-        revalidatePath('/admin/students');
+        revalidatePath('/admin/student-management');
         return { message: "Student added successfully!", isSuccess: true, data: newStudent };
     } catch (e) {
         return { message: "Failed to add student.", isSuccess: false };
@@ -78,7 +78,7 @@ export async function updateStudentAction(prevState: StudentFormState, formData:
         };
         simulatedStudentsDb[studentIndex] = updatedStudent;
         console.log("Student updated:", updatedStudent);
-        revalidatePath('/admin/students');
+        revalidatePath('/admin/student-management');
         return { message: "Student updated successfully!", isSuccess: true };
     } catch (e) {
         return { message: "Failed to update student.", isSuccess: false };
@@ -92,7 +92,7 @@ export async function deleteStudentAction(studentId: string): Promise<StudentFor
         if (simulatedStudentsDb.length === initialLength) {
             return { message: "Student not found", isSuccess: false };
         }
-        revalidatePath('/admin/students');
+        revalidatePath('/admin/student-management');
         return { message: "Student deleted successfully!", isSuccess: true };
     } catch (e) {
         return { message: "Failed to delete student.", isSuccess: false };

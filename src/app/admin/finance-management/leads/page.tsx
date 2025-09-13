@@ -1,4 +1,4 @@
-// src/app/admin/leads/page.tsx
+// src/app/admin/finance-management/leads/page.tsx
 "use client";
 
 import { useState, useEffect, useTransition } from 'react';
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Edit2, StickyNote, MessageSquare, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getLeadsAction, updateLeadStatusAction, type DemoRequestLead, type ContactLead } from './actions';
+import { getLeadsAction, updateLeadStatusAction, type DemoRequestLead, type ContactLead } from '../actions';
 
 const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
@@ -62,7 +62,7 @@ export default function AdminLeadsPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-primary">Lead Management</h1>
+        <h2 className="text-2xl font-semibold text-foreground">Lead Management</h2>
          <Button onClick={fetchLeads} variant="outline" size="icon" aria-label="Refresh Leads" disabled={isPending}>
             <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
           </Button>

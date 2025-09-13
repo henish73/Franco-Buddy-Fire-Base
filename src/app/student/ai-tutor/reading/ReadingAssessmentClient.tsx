@@ -1,4 +1,3 @@
-
 // src/app/student/ai-tutor/reading/ReadingAssessmentClient.tsx
 "use client";
 
@@ -11,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, CheckCircle, RefreshCw, Sparkles, Send, BookOpen, ChevronsUpDown } from "lucide-react";
-import type { ReadingPassage, QuizQuestion } from '@/app/admin/ai-content/readingPassageSchemas';
+import type { ReadingPassage, QuizQuestion } from '@/app/admin/site-management/ai-content/readingPassageSchemas';
 import { submitReadingQuiz, type ReadingQuizFormState, type ReadingQuizResult } from "./actions";
 
 type ReadingAssessmentClientProps = {

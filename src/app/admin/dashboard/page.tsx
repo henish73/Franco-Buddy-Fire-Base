@@ -3,11 +3,11 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import StatCard from '@/components/shared/StatCard';
-import { Users, Inbox, BookOpen, BarChart3, ArrowRight } from 'lucide-react';
+import { Users, BookOpen, BarChart3, ArrowRight, Wallet, Settings, GraduationCap } from 'lucide-react';
 import Image from 'next/image';
-import { getLeadStatsAction } from '../leads/actions';
-import { getStudentCountAction } from '../students/actions';
-import { getCourseCountAction } from '../courses/actions';
+import { getLeadStatsAction } from '../finance-management/actions';
+import { getStudentCountAction } from '../student-management/actions';
+import { getCourseCountAction } from '../site-management/courses/actions';
 
 export default async function AdminDashboardPage() {
   // Fetch real stats using server actions
@@ -16,10 +16,10 @@ export default async function AdminDashboardPage() {
   const courseCount = await getCourseCountAction();
 
   const quickLinks = [
-    { href: "/admin/leads", label: "Manage Leads", icon: Inbox },
-    { href: "/admin/students", label: "Manage Students", icon: Users },
-    { href: "/admin/courses", label: "Manage Courses", icon: BookOpen },
-    { href: "/admin/blog-management", label: "Manage Blog", icon: BookOpen },
+    { href: "/admin/finance-management", label: "Finance Management", icon: Wallet },
+    { href: "/admin/student-management", label: "Student Management", icon: Users },
+    { href: "/admin/teacher-management", label: "Teacher Management", icon: GraduationCap },
+    { href: "/admin/site-management", label: "Site Management", icon: Settings },
   ];
 
   return (
@@ -44,8 +44,7 @@ export default async function AdminDashboardPage() {
       <section>
         <h2 className="text-xl font-semibold text-foreground mb-4">Overview</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <StatCard title="New Demo Requests" value={leadStats.demoRequests} icon={Inbox} description="Awaiting action" />
-          <StatCard title="New Contact Submissions" value={leadStats.contactSubmissions} icon={Inbox} description="Needs review" />
+          <StatCard title="New Leads & Demos" value={leadStats.demoRequests + leadStats.contactSubmissions} icon={Wallet} description="Awaiting action" />
           <StatCard title="Total Students" value={studentCount} icon={Users} description="Enrolled" />
           <StatCard title="Active Courses" value={courseCount} icon={BookOpen} description="Currently offered" />
         </div>
@@ -53,7 +52,7 @@ export default async function AdminDashboardPage() {
 
       {/* Quick Links Section */}
       <section>
-        <h2 className="text-xl font-semibold text-foreground mb-4">Quick Links</h2>
+        <h2 className="text-xl font-semibold text-foreground mb-4">Management Areas</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {quickLinks.map(link => (
             <Card key={link.href} className="shadow-md hover:shadow-lg transition-shadow">

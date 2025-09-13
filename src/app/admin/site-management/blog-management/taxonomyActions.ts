@@ -1,4 +1,4 @@
-// src/app/admin/blog-management/taxonomyActions.ts
+// src/app/admin/site-management/blog-management/taxonomyActions.ts
 "use server";
 
 import { z } from "zod";
@@ -80,7 +80,7 @@ export async function addCategoryAction(
       updatedAt: new Date().toISOString(),
     };
     db.categories.push(newCategory);
-    revalidatePath("/admin/blog-management");
+    revalidatePath("/admin/site-management/blog-management");
     revalidatePath("/blog", "layout");
     return { message: "Category added successfully!", isSuccess: true, data: newCategory };
   } catch (error) {
@@ -134,7 +134,7 @@ export async function updateCategoryAction(
     };
     
     db.categories[categoryIndex] = updatedCategory;
-    revalidatePath("/admin/blog-management");
+    revalidatePath("/admin/site-management/blog-management");
     revalidatePath("/blog", "layout");
 
     return { message: "Category updated successfully!", isSuccess: true, data: updatedCategory };
@@ -151,7 +151,7 @@ export async function deleteCategoryAction(categoryId: string): Promise<Taxonomy
     if (db.categories.length === initialLength) {
         return { message: "Category not found or already deleted.", isSuccess: false };
     }
-    revalidatePath("/admin/blog-management");
+    revalidatePath("/admin/site-management/blog-management");
     revalidatePath("/blog", "layout");
     return { message: "Category deleted successfully!", isSuccess: true };
   } catch (error) {
@@ -204,7 +204,7 @@ export async function addTagAction(
       updatedAt: new Date().toISOString(),
     };
     db.tags.push(newTag);
-    revalidatePath("/admin/blog-management");
+    revalidatePath("/admin/site-management/blog-management");
     revalidatePath("/blog", "layout");
     return { message: "Tag added successfully!", isSuccess: true, data: newTag };
   } catch (error) {
@@ -256,7 +256,7 @@ export async function updateTagAction(
       updatedAt: new Date().toISOString(),
     };
     db.tags[tagIndex] = updatedTag;
-    revalidatePath("/admin/blog-management");
+    revalidatePath("/admin/site-management/blog-management");
     revalidatePath("/blog", "layout");
     return { message: "Tag updated successfully!", isSuccess: true, data: updatedTag };
   } catch (error) {
@@ -272,7 +272,7 @@ export async function deleteTagAction(tagId: string): Promise<TaxonomyFormState>
      if (db.tags.length === initialLength) {
         return { message: "Tag not found or already deleted.", isSuccess: false };
     }
-    revalidatePath("/admin/blog-management");
+    revalidatePath("/admin/site-management/blog-management");
     revalidatePath("/blog", "layout");
     return { message: "Tag deleted successfully!", isSuccess: true };
   } catch (error) {

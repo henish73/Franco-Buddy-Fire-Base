@@ -1,4 +1,4 @@
-// src/app/admin/leads/actions.ts
+// src/app/admin/finance-management/actions.ts
 "use server";
 
 import { revalidatePath } from 'next/cache';
@@ -29,18 +29,34 @@ export type ContactLead = {
   notes?: string;
 };
 
+export type Enrollment = {
+  id: string;
+  studentId: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  courseId: string;
+  courseName: string;
+  date: string;
+  paymentStatus: "Paid" | "Pending" | "Failed" | "Refunded";
+  enrollmentStatus: "Active" | "Cancelled" | "Completed";
+};
+
+
 // Simulated in-memory database
 let simulatedDemoLeadsDb: DemoRequestLead[] = [];
 let simulatedContactLeadsDb: ContactLead[] = [];
+let simulatedEnrollmentsDb: Enrollment[] = [];
 
 // Form state for server actions
-export type LeadsFormState = {
+export type FinanceManagementFormState = {
   message: string;
   isSuccess: boolean;
   data?: {
     demoRequests: DemoRequestLead[];
     contactSubmissions: ContactLead[];
-  } | DemoRequestLead | ContactLead | null;
+    enrollments: Enrollment[];
+  } | DemoRequestLead | ContactLead | Enrollment | null;
 };
 
 // Zod schema for adding a demo lead, only validates required fields from the form
@@ -53,7 +69,7 @@ const addDemoLeadSchema = z.object({
 });
 
 // Action to add a demo request lead (from public form)
-export async function addDemoRequestAction(data: z.infer<typeof addDemoLeadSchema>): Promise<LeadsFormState> {
+export async function addDemoRequestAction(data: z.infer<typeof addDemoLeadSchema>): Promise<FinanceManagementFormState> {
   const validatedFields = addDemoLeadSchema.safeParse(data);
   if (!validatedFields.success) {
     return { message: "Invalid lead data provided.", isSuccess: false };
@@ -68,7 +84,7 @@ export async function addDemoRequestAction(data: z.infer<typeof addDemoLeadSchem
     };
     simulatedDemoLeadsDb.push(newLead);
     console.log("[Server Action] New demo lead added:", newLead);
-    revalidatePath('/admin/leads');
+    revalidatePath('/admin/finance-management');
     return { message: "Demo request has been submitted.", isSuccess: true, data: newLead };
   } catch (e) {
     const error = e as Error;
@@ -79,7 +95,7 @@ export async function addDemoRequestAction(data: z.infer<typeof addDemoLeadSchem
 
 
 // Action to add a contact submission lead (from public form)
-export async function addContactSubmissionAction(data: Omit<ContactLead, 'id' | 'submittedAt' | 'status'>): Promise<LeadsFormState> {
+export async function addContactSubmissionAction(data: Omit<ContactLead, 'id' | 'submittedAt' | 'status'>): Promise<FinanceManagementFormState> {
     try {
         const newLead: ContactLead = {
         ...data,
@@ -89,10 +105,8 @@ export async function addContactSubmissionAction(data: Omit<ContactLead, 'id' | 
         };
         simulatedContactLeadsDb.push(newLead);
         console.log("[Server Action] New contact lead added:", newLead);
-        revalidatePath('/admin/leads');
+        revalidatePath('/admin/finance-management');
 
-        // This action redirects, so the return state is for fallback
-        // The actual redirect will be handled in the form action itself.
         return { message: "Redirecting to WhatsApp...", isSuccess: true };
     } catch (e) {
         return { message: "Failed to submit contact form.", isSuccess: false };
@@ -101,7 +115,7 @@ export async function addContactSubmissionAction(data: Omit<ContactLead, 'id' | 
 
 
 // Action to get all leads for the admin panel
-export async function getLeadsAction(): Promise<LeadsFormState> {
+export async function getLeadsAction(): Promise<FinanceManagementFormState> {
   try {
     return {
       message: "Leads fetched successfully.",
@@ -109,6 +123,7 @@ export async function getLeadsAction(): Promise<LeadsFormState> {
       data: {
         demoRequests: [...simulatedDemoLeadsDb].sort((a,b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()),
         contactSubmissions: [...simulatedContactLeadsDb].sort((a,b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()),
+        enrollments: [], // Not needed for this specific action but part of the type
       },
     };
   } catch (error) {
@@ -130,7 +145,7 @@ export async function getLeadStatsAction(): Promise<{ demoRequests: number, cont
 
 
 // Action to update lead status
-export async function updateLeadStatusAction(leadId: string, leadType: 'demo' | 'contact', newStatus: string): Promise<LeadsFormState> {
+export async function updateLeadStatusAction(leadId: string, leadType: 'demo' | 'contact', newStatus: string): Promise<FinanceManagementFormState> {
     try {
         if (leadType === 'demo') {
             const leadIndex = simulatedDemoLeadsDb.findIndex(l => l.id === leadId);
@@ -141,9 +156,77 @@ export async function updateLeadStatusAction(leadId: string, leadType: 'demo' | 
             if (leadIndex === -1) return { message: "Contact lead not found.", isSuccess: false };
             simulatedContactLeadsDb[leadIndex].status = newStatus as ContactLead['status'];
         }
-        revalidatePath('/admin/leads');
+        revalidatePath('/admin/finance-management');
         return { message: "Lead status updated.", isSuccess: true };
     } catch (error) {
         return { message: "Failed to update lead status.", isSuccess: false };
+    }
+}
+
+// --- ENROLLMENT ACTIONS ---
+
+// Action to add a new enrollment (called by the public enrollment form)
+export async function addEnrollmentAction(enrollmentData: Omit<Enrollment, 'id' | 'paymentStatus' | 'enrollmentStatus'>): Promise<FinanceManagementFormState> {
+    try {
+        const newEnrollment: Enrollment = {
+            ...enrollmentData,
+            id: `enr_${Date.now()}`,
+            paymentStatus: "Pending", // Default status
+            enrollmentStatus: "Active", // Default status
+        };
+        simulatedEnrollmentsDb.push(newEnrollment);
+        console.log("[Server Action] New enrollment added:", newEnrollment);
+        
+        revalidatePath('/admin/finance-management');
+
+        return { message: `Enrollment successful! We have received your details and will contact you shortly with payment information and next steps.`, isSuccess: true, data: newEnrollment };
+    } catch(e) {
+        const error = e as Error;
+        console.error("Error adding enrollment:", error);
+        return { message: `Enrollment failed: ${error.message}`, isSuccess: false };
+    }
+}
+
+// Action to get all enrollments for the admin panel
+export async function getEnrollmentsAction(): Promise<FinanceManagementFormState> {
+    try {
+        const sortedEnrollments = [...simulatedEnrollmentsDb].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return {
+            message: "Enrollments fetched successfully.",
+            isSuccess: true,
+            data: {
+              enrollments: JSON.parse(JSON.stringify(sortedEnrollments)),
+              demoRequests: [],
+              contactSubmissions: []
+            },
+        };
+    } catch (e) {
+        const error = e as Error;
+        console.error("Error fetching enrollments:", error);
+        return { message: "Failed to fetch enrollments.", isSuccess: false, data: { enrollments: [], demoRequests: [], contactSubmissions: [] } };
+    }
+}
+
+
+// Action to update an enrollment's status
+export async function updateEnrollmentStatusAction(enrollmentId: string, newStatus: Enrollment["enrollmentStatus"]): Promise<FinanceManagementFormState> {
+    try {
+        const enrollmentIndex = simulatedEnrollmentsDb.findIndex(e => e.id === enrollmentId);
+        if (enrollmentIndex === -1) {
+            return { message: "Enrollment not found.", isSuccess: false };
+        }
+        simulatedEnrollmentsDb[enrollmentIndex].enrollmentStatus = newStatus;
+        if(newStatus === 'Active') {
+            simulatedEnrollmentsDb[enrollmentIndex].paymentStatus = 'Paid';
+        }
+        console.log(`[Server Action] Updated enrollment ${enrollmentId} status to ${newStatus}`);
+        
+        revalidatePath('/admin/finance-management');
+
+        return { message: "Enrollment status updated.", isSuccess: true };
+    } catch (e) {
+        const error = e as Error;
+        console.error("Error updating enrollment status:", error);
+        return { message: `Failed to update status: ${error.message}`, isSuccess: false };
     }
 }

@@ -6,7 +6,7 @@ import SectionTitle from '@/components/shared/SectionTitle';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CheckCircle, Users, Clock, Award, UserCheck, BookOpen, Star, TrendingUp, Target, ChevronRight, ShieldCheck, Heart, GitCommit, User, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { getCoursesAction } from '@/app/admin/courses/actions';
+import { getCoursesAction } from '@/app/admin/site-management/courses/actions';
 import type { Course } from '@/components/shared/CourseCard';
 
 const testimonials = [
@@ -64,9 +64,9 @@ export default async function HomePage() {
           </div>
            <div className="mt-12 flex justify-center items-center gap-8 opacity-90">
                 <div className="flex -space-x-4 rtl:space-x-reverse">
-                    <Avatar><AvatarImage src="https://picsum.photos/40/40" alt="Student from Canada" data-ai-hint="person avatar"/><AvatarFallback>S1</AvatarFallback></Avatar>
-                    <Avatar><AvatarImage src="https://picsum.photos/41/41" alt="Student from Canada" data-ai-hint="person avatar"/><AvatarFallback>S2</AvatarFallback></Avatar>
-                    <Avatar><AvatarImage src="https://picsum.photos/42/42" alt="Student from Canada" data-ai-hint="person avatar"/><AvatarFallback>S3</AvatarFallback></Avatar>
+                    <Avatar><AvatarImage src="https://picsum.photos/seed/s1/40/40" alt="Student from Canada" data-ai-hint="person avatar"/><AvatarFallback>S1</AvatarFallback></Avatar>
+                    <Avatar><AvatarImage src="https://picsum.photos/seed/s2/40/40" alt="Student from Canada" data-ai-hint="person avatar"/><AvatarFallback>S2</AvatarFallback></Avatar>
+                    <Avatar><AvatarImage src="https://picsum.photos/seed/s3/40/40" alt="Student from Canada" data-ai-hint="person avatar"/><AvatarFallback>S3</AvatarFallback></Avatar>
                 </div>
                 <div>
                     <p className="font-semibold">500+ Students Across Canada</p>

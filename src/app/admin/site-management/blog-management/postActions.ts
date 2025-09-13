@@ -1,4 +1,4 @@
-// src/app/admin/blog-management/postActions.ts
+// src/app/admin/site-management/blog-management/postActions.ts
 "use server";
 
 import { z } from "zod";
@@ -204,7 +204,7 @@ export async function addBlogPostAction(
 
     db.posts.push(newPost);
     
-    revalidatePath("/admin/blog-management");
+    revalidatePath("/admin/site-management/blog-management");
     revalidatePath("/blog", "layout");
     
     return { message: "Blog post added successfully!", isSuccess: true, data: newPost };
@@ -276,7 +276,7 @@ export async function updateBlogPostAction(
     
     db.posts[postIndex] = updatedPost;
 
-    revalidatePath("/admin/blog-management");
+    revalidatePath("/admin/site-management/blog-management");
     revalidatePath("/blog", "layout");
     revalidatePath(`/blog/${updatedPost.slug}`);
     
@@ -296,7 +296,7 @@ export async function deleteBlogPostAction(postId: string): Promise<BlogPostForm
     
     db.posts.splice(postIndex, 1);
 
-    revalidatePath("/admin/blog-management");
+    revalidatePath("/admin/site-management/blog-management");
     revalidatePath("/blog", "layout");
     
     return { message: "Blog post deleted successfully!", isSuccess: true };

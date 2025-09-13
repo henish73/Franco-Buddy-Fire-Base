@@ -1,4 +1,4 @@
-// src/app/admin/blog-management/db.ts
+// src/app/admin/site-management/blog-management/db.ts
 import { mockBlogPosts, type BlogPost, type BlogCategory, type BlogTag } from "@/app/(public)/blog/mockBlogPosts";
 
 // --- In-memory DB with Singleton Pattern ---

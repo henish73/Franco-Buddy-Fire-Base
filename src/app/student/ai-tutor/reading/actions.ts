@@ -1,10 +1,9 @@
-
 // src/app/student/ai-tutor/reading/actions.ts
 "use server";
 
 import { z } from "zod";
-import { getReadingPassagesAction } from '@/app/admin/ai-content/readingPassageActions'; // To fetch passage and its questions
-import type { ReadingPassage, QuizQuestion } from '@/app/admin/ai-content/readingPassageSchemas';
+import { getReadingPassagesAction } from '@/app/admin/site-management/ai-content/readingPassageActions'; // To fetch passage and its questions
+import type { ReadingPassage, QuizQuestion } from '@/app/admin/site-management/ai-content/readingPassageSchemas';
 
 export type ReadingQuizResultItem = {
   questionId: string;

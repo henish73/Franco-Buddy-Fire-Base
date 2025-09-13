@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Users, BookOpen, Inbox, Settings, LogOut, BookMarked, ExternalLink, ClipboardList, Home, FileText, MessageSquareHeart, GraduationCap
+  LayoutDashboard, Users, BookOpen, Settings, LogOut, Home, Wallet, GraduationCap
 } from 'lucide-react';
 import {
   Sidebar,
@@ -15,22 +15,17 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarSeparator
 } from '@/components/ui/sidebar'; 
-import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo } from '../icons/Logo';
 
 const adminNavItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/leads', label: 'Lead Management', icon: Inbox },
-  { href: '/admin/students', label: 'Student Management', icon: Users },
-  { href: '/admin/courses', label: 'Course Management', icon: BookOpen },
-  { href: '/admin/enrollments', label: 'Enrollments', icon: ClipboardList },
-  { href: '/admin/blog-management', label: 'Blog Management', icon: FileText },
-  { href: '/admin/ai-content', label: 'AI Tutor Content', icon: MessageSquareHeart },
-  { href: '/admin/settings', label: 'Site Settings', icon: Settings },
+  { href: '/admin/finance-management', label: 'Finance', icon: Wallet },
+  { href: '/admin/student-management', label: 'Students', icon: Users },
+  { href: '/admin/teacher-management', label: 'Teachers', icon: GraduationCap },
+  { href: '/admin/site-management', label: 'Site Management', icon: Settings },
 ];
 
 export default function AdminSidebar() {
@@ -63,6 +58,7 @@ export default function AdminSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+           <SidebarSeparator />
            <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
@@ -79,11 +75,11 @@ export default function AdminSidebar() {
               <SidebarMenuButton
                 asChild
                 isActive={pathname === "/"}
-                tooltip="Back to Main Content"
+                tooltip="Back to Public Site"
               >
                 <Link href="/">
                   <Home />
-                  <span>Back to Main Content</span>
+                  <span>Public Site</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -94,12 +90,6 @@ export default function AdminSidebar() {
 
       <SidebarFooter className="p-4">
         <SidebarGroup>
-            <SidebarMenuButton asChild tooltip="View Public Site">
-                <Link href="/" target="_blank">
-                    <ExternalLink/>
-                    <span>View Site</span>
-                </Link>
-            </SidebarMenuButton>
             <SidebarMenuButton tooltip="Logout"> {/* Implement logout functionality */}
                 <LogOut />
                 <span>Logout</span>

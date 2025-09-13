@@ -1,4 +1,4 @@
-// src/app/admin/enrollments/page.tsx
+// src/app/admin/finance-management/enrollments/page.tsx
 "use client";
 
 import { useState, useEffect, useTransition } from 'react';
@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { MoreHorizontal, CheckCircle, XCircle, Eye, RefreshCw, Clock } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { getEnrollmentsAction, updateEnrollmentStatusAction, type Enrollment } from './actions';
+import { getEnrollmentsAction, updateEnrollmentStatusAction, type Enrollment } from '../actions';
 
 const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
 
@@ -67,7 +67,7 @@ export default function AdminEnrollmentsPage() {
   return (
     <div className="space-y-8">
        <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-primary">Enrollment Management</h1>
+        <h2 className="text-2xl font-semibold text-foreground">Enrollment Management</h2>
          <Button onClick={fetchEnrollments} variant="outline" size="icon" aria-label="Refresh Enrollments" disabled={isPending}>
             <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
           </Button>
@@ -111,7 +111,7 @@ export default function AdminEnrollmentsPage() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem asChild>
-                        <Link href={`/admin/students?edit=${enrollment.studentId}`} className="flex items-center w-full">
+                        <Link href={`/admin/student-management?edit=${enrollment.studentId}`} className="flex items-center w-full">
                             <Eye className="mr-2 h-4 w-4" /> View Student
                         </Link>
                       </DropdownMenuItem>

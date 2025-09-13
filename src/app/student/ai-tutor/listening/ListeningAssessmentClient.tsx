@@ -1,4 +1,3 @@
-
 // src/app/student/ai-tutor/listening/ListeningAssessmentClient.tsx
 "use client";
 
@@ -11,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, CheckCircle, RefreshCw, Sparkles, Send, Headphones, Play, Pause, Volume2 } from "lucide-react";
-import type { ListeningAudio } from '@/app/admin/ai-content/listeningAudioSchemas';
+import type { ListeningAudio } from '@/app/admin/site-management/ai-content/listeningAudioSchemas';
 import { submitListeningAssessment, type ListeningAssessmentFormState } from "./actions";
 
 type ListeningAssessmentClientProps = {

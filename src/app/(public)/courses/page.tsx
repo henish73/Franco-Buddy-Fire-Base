@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import SectionTitle from '@/components/shared/SectionTitle';
 import CourseCard, { type Course } from '@/components/shared/CourseCard';
 import { HelpCircle, Star, Users, Award } from 'lucide-react';
-import { getCoursesAction } from '@/app/admin/courses/actions';
+import { getCoursesAction } from '@/app/admin/site-management/courses/actions';
 import Image from 'next/image';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';

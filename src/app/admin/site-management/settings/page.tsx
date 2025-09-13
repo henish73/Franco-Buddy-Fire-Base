@@ -1,4 +1,4 @@
-// src/app/admin/settings/page.tsx
+// src/app/admin/site-management/settings/page.tsx
 import SiteSettingsForm, { type InitialSiteSettings } from './SiteSettingsForm';
 import { getSiteSettings, getTimeSlotsAction } from './actions';
 import TimeSlotManager from './TimeSlotManager';
@@ -18,7 +18,7 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-primary">Site Settings</h1>
+      <h2 className="text-2xl font-bold text-foreground">General Site Settings</h2>
       <div className="grid md:grid-cols-2 gap-8 items-start">
         <SiteSettingsForm initialData={initialData} />
         <TimeSlotManager initialTimeSlots={timeSlots} />

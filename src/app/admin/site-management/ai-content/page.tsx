@@ -1,4 +1,4 @@
-// src/app/admin/ai-content/page.tsx
+// src/app/admin/site-management/ai-content/page.tsx
 "use client";
 
 import { useState, useEffect, useTransition, FormEvent, useActionState } from 'react';
@@ -67,8 +67,6 @@ import {
   type ListeningAudioFormData, 
   type ListeningAudioFormState, 
   type ListeningAudio 
-  // Assuming ListeningAudio will also have questions eventually, similar to ReadingPassage
-  // type ListeningQuizQuestion 
 } from './listeningAudioSchemas';
 
 
@@ -92,10 +90,6 @@ export default function AdminAIContentPage() {
     resolver: zodResolver(speakingPromptSchema), 
     defaultValues: { topic: "", promptText: "", expectedKeywords: "", difficultyLevel: undefined, tefSection: "" }
   });
-  const [speakingPromptServerState, speakingPromptFormAction] = useActionState(
-    editingSpeakingPrompt ? updateSpeakingPromptAction : addSpeakingPromptAction,
-    initialSpeakingPromptFormState
-  );
 
   // --- Writing Prompts State & Forms ---
   const [writingPrompts, setWritingPrompts] = useState<WritingPrompt[]>([]);
@@ -106,11 +100,7 @@ export default function AdminAIContentPage() {
     resolver: zodResolver(writingPromptSchema),
     defaultValues: { topic: "", taskType: "", promptText: "", sampleResponse: "", difficultyLevel: undefined, tefSection: "" }
   });
-  const [writingPromptServerState, writingPromptFormAction] = useActionState(
-    editingWritingPrompt ? updateWritingPromptAction : addWritingPromptAction,
-    initialWritingPromptFormState
-  );
-
+  
   // --- Reading Passages State & Forms ---
   const [readingPassages, setReadingPassages] = useState<ReadingPassage[]>([]);
   const [isReadingPassageDialogOpen, setIsReadingPassageDialogOpen] = useState(false);
@@ -120,10 +110,6 @@ export default function AdminAIContentPage() {
     resolver: zodResolver(readingPassageSchema),
     defaultValues: { topic: "", passageText: "", difficultyLevel: undefined, tefSection: "", questions: "[]" }
   });
-  const [readingPassageServerState, readingPassageFormAction] = useActionState(
-    editingReadingPassage ? updateReadingPassageAction : addReadingPassageAction,
-    initialReadingPassageFormState
-  );
 
   // --- Listening Audio State & Forms ---
   const [listeningAudioItems, setListeningAudioItems] = useState<ListeningAudio[]>([]);
@@ -134,10 +120,6 @@ export default function AdminAIContentPage() {
     resolver: zodResolver(listeningAudioSchema),
     defaultValues: { topic: "", audioFileUrlOrName: "", transcript: "", difficultyLevel: undefined, tefSection: "", questions: "[]" }
   });
-  const [listeningAudioServerState, listeningAudioFormAction] = useActionState(
-    editingListeningAudio ? updateListeningAudioAction : addListeningAudioAction,
-    initialListeningAudioFormState
-  );
 
 
   // --- Data Fetching Effects ---
@@ -311,7 +293,9 @@ export default function AdminAIContentPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold text-primary">AI Tutor Content Management</h1>
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-foreground">AI Tutor Content Management</h2>
+      </div>
 
       <Tabs defaultValue="speaking_prompts">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 md:max-w-2xl">
@@ -324,7 +308,7 @@ export default function AdminAIContentPage() {
         {/* Speaking Prompts Tab Content */}
         <TabsContent value="speaking_prompts" className="mt-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-foreground">Manage Speaking Prompts</h2>
+            <h3 className="text-xl font-semibold text-foreground">Speaking Prompts</h3>
             <div>
               <Button onClick={() => fetchData('speaking')} variant="outline" size="icon" className="mr-2" aria-label="Refresh Speaking Prompts" disabled={isPending}>
                 <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
@@ -349,7 +333,6 @@ export default function AdminAIContentPage() {
                   {speakingPromptForm.formState.errors.difficultyLevel && <p className="text-sm text-destructive mt-1">{speakingPromptForm.formState.errors.difficultyLevel.message}</p>}
                 </div>
                 <div><Label htmlFor="tefSection_spk">TEF Section</Label><Input id="tefSection_spk" {...speakingPromptForm.register("tefSection")} placeholder="e.g., Speaking Section A"/>{speakingPromptForm.formState.errors.tefSection && <p className="text-sm text-destructive mt-1">{speakingPromptForm.formState.errors.tefSection.message}</p>}</div>
-                 {speakingPromptServerState.message && !speakingPromptServerState.isSuccess && <p className="text-sm text-destructive mt-1">{speakingPromptServerState.message}</p>}
               </form>
               <DialogFooter><Button variant="outline" onClick={() => setIsSpeakingPromptDialogOpen(false)}>Cancel</Button><Button type="submit" form="speakingPromptForm" disabled={isPending}>{editingSpeakingPrompt ? "Save" : "Add"}</Button></DialogFooter>
             </DialogContent>
@@ -367,7 +350,7 @@ export default function AdminAIContentPage() {
         {/* Writing Prompts Tab Content */}
         <TabsContent value="writing_prompts" className="mt-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-foreground">Manage Writing Prompts</h2>
+            <h3 className="text-xl font-semibold text-foreground">Writing Prompts</h3>
             <div><Button onClick={() => fetchData('writing')} variant="outline" size="icon" className="mr-2" disabled={isPending}><RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin':''}`}/></Button><Button onClick={openAddWritingPromptDialog} disabled={isPending}><PlusCircle className="mr-2 h-4 w-4"/>Add New</Button></div>
           </div>
            <Dialog open={isWritingPromptDialogOpen} onOpenChange={setIsWritingPromptDialogOpen}>
@@ -385,7 +368,6 @@ export default function AdminAIContentPage() {
                   </Select>{writingPromptForm.formState.errors.difficultyLevel && <p className="text-sm text-destructive mt-1">{writingPromptForm.formState.errors.difficultyLevel.message}</p>}
                 </div>
                 <div><Label htmlFor="tefSection_wp">TEF Section</Label><Input id="tefSection_wp" {...writingPromptForm.register("tefSection")} placeholder="e.g., Writing Section B"/>{writingPromptForm.formState.errors.tefSection && <p className="text-sm text-destructive mt-1">{writingPromptForm.formState.errors.tefSection.message}</p>}</div>
-                {writingPromptServerState.message && !writingPromptServerState.isSuccess && <p className="text-sm text-destructive mt-1">{writingPromptServerState.message}</p>}
               </form>
               <DialogFooter><Button variant="outline" onClick={()=>setIsWritingPromptDialogOpen(false)}>Cancel</Button><Button type="submit" form="writingPromptForm" disabled={isPending}>{editingWritingPrompt ? "Save" : "Add"}</Button></DialogFooter>
             </DialogContent>
@@ -403,7 +385,7 @@ export default function AdminAIContentPage() {
         {/* Reading Passages Tab Content */}
         <TabsContent value="reading_passages" className="mt-6 space-y-6">
            <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-foreground">Manage Reading Passages</h2>
+            <h3 className="text-xl font-semibold text-foreground">Reading Passages</h3>
             <div><Button onClick={() => fetchData('reading')} variant="outline" size="icon" className="mr-2" disabled={isPending}><RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin':''}`}/></Button><Button onClick={openAddReadingPassageDialog} disabled={isPending}><PlusCircle className="mr-2 h-4 w-4"/>Add New</Button></div>
           </div>
           <Dialog open={isReadingPassageDialogOpen} onOpenChange={setIsReadingPassageDialogOpen}>
@@ -425,7 +407,6 @@ export default function AdminAIContentPage() {
                   {readingPassageForm.formState.errors.questions && <p className="text-sm text-destructive mt-1">{readingPassageForm.formState.errors.questions.message}</p>}
                   <p className="text-xs text-muted-foreground mt-1">Enter questions as a JSON array. Each question needs: id, questionText, options (array of strings), correctAnswer (string matching an option).</p>
                 </div>
-                {readingPassageServerState.message && !readingPassageServerState.isSuccess && <p className="text-sm text-destructive mt-1">{readingPassageServerState.message}</p>}
               </form>
               <DialogFooter><Button variant="outline" onClick={()=>setIsReadingPassageDialogOpen(false)}>Cancel</Button><Button type="submit" form="readingPassageForm" disabled={isPending}>{editingReadingPassage ? "Save" : "Add"}</Button></DialogFooter>
             </DialogContent>
@@ -443,7 +424,7 @@ export default function AdminAIContentPage() {
         {/* Listening Audio Tab Content */}
         <TabsContent value="listening_audio" className="mt-6 space-y-6">
            <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-foreground">Manage Listening Audio</h2>
+            <h3 className="text-xl font-semibold text-foreground">Listening Audio</h3>
             <div><Button onClick={() => fetchData('listening')} variant="outline" size="icon" className="mr-2" disabled={isPending}><RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin':''}`}/></Button><Button onClick={openAddListeningAudioDialog} disabled={isPending}><PlusCircle className="mr-2 h-4 w-4"/>Add New</Button></div>
           </div>
           <Dialog open={isListeningAudioDialogOpen} onOpenChange={setIsListeningAudioDialogOpen}>
@@ -466,7 +447,6 @@ export default function AdminAIContentPage() {
                   {listeningAudioForm.formState.errors.questions && <p className="text-sm text-destructive mt-1">{listeningAudioForm.formState.errors.questions.message}</p>}
                   <p className="text-xs text-muted-foreground mt-1">Enter questions as a JSON array. Each question needs: id, questionText, options (array of strings), correctAnswer (string matching an option).</p>
                 </div>
-                {listeningAudioServerState.message && !listeningAudioServerState.isSuccess && <p className="text-sm text-destructive mt-1">{listeningAudioServerState.message}</p>}
               </form>
               <DialogFooter><Button variant="outline" onClick={()=>setIsListeningAudioDialogOpen(false)}>Cancel</Button><Button type="submit" form="listeningAudioForm" disabled={isPending}>{editingListeningAudio ? "Save" : "Add"}</Button></DialogFooter>
             </DialogContent>
