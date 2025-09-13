@@ -8,6 +8,8 @@ type DemoBookingDetails = {
     selectedTime: string;
 }
 
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
+const SMTP_PORT = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
 const FROM_EMAIL = process.env.FROM_EMAIL || SMTP_USER;
@@ -100,7 +102,9 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
     `;
     
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: SMTP_HOST,
+        port: SMTP_PORT,
+        secure: SMTP_PORT === 465, // true for 465, false for other ports
         auth: {
             user: SMTP_USER,
             pass: SMTP_PASSWORD,
@@ -108,7 +112,7 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
     });
 
     try {
-        console.log("Attempting to send email via Nodemailer using 'gmail' service...");
+        console.log(`Attempting to send email via Nodemailer using host: ${SMTP_HOST}...`);
         const info = await transporter.sendMail({
             from: `FrancoBuddy <${FROM_EMAIL}>`,
             to: email, // The recipient's email address
@@ -117,7 +121,7 @@ export async function sendDemoConfirmationEmail(details: DemoBookingDetails): Pr
         });
         console.log('Message sent successfully! Message ID: %s', info.messageId);
     } catch (error) {
-        console.error("--- NODEMAILER GMAIL SERVICE ERROR ---");
+        console.error("--- NODEMAILER SMTP ERROR ---");
         console.error("User:", SMTP_USER);
         console.error(error);
         console.error("--- END OF NODEMAILER ERROR ---");
