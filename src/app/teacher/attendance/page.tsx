@@ -16,9 +16,15 @@ export default function AttendancePage() {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const [sessions, setSessions] = useState<ClassSession[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingSession, setEditingSession] = useState<ClassSession | null>(null);
+
+  // Set initial date on the client to prevent hydration mismatch
+  useEffect(() => {
+    setSelectedDate(new Date());
+  }, []);
+
 
   const fetchSessions = () => {
     startTransition(async () => {
@@ -33,6 +39,7 @@ export default function AttendancePage() {
 
   useEffect(() => {
     fetchSessions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDayClick = (day: Date) => {
