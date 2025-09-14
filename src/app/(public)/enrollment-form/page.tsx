@@ -2,6 +2,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import EnrollmentForm from './EnrollmentForm';
 import { coursesData } from '@/app/(public)/courses/mockCoursesData';
 import { type Course } from '@/components/shared/CourseCard';
@@ -36,7 +37,7 @@ const faqItems = [
 ]
 
 
-export default function EnrollmentPage() {
+function EnrollmentPageContent() {
   const searchParams = useSearchParams();
   const courseId = searchParams.get('course');
   const selectedCourse = coursesData.find(c => c.id === courseId);
@@ -240,5 +241,13 @@ export default function EnrollmentPage() {
         </div>
       </section>
     </>
+  );
+}
+
+export default function EnrollmentPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EnrollmentPageContent />
+    </Suspense>
   );
 }

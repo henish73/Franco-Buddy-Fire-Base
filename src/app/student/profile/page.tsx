@@ -1,8 +1,9 @@
 // src/app/student/profile/page.tsx
 import { UserCog, User, Mail, Phone, BookOpen } from 'lucide-react';
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 
 // Placeholder for the currently logged-in student's data
